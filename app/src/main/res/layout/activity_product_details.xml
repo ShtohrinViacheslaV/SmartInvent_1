@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="16dp"
+              android:orientation="vertical">
+
+    <TextView
+            android:id="@+id/txt_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Назва:"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+    <TextView
+            android:id="@+id/txt_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Опис:"
+            android:textSize="16sp"/>
+
+    <TextView
+            android:id="@+id/txt_product_work_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Код роботи:"
+            android:textSize="16sp"/>
+
+    <TextView
+            android:id="@+id/txt_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Кількість:"
+            android:textSize="16sp"/>
+
+    <TextView
+            android:id="@+id/txt_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Категорія:"
+            android:textSize="16sp"/>
+
+    <Button
+            android:id="@+id/btn_edit_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Редагувати"
+            android:layout_marginTop="16dp"/>
+
+    <Button
+            android:id="@+id/btn_back_to_scanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Назад до сканера"
+            android:layout_marginTop="8dp"/>
+</LinearLayout>

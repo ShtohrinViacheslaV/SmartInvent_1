@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:gravity="center"
+              android:padding="20dp"
+              tools:context=".fragment.MoreFragment">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Додаткові функції"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:textColor="@android:color/black" />
+
+    <Button
+            android:id="@+id/btnCategories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Категорії" />
+
+    <Button
+            android:id="@+id/btnStorages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Склади" />
+
+    <Button
+            android:id="@+id/btnPrintouts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Звіти" />
+
+    <Button
+            android:id="@+id/btnTransactions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Транзакції" />
+
+
+</LinearLayout>

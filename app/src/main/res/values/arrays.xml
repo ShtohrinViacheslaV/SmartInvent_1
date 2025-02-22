@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="legal_entity_type">
+        <item>Individual</item>
+        <item>Company</item>
+        <item>Partnership</item>
+        <item>Trust</item>
+        <item>Association</item>
+        <item>Government</item>
+        <item>Other</item>
+        <item>Not Applicable</item>
+        <item>Non Profit</item>
+    </string-array>
+
+</resources>

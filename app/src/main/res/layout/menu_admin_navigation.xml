@@ -1,0 +1,36 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Продукти -->
+    <item
+            android:id="@+id/navigation_products"
+            android:icon="@drawable/ukr"
+            android:title=""
+            android:contentDescription="Продукти" />
+
+    <!-- Рухи -->
+    <item
+            android:id="@+id/navigation_movements"
+            android:icon="@drawable/ukr"
+            android:title=""
+            android:contentDescription="Рухи" />
+
+    <!-- Співробітники -->
+    <item
+            android:id="@+id/navigation_employees"
+            android:icon="@drawable/ukr"
+            android:title=""
+            android:contentDescription="Співробітники" />
+
+    <!-- Налаштування -->
+    <item
+            android:id="@+id/navigation_settings"
+            android:icon="@drawable/ukr"
+            android:title=""
+            android:contentDescription="Налаштування" />
+
+    <!-- Звіти -->
+    <item
+            android:id="@+id/navigation_reports"
+            android:icon="@drawable/ukr"
+            android:title=""
+            android:contentDescription="Звіти" />
+</menu>

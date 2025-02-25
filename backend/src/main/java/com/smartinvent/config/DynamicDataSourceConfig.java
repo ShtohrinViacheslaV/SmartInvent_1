@@ -3,16 +3,23 @@ package com.smartinvent.config;
 import com.smartinvent.models.DatabaseConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+
+@Slf4j
 @Configuration
+@DependsOn("configService") // Впевненість, що конфігурація завантажена
 public class DynamicDataSourceConfig {
 
     private final ConfigService configService;
@@ -21,16 +28,51 @@ public class DynamicDataSourceConfig {
         this.configService = configService;
     }
 
+
     @Bean
+    @ConditionalOnProperty(name = "database.enabled", havingValue = "true", matchIfMissing = false)
     public DataSource dataSource() {
-        DatabaseConfig databaseConfig = configService.getDatabaseConfig();
+        DatabaseConfig databaseConfig = configService.getConfig();
+
+        if (databaseConfig == null || databaseConfig.getUrl() == null || databaseConfig.getUrl().isEmpty()) {
+            log.warn("⚠️ Database config is missing. Skipping database initialization.");
+            return null;  // Не створюємо DataSource
+        }
+
+        log.info("✅ Database configuration found, initializing DataSource...");
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(databaseConfig.getUrl());
         hikariConfig.setUsername(databaseConfig.getUsername());
         hikariConfig.setPassword(databaseConfig.getPassword());
-        hikariConfig.setDriverClassName(databaseConfig.getDriverClassName());
+
         return new HikariDataSource(hikariConfig);
     }
+
+//    public DataSource dataSource() {
+//        DatabaseConfig databaseConfig = configService.getDatabaseConfig();
+//
+//        if (databaseConfig == null) {
+//            throw new IllegalStateException("DatabaseConfig is null!");
+//        }
+//        if (databaseConfig.getUrl() == null) {
+//            throw new IllegalStateException("Database URL is null!");
+//        }
+//        if (databaseConfig.getUsername() == null) {
+//            throw new IllegalStateException("Database username is null!");
+//        }
+//        if (databaseConfig.getPassword() == null) {
+//            throw new IllegalStateException("Database password is null!");
+//        }
+//
+//        HikariConfig hikariConfig = new HikariConfig();
+//        hikariConfig.setJdbcUrl(databaseConfig.getUrl());
+//        hikariConfig.setUsername(databaseConfig.getUsername());
+//        hikariConfig.setPassword(databaseConfig.getPassword());
+////        hikariConfig.setDriverClassName(databaseConfig.getDriverClassName());
+//
+//        return new HikariDataSource(hikariConfig);
+//    }
+
 }
 
 

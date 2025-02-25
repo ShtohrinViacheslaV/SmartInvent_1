@@ -1,24 +1,24 @@
 package com.smartinvent.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.smartinvent.R;
-import org.json.JSONObject;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import com.smartinvent.config.DbConfigManager;
+import com.smartinvent.model.Company;
+import com.smartinvent.network.ApiClient;
+import com.smartinvent.network.ApiService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUpCompanyActivity1 extends AppCompatActivity {
 
     private EditText companyName, companyAddress, companyPhone, companyEmail, companyWebsite;
-    private static final String FILE_NAME = "company_data.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,51 +30,121 @@ public class SignUpCompanyActivity1 extends AppCompatActivity {
         companyPhone = findViewById(R.id.input_phone_number);
         companyEmail = findViewById(R.id.input_email_address);
         companyWebsite = findViewById(R.id.input_website_url);
-
-        showInfoDialog();
-    }
-
-    private void showInfoDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Welcome to SmartInventory")
-                .setMessage("Please provide your company details.")
-                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                .show();
     }
 
     public void saveCompanyData(View v) {
-        try {
-            JSONObject companyData = new JSONObject();
-            companyData.put("companyName", companyName.getText().toString());
-            companyData.put("companyAddress", companyAddress.getText().toString());
-            companyData.put("companyPhone", companyPhone.getText().toString());
-            companyData.put("companyEmail", companyEmail.getText().toString());
-            companyData.put("companyWebsite", companyWebsite.getText().toString());
+        Company company = new Company(
+                companyName.getText().toString(),
+                companyAddress.getText().toString(),
+                companyPhone.getText().toString(),
+                companyEmail.getText().toString()
+        );
 
-            File file = new File(getFilesDir(), FILE_NAME);
-            try (FileWriter writer = new FileWriter(file)) {
-                writer.write(companyData.toString());
+        ApiService apiService = ApiClient.getService();
+        apiService.createCompany(company).enqueue(new Callback<Company>() {
+            @Override
+            public void onResponse(Call<Company> call, Response<Company> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(SignUpCompanyActivity1.this, "Компанія зареєстрована!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(SignUpCompanyActivity1.this, SignUpCompanyActivity2.class));
+                    finish();
+                } else {
+                    Toast.makeText(SignUpCompanyActivity1.this, "Помилка реєстрації компанії", Toast.LENGTH_SHORT).show();
+                }
             }
 
-            Toast.makeText(this, "Company data saved", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, SignUpCompanyActivity2.class));
-            finish();  // Закриваємо активність
-
-        } catch (Exception e) {
-            Log.e("SignUpCompanyActivity1", "Error saving JSON data", e);
-            Toast.makeText(this, "Error saving data", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void signUpCompanyPage2(View v) {
-        saveCompanyData(v);
-    }
-
-    public void backToLogin(View v) {
-        startActivity(new Intent(this, LoginActivity.class));
-        finish();
+            @Override
+            public void onFailure(Call<Company> call, Throwable t) {
+                Toast.makeText(SignUpCompanyActivity1.this, "Не вдалося підключитися до сервера", Toast.LENGTH_SHORT).show();
+                Log.e("API_ERROR", "Помилка підключення", t);
+            }
+        });
     }
 }
+
+
+//package com.smartinvent.activity;
+//
+//import android.content.DialogInterface;
+//import android.content.Intent;
+//import android.os.Bundle;
+//import android.util.Log;
+//import android.view.View;
+//import android.widget.EditText;
+//import android.widget.Toast;
+//import androidx.appcompat.app.AlertDialog;
+//import androidx.appcompat.app.AppCompatActivity;
+//import com.smartinvent.R;
+//import org.json.JSONObject;
+//import java.io.File;
+//import java.io.FileWriter;
+//import java.io.IOException;
+//
+//public class SignUpCompanyActivity1 extends AppCompatActivity {
+//
+//    private EditText companyName, companyAddress, companyPhone, companyEmail, companyWebsite;
+//    private static final String FILE_NAME = "company_data.json";
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_sign_up_company_page_1);
+//
+//        companyName = findViewById(R.id.input_company_name);
+//        companyAddress = findViewById(R.id.input_company_address);
+//        companyPhone = findViewById(R.id.input_phone_number);
+//        companyEmail = findViewById(R.id.input_email_address);
+//        companyWebsite = findViewById(R.id.input_website_url);
+//
+//        showInfoDialog();
+//    }
+//
+//    private void showInfoDialog() {
+//        new AlertDialog.Builder(this)
+//                .setTitle("Welcome to SmartInventory")
+//                .setMessage("Please provide your company details.")
+//                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+//                .show();
+//    }
+//
+//    public void saveCompanyData(View v) {
+//        try {
+//            JSONObject companyData = new JSONObject();
+//            companyData.put("companyName", companyName.getText().toString());
+//            companyData.put("companyAddress", companyAddress.getText().toString());
+//            companyData.put("companyPhone", companyPhone.getText().toString());
+//            companyData.put("companyEmail", companyEmail.getText().toString());
+//            companyData.put("companyWebsite", companyWebsite.getText().toString());
+//
+//            File file = new File(getFilesDir(), FILE_NAME);
+//            try (FileWriter writer = new FileWriter(file)) {
+//                writer.write(companyData.toString());
+//            }
+//
+//            Toast.makeText(this, "Company data saved", Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(this, SignUpCompanyActivity2.class));
+//            finish();  // Закриваємо активність
+//
+//        } catch (Exception e) {
+//            Log.e("SignUpCompanyActivity1", "Error saving JSON data", e);
+//            Toast.makeText(this, "Error saving data", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    public void signUpCompanyPage2(View v) {
+//        saveCompanyData(v);
+//    }
+//
+//    public void backToDatabase(View v) {
+//        startActivity(new Intent(this, DatabaseConfigActivity.class));
+//        finish();
+//    }
+//
+//    public void backToLogin(View v) {
+//        startActivity(new Intent(this, LoginActivity.class));
+//        finish();
+//    }
+//}
 
 
 

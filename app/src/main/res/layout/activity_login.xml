@@ -100,7 +100,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/delft_blue"
-        android:onClick="signUpCompanyPage1"
+        android:onClick="signUpDatabase"
         android:text="Sign Up Company"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

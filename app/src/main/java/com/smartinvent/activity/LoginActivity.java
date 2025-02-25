@@ -158,6 +158,11 @@ public class LoginActivity extends AppCompatActivity {
 //        startActivity(intent);
 //    }
 
+    public void signUpDatabase(View v){
+        Intent intent = new Intent(this, DatabaseConfigActivity.class);
+        startActivity(intent);
+    }
+
     public void signUpCompanyPage1(View v){
         Intent intent = new Intent(this, SignUpCompanyActivity1.class);
         startActivity(intent);

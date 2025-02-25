@@ -64,7 +64,7 @@ public class DatabaseConfigActivity extends AppCompatActivity {
 
         DbConfigManager.saveConfig(this, config);
         Toast.makeText(this, "Налаштування збережені", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, AdminHomeActivity.class));
+        startActivity(new Intent(this, SignUpCompanyActivity1.class));
     }
 }
 

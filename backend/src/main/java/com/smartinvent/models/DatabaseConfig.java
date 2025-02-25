@@ -10,7 +10,7 @@ public class DatabaseConfig {
     private String url;
     private String username;
     private String password;
-    private String driverClassName;
+//    private String driverClassName;
 
     public String getUrl() {
         return url;
@@ -36,13 +36,13 @@ public class DatabaseConfig {
         this.password = password;
     }
 
-    public String getDriverClassName() {
-        return driverClassName;
-    }
-
-    public void setDriverClassName(String driverClassName) {
-        this.driverClassName = driverClassName;
-    }
+//    public String getDriverClassName() {
+//        return driverClassName;
+//    }
+//
+//    public void setDriverClassName(String driverClassName) {
+//        this.driverClassName = driverClassName;
+//    }
 }
 
 //

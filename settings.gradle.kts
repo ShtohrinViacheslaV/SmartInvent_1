@@ -5,6 +5,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -14,5 +15,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "SmartInvent"
-include("backend", "app")
+include(":app")
+include(":backend")
 

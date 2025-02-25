@@ -19,6 +19,10 @@ public class ConfigService {
     @Getter @Setter
     private DatabaseConfig databaseConfig;
 
+    public ConfigService() {
+        loadConfig();
+    }
+
     @PostConstruct
     public void loadConfig() {
         try {
@@ -27,17 +31,19 @@ public class ConfigService {
                 databaseConfig = objectMapper.readValue(configFile, DatabaseConfig.class);
             } else {
                 databaseConfig = new DatabaseConfig();
-                databaseConfig.setUrl("");  // Запобігаємо NullPointerException
-                databaseConfig.setUsername("");
-                databaseConfig.setPassword("");
                 saveConfig();
             }
+
+            // Перевірка, чи всі поля ініціалізовані
+            if (databaseConfig.getUrl() == null) databaseConfig.setUrl("");
+            if (databaseConfig.getUsername() == null) databaseConfig.setUsername("");
+            if (databaseConfig.getPassword() == null) databaseConfig.setPassword("");
+
             log.info("Config loaded successfully: {}", databaseConfig);
         } catch (IOException e) {
             log.error("Failed to load config", e);
         }
     }
-
 
 //    @PostConstruct
 //    public void loadConfig() {
@@ -47,6 +53,9 @@ public class ConfigService {
 //                databaseConfig = objectMapper.readValue(configFile, DatabaseConfig.class);
 //            } else {
 //                databaseConfig = new DatabaseConfig();
+//                databaseConfig.setUrl("");  // Запобігаємо NullPointerException
+//                databaseConfig.setUsername("");
+//                databaseConfig.setPassword("");
 //                saveConfig();
 //            }
 //            log.info("Config loaded successfully: {}", databaseConfig);

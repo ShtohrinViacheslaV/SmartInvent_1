@@ -23,6 +23,8 @@ public class Company {
         this.email = email;
     }
 
+
+
     public Long getCompanyId() {
         return companyId;
     }

@@ -1,24 +1,23 @@
 package com.smartinvent.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.smartinvent.R;
-import org.json.JSONObject;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import com.smartinvent.model.Employee;
+import com.smartinvent.network.ApiClient;
+import com.smartinvent.network.ApiService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUpCompanyActivity2 extends AppCompatActivity {
 
     private EditText adminWorkId, adminFirstName, adminLastName, adminEmail, adminPassword;
-    private static final String FILE_NAME = "admin_data.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,51 +29,119 @@ public class SignUpCompanyActivity2 extends AppCompatActivity {
         adminLastName = findViewById(R.id.input_admin_last_name);
         adminEmail = findViewById(R.id.input_admin_email);
         adminPassword = findViewById(R.id.input_admin_password);
-
-        showInfoDialog();
-    }
-
-    private void showInfoDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Sign Up administrator for your company")
-                .setMessage("Please provide the following information for the primary administrator.")
-                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                .show();
     }
 
     public void saveAdminData(View v) {
-        try {
-            JSONObject adminData = new JSONObject();
-            adminData.put("adminWorkId", adminWorkId.getText().toString());
-            adminData.put("adminFirstName", adminFirstName.getText().toString());
-            adminData.put("adminLastName", adminLastName.getText().toString());
-            adminData.put("adminEmail", adminEmail.getText().toString());
-            adminData.put("adminPassword", adminPassword.getText().toString());
+        Employee admin = new Employee(
+                adminFirstName.getText().toString(),
+                adminLastName.getText().toString(),
+                adminEmail.getText().toString(),
+                "ADMIN" // Встановлюємо роль адміністратора
+        );
+        admin.setEmployeeWorkId(Integer.parseInt(adminWorkId.getText().toString()));
+        admin.setPasswordHash(adminPassword.getText().toString());
 
-            File file = new File(getFilesDir(), FILE_NAME);
-            try (FileWriter writer = new FileWriter(file)) {
-                writer.write(adminData.toString());
+        ApiService apiService = ApiClient.getService();
+        apiService.createEmployee(admin).enqueue(new Callback<Employee>() {
+            @Override
+            public void onResponse(Call<Employee> call, Response<Employee> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(SignUpCompanyActivity2.this, "Адміністратор зареєстрований!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(SignUpCompanyActivity2.this, AdminHomeActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(SignUpCompanyActivity2.this, "Помилка реєстрації адміністратора", Toast.LENGTH_SHORT).show();
+                }
             }
 
-            Toast.makeText(this, "Admin data saved", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, DatabaseConfigActivity.class));
-            finish();
-
-        } catch (Exception e) {
-            Log.e("SignUpCompanyActivity2", "Error saving JSON data", e);
-            Toast.makeText(this, "Error saving data", Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onFailure(Call<Employee> call, Throwable t) {
+                Toast.makeText(SignUpCompanyActivity2.this, "Не вдалося підключитися до сервера", Toast.LENGTH_SHORT).show();
+                Log.e("API_ERROR", "Помилка підключення", t);
+            }
+        });
     }
 
-    public void backToSignUpCompanyActivity1(View v) {
-        startActivity(new Intent(this, SignUpCompanyActivity1.class));
-        finish();
-    }
-
-    public void databaseActivity(View v) {
-        saveAdminData(v);
-    }
 }
+
+
+//package com.smartinvent.activity;
+//
+//import android.content.DialogInterface;
+//import android.content.Intent;
+//import android.os.Bundle;
+//import android.util.Log;
+//import android.view.View;
+//import android.widget.EditText;
+//import android.widget.Toast;
+//import androidx.appcompat.app.AlertDialog;
+//import androidx.appcompat.app.AppCompatActivity;
+//import com.smartinvent.R;
+//import org.json.JSONObject;
+//import java.io.File;
+//import java.io.FileWriter;
+//import java.io.IOException;
+//
+//public class SignUpCompanyActivity2 extends AppCompatActivity {
+//
+//    private EditText adminWorkId, adminFirstName, adminLastName, adminEmail, adminPassword;
+//    private static final String FILE_NAME = "admin_data.json";
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_sign_up_company_page_2);
+//
+//        adminWorkId = findViewById(R.id.input_admin_worker_id);
+//        adminFirstName = findViewById(R.id.input_admin_first_name);
+//        adminLastName = findViewById(R.id.input_admin_last_name);
+//        adminEmail = findViewById(R.id.input_admin_email);
+//        adminPassword = findViewById(R.id.input_admin_password);
+//
+//        showInfoDialog();
+//    }
+//
+//    private void showInfoDialog() {
+//        new AlertDialog.Builder(this)
+//                .setTitle("Sign Up administrator for your company")
+//                .setMessage("Please provide the following information for the primary administrator.")
+//                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+//                .show();
+//    }
+//
+//    public void saveAdminData(View v) {
+//        try {
+//            JSONObject adminData = new JSONObject();
+//            adminData.put("adminWorkId", adminWorkId.getText().toString());
+//            adminData.put("adminFirstName", adminFirstName.getText().toString());
+//            adminData.put("adminLastName", adminLastName.getText().toString());
+//            adminData.put("adminEmail", adminEmail.getText().toString());
+//            adminData.put("adminPassword", adminPassword.getText().toString());
+//
+//            File file = new File(getFilesDir(), FILE_NAME);
+//            try (FileWriter writer = new FileWriter(file)) {
+//                writer.write(adminData.toString());
+//            }
+//
+//            Toast.makeText(this, "Admin data saved", Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(this, AdminHomeActivity.class));
+//            finish();
+//
+//        } catch (Exception e) {
+//            Log.e("SignUpCompanyActivity2", "Error saving JSON data", e);
+//            Toast.makeText(this, "Error saving data", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    public void backToSignUpCompanyActivity1(View v) {
+//        startActivity(new Intent(this, SignUpCompanyActivity1.class));
+//        finish();
+//    }
+//
+//    public void databaseActivity(View v) {
+//        saveAdminData(v);
+//    }
+//}
 
 
 //package com.smartinvent.activity;

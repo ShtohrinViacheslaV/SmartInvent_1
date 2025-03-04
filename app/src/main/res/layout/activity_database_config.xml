@@ -12,7 +12,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Configuring the database"
+                android:text="Database Configuration"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_gravity="center_horizontal"
@@ -29,14 +29,14 @@
                     android:id="@+id/radio_manual"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Manual"
+                    android:text="Connect by parameters"
                     android:checked="true" />
 
             <RadioButton
                     android:id="@+id/radio_url"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Enter URL" />
+                    android:text="Connect by URL" />
         </RadioGroup>
 
         <!-- Поле для введення URL -->
@@ -44,21 +44,15 @@
                 android:id="@+id/urlInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="URL "
+                android:hint="Enter database URL"
                 android:visibility="gone" />
 
         <!-- Поля для ручного введення -->
-        <Spinner
-                android:id="@+id/dbTypeSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:entries="@array/db_types" />
-
         <EditText
                 android:id="@+id/hostInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Host (IP or domen)" />
+                android:hint="Host (IP or domain)" />
 
         <EditText
                 android:id="@+id/portInput"
@@ -71,13 +65,13 @@
                 android:id="@+id/databaseInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Name database" />
+                android:hint="Database name" />
 
         <EditText
                 android:id="@+id/userInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="User" />
+                android:hint="Username" />
 
         <EditText
                 android:id="@+id/passwordInput"
@@ -90,89 +84,204 @@
                 android:id="@+id/testButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Test connection"
+                android:text="Test Connection"
                 android:layout_marginTop="8dp" />
-
 
         <Button
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save and connect"
+                android:text="Save and Connect"
                 android:layout_marginTop="16dp" />
 
         <Button
-                android:id="@+id/back_to_signUpCompanyPage2"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:onClick="backToSignUpCompanyPage2"
+                android:id="@+id/backButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="backToPreviousPage"
                 android:text="Back"
-                android:textSize="24dp"/>
+                android:textSize="16dp"
+                android:layout_marginTop="16dp"/>
 
     </LinearLayout>
 </ScrollView>
 
 
         <!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--              android:layout_width="match_parent"-->
-<!--              android:layout_height="match_parent"-->
-<!--              android:orientation="vertical"-->
-<!--              android:padding="16dp">-->
+<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:padding="16dp">-->
 
-<!--    <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Configuring the database"-->
-<!--            android:textSize="18sp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:layout_gravity="center_horizontal"-->
-<!--            android:paddingBottom="16dp" />-->
-
-<!--    &lt;!&ndash; Вибір типу бази даних &ndash;&gt;-->
-<!--    <Spinner-->
-<!--            android:id="@+id/dbTypeSpinner"-->
+<!--    <LinearLayout-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:entries="@array/db_types" />-->
+<!--            android:orientation="vertical">-->
 
-<!--    <EditText-->
-<!--            android:id="@+id/hostInput"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:hint="Host (IP or domen)" />-->
+<!--        <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Configuring the database"-->
+<!--                android:textSize="18sp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                android:paddingBottom="16dp" />-->
 
-<!--    <EditText-->
-<!--            android:id="@+id/portInput"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:hint="Port"-->
-<!--            android:inputType="number" />-->
+<!--        &lt;!&ndash; Вибір способу підключення &ndash;&gt;-->
+<!--        <RadioGroup-->
+<!--                android:id="@+id/connectionTypeGroup"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
 
-<!--    <EditText-->
-<!--            android:id="@+id/databaseInput"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:hint="Name" />-->
+<!--            <RadioButton-->
+<!--                    android:id="@+id/radio_manual"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Manual"-->
+<!--                    android:checked="true" />-->
 
-<!--    <EditText-->
-<!--            android:id="@+id/userInput"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:hint="User" />-->
+<!--            <RadioButton-->
+<!--                    android:id="@+id/radio_url"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Enter URL" />-->
+<!--        </RadioGroup>-->
 
-<!--    <EditText-->
-<!--            android:id="@+id/passwordInput"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:hint="Password"-->
-<!--            android:inputType="textPassword" />-->
+<!--        &lt;!&ndash; Поле для введення URL &ndash;&gt;-->
+<!--        <EditText-->
+<!--                android:id="@+id/urlInput"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="URL "-->
+<!--                android:visibility="gone" />-->
+
+<!--        &lt;!&ndash; Поля для ручного введення &ndash;&gt;-->
+<!--        <Spinner-->
+<!--                android:id="@+id/dbTypeSpinner"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:entries="@array/db_types" />-->
+
+<!--        <EditText-->
+<!--                android:id="@+id/hostInput"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Host (IP or domen)" />-->
+
+<!--        <EditText-->
+<!--                android:id="@+id/portInput"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Port"-->
+<!--                android:inputType="number" />-->
+
+<!--        <EditText-->
+<!--                android:id="@+id/databaseInput"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Name database" />-->
+
+<!--        <EditText-->
+<!--                android:id="@+id/userInput"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="User" />-->
+
+<!--        <EditText-->
+<!--                android:id="@+id/passwordInput"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Password"-->
+<!--                android:inputType="textPassword" />-->
+
+<!--        <Button-->
+<!--                android:id="@+id/testButton"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Test connection"-->
+<!--                android:layout_marginTop="8dp" />-->
 
 
-<!--    <Button-->
-<!--            android:id="@+id/saveButton"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Зберегти"-->
-<!--            android:layout_marginTop="16dp" />-->
-<!--</LinearLayout>-->
+<!--        <Button-->
+<!--                android:id="@+id/saveButton"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Save and connect"-->
+<!--                android:layout_marginTop="16dp" />-->
+
+<!--        <Button-->
+<!--                android:id="@+id/back_to_signUpCompanyPage2"-->
+<!--                android:layout_width="200dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:onClick="backToSignUpCompanyPage2"-->
+<!--                android:text="Back"-->
+<!--                android:textSize="24dp"/>-->
+
+<!--    </LinearLayout>-->
+<!--</ScrollView>-->
+
+
+<!--        &lt;!&ndash;<?xml version="1.0" encoding="utf-8"?>&ndash;&gt;-->
+<!--&lt;!&ndash;<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"&ndash;&gt;-->
+<!--&lt;!&ndash;              android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;              android:layout_height="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;              android:orientation="vertical"&ndash;&gt;-->
+<!--&lt;!&ndash;              android:padding="16dp">&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:text="Configuring the database"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textSize="18sp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textStyle="bold"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_gravity="center_horizontal"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:paddingBottom="16dp" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; Вибір типу бази даних &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <Spinner&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/dbTypeSpinner"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:entries="@array/db_types" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <EditText&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/hostInput"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:hint="Host (IP or domen)" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <EditText&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/portInput"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:hint="Port"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:inputType="number" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <EditText&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/databaseInput"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:hint="Name" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <EditText&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/userInput"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:hint="User" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <EditText&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/passwordInput"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:hint="Password"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:inputType="textPassword" />&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;    <Button&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/saveButton"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:text="Зберегти"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginTop="16dp" />&ndash;&gt;-->
+<!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->

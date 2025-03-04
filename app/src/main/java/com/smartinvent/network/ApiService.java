@@ -19,17 +19,19 @@ public interface ApiService {
     @POST("api/companies")
     Call<Company> createCompany(@Body Company company);
 
-    @POST("/employees")
+    @POST("api/employees")
     Call<Employee> createEmployee(@Body Employee employee);
 
+    @POST("api/testConnection")
+    Call<Void> testDbConnection(@Body DatabaseConfig config);
 
 //    @POST("config/save")
 //    Call<Void> saveDatabaseConfig(@Body DatabaseConfigRequest request);
 
-    @POST("test-db-connection")
-    Call<Void> testDbConnection(@Body DatabaseConfig config);
+//    @POST("api/config/tst-connection")
+//    Call<Void> testDbConnection(@Body DatabaseConfig config);
 
 
-    @POST("/api/auth/login")
+    @POST("api/auth/login")
     Call<AuthResponse> login(@Body AuthRequest request);
 }

@@ -1,7 +1,7 @@
 package com.smartinvent.config;
 
 public class ApiConfig {
-    public static final String BASE_URL = "https://192.168.0.1:8080";
+    public static final String BASE_URL = "http://192.168.0.120:8080";
 
     // Додаткові конфігурації API
     public static final String API_PRODUCTS = BASE_URL + "/api/products";

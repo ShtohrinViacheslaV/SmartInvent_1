@@ -23,20 +23,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+//    @GetMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        Optional<Employee> employeeOpt = employeeRepository.findByEmail(request.getEmail());
+            Optional<Employee> employeeOpt = employeeRepository.findByEmail(request.getEmail());
 
-        if (employeeOpt.isPresent()) {
-            Employee employee = employeeOpt.get();
-            if (passwordEncoder.matches(request.getPassword(), employee.getPasswordHash())) {
-                return ResponseEntity.ok(new AuthResponse(
-                        employee.getEmployeeId(),
-                        employee.getRole(),
-                        employee.getFirstName(),
-                        employee.getLastName()
-                ));
+            if (employeeOpt.isPresent()) {
+                Employee employee = employeeOpt.get();
+                if (passwordEncoder.matches(request.getPassword(), employee.getPasswordHash())) {
+                    return ResponseEntity.ok(new AuthResponse(
+                            employee.getEmployeeId(),
+                            employee.getRole(),
+                            employee.getFirstName(),
+                            employee.getLastName()
+                    ));
+                }
             }
+            return ResponseEntity.status(401).body("Invalid email or password");
         }
-        return ResponseEntity.status(401).body("Invalid email or password");
-    }
 }

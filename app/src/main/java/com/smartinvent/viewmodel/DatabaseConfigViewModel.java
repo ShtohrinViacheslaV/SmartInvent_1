@@ -2,28 +2,24 @@ package com.smartinvent.viewmodel;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
+import com.smartinvent.config.DatabaseConfig;
 import com.smartinvent.network.DatabaseConfigRequest;
 
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class DatabaseConfigViewModel extends AndroidViewModel {
     private final DatabaseConfigRequest configRequest;
-
-
 
     public DatabaseConfigViewModel(Application application) {
         super(application);
         configRequest = new DatabaseConfigRequest(application);
     }
 
-    public void saveDatabaseConfig(String url, String username, String password, OnSaveCallback callback) {
-        configRequest.sendConfigToServer(url, username, password, callback::onSave);
+    public void saveDatabaseConfig(DatabaseConfig config, OnSaveCallback callback) {
+        configRequest.sendConfigToServer(config, callback::onSave);
     }
-
-//    public void saveDatabaseConfig(String dbType, String host, String port, String database, String user, String password, OnSaveCallback callback) {
-//        configRequest.sendConfigToServer(dbType, host, port, database, user, password, callback::onSave);
-//    }
 
     public void saveDatabaseUrl(String url, OnSaveCallback callback) {
         configRequest.sendUrlToServer(url, callback::onSave);
@@ -33,6 +29,37 @@ public class DatabaseConfigViewModel extends AndroidViewModel {
         void onSave(boolean success);
     }
 }
+//public class DatabaseConfigViewModel extends AndroidViewModel {
+//    private final DatabaseConfigRequest configRequest;
+//
+//
+//
+//    public DatabaseConfigViewModel(Application application) {
+//        super(application);
+//        configRequest = new DatabaseConfigRequest(application);
+//    }
+//
+//    public void saveDatabaseConfig(DatabaseConfig config, OnSaveCallback callback) {
+//        configRequest.sendConfigToServer(config, callback::onSave);
+//    }
+//
+//
+////    public void saveDatabaseConfig(String url, String username, String password, OnSaveCallback callback) {
+////        configRequest.sendConfigToServer(url, username, password, callback::onSave);
+////    }
+//
+////    public void saveDatabaseConfig(String dbType, String host, String port, String database, String user, String password, OnSaveCallback callback) {
+////        configRequest.sendConfigToServer(dbType, host, port, database, user, password, callback::onSave);
+////    }
+//
+//    public void saveDatabaseUrl(String url, OnSaveCallback callback) {
+//        configRequest.sendUrlToServer(url, callback::onSave);
+//    }
+//
+//    public interface OnSaveCallback {
+//        void onSave(boolean success);
+//    }
+//}
 
 
 //package com.smartinvent.viewmodel;

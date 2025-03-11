@@ -5,6 +5,12 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <style name="CustomScannerTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#FF9800</item>
+        <item name="colorPrimaryDark">#F57C00</item>
+        <item name="colorAccent">#FF5722</item>
+    </style>
+
 
 
     <style name="Theme.SmartInvent" parent="Base.Theme.SmartInvent" />

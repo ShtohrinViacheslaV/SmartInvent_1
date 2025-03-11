@@ -1,6 +1,5 @@
 package com.smartinvent.config;
 
-
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -20,8 +19,9 @@ public class DbConfigManager {
         editor.putString(KEY_USER, config.getUsername());
         editor.putString(KEY_PASSWORD, config.getPassword());
         editor.putString(KEY_URL, config.getUrl());
-        editor.apply(); // Зберігаємо зміни
+        editor.apply();
     }
+
 
     public static DatabaseConfig loadConfig(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -30,7 +30,32 @@ public class DbConfigManager {
         String user = prefs.getString(KEY_USER, "");
         String password = prefs.getString(KEY_PASSWORD, "");
         String url = prefs.getString(KEY_URL, "");
+
+        // Якщо хоча б одне поле порожнє, повертаємо null
+        if (host.isEmpty() || port.isEmpty() || user.isEmpty() || password.isEmpty() || url.isEmpty()) {
+            return null;
+        }
         return new DatabaseConfig(host, port, user, password, url);
+    }
+//    public static DatabaseConfig loadConfig(Context context) {
+//        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+//        String host = prefs.getString(KEY_HOST, null);
+//        String port = prefs.getString(KEY_PORT, null);
+//        String user = prefs.getString(KEY_USER, null);
+//        String password = prefs.getString(KEY_PASSWORD, null);
+//        String url = prefs.getString(KEY_URL, null);
+//
+//        if (host == null || port == null || user == null || password == null || url == null) {
+//            return null; // Немає збереженої конфігурації
+//        }
+//        return new DatabaseConfig(host, port, user, password, url);
+//    }
+
+    public static boolean isConfigAvailable(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.contains(KEY_HOST) && prefs.contains(KEY_PORT) &&
+                prefs.contains(KEY_USER) && prefs.contains(KEY_PASSWORD) &&
+                prefs.contains(KEY_URL);
     }
 
     public static void clearConfig(Context context) {
@@ -38,6 +63,49 @@ public class DbConfigManager {
         prefs.edit().clear().apply();
     }
 }
+
+
+
+//package com.smartinvent.config;
+//
+//
+//import android.content.Context;
+//import android.content.SharedPreferences;
+//
+//public class DbConfigManager {
+//    private static final String PREF_NAME = "db_config";
+//    private static final String KEY_HOST = "db_host";
+//    private static final String KEY_PORT = "db_port";
+//    private static final String KEY_USER = "db_user";
+//    private static final String KEY_PASSWORD = "db_password";
+//    private static final String KEY_URL = "db_url";
+//
+//    public static void saveConfig(Context context, DatabaseConfig config) {
+//        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = prefs.edit();
+//        editor.putString(KEY_HOST, config.getHost());
+//        editor.putString(KEY_PORT, config.getPort());
+//        editor.putString(KEY_USER, config.getUsername());
+//        editor.putString(KEY_PASSWORD, config.getPassword());
+//        editor.putString(KEY_URL, config.getUrl());
+//        editor.apply(); // Зберігаємо зміни
+//    }
+//
+//    public static DatabaseConfig loadConfig(Context context) {
+//        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+//        String host = prefs.getString(KEY_HOST, "");
+//        String port = prefs.getString(KEY_PORT, "");
+//        String user = prefs.getString(KEY_USER, "");
+//        String password = prefs.getString(KEY_PASSWORD, "");
+//        String url = prefs.getString(KEY_URL, "");
+//        return new DatabaseConfig(host, port, user, password, url);
+//    }
+//
+//    public static void clearConfig(Context context) {
+//        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+//        prefs.edit().clear().apply();
+//    }
+//}
 
 
 //package com.smartinvent.config;

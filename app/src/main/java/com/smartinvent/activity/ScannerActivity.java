@@ -15,6 +15,15 @@ public class ScannerActivity extends AppCompatActivity {
         startQrScanner();
     }
 
+//    private void startQrScanner() {
+//        IntentIntegrator integrator = new IntentIntegrator(this);
+//        integrator.setOrientationLocked(false);
+//        integrator.setPrompt("🔍 Наведіть камеру на QR-код товару");
+//        integrator.setBeepEnabled(true);
+//        integrator.setCaptureActivity(CustomScannerActivity.class); // Використовуємо кастомну активність
+//        integrator.initiateScan();
+    //}
+
     private void startQrScanner() {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setOrientationLocked(false);

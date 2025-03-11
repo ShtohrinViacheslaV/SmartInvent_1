@@ -1,6 +1,14 @@
 package com.smartinvent.models;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
+@ConfigurationProperties(prefix = "database")
+@Getter
+@Setter
 public class DatabaseConfig {
     private String host;
     private String port;

@@ -30,6 +30,7 @@
             </intent-filter>
         </activity>
 
+
         <activity android:name=".activity.SignUpCompanyActivity1" android:exported="false"/>
         <activity android:name=".activity.SignUpCompanyActivity2" android:exported="false" android:theme="@style/Theme.SmartInvent"/>
         <activity android:name=".activity.ForgotPasswordActivity" android:exported="false"/>
@@ -40,7 +41,7 @@
         <activity android:name=".activity.MainActivity" android:exported="false"/>
         <activity android:name=".activity.MoreActivity" android:exported="false"/>
         <activity android:name=".activity.ProductDetailsActivity" android:exported="false"/>
-        <activity android:name=".activity.ScannerActivity" android:exported="false"/>
+        <activity android:name=".activity.ScannerActivity" android:exported="false" android:theme="@style/CustomScannerTheme" android:screenOrientation="portrait"/>
         <activity android:name=".activity.ReportsActivity" android:exported="false"/>
         <activity android:name=".activity.BaseHomeActivity" android:exported="false"/>
         <activity android:name=".activity.UserHomeActivity" android:exported="false"/>

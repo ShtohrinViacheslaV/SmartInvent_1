@@ -25,6 +25,21 @@ public interface ApiService {
     @POST("api/testConnection")
     Call<Void> testDbConnection(@Body DatabaseConfig config);
 
+    @POST("api/checkTables")
+    Call<Boolean> checkDatabaseTables(@Body DatabaseConfig config);
+
+//    @POST("api/setupDatabase")
+//    Call<Void> setupDatabase();
+
+    @POST("api/setupDatabase")
+    Call<String> setupDatabase();
+
+    @POST("api/initializeDatabase")
+    Call<Void> initializeDatabase(@Body DatabaseConfig config);
+
+    @POST("clear-database")
+    Call<Void> clearDatabase(@Body DatabaseConfig config);
+
 //    @POST("config/save")
 //    Call<Void> saveDatabaseConfig(@Body DatabaseConfigRequest request);
 

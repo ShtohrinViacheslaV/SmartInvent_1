@@ -27,6 +27,16 @@ CREATE TABLE Category (
 );
 
 
+
+-- Таблиця Storage
+CREATE TABLE Storage (
+                         storage_id SERIAL PRIMARY KEY,
+                         name VARCHAR(100) NOT NULL,
+                         location VARCHAR(255),
+                         details TEXT
+);
+
+
 -- Таблиця Product
 CREATE TABLE Product (
                          product_id SERIAL PRIMARY KEY,
@@ -42,14 +52,6 @@ CREATE TABLE Product (
 
 
 
-
--- Таблиця Storage
-CREATE TABLE Storage (
-                         storage_id SERIAL PRIMARY KEY,
-                         name VARCHAR(100) NOT NULL,
-                         location VARCHAR(255),
-                         details TEXT
-);
 
 -- Таблиця Transaction
 CREATE TABLE Transaction (

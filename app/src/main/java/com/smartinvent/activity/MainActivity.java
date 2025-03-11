@@ -62,6 +62,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+
+            if (selectedFragment != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, selectedFragment)
+                        .commit();
+                return true;
+            }
+            return false;
+        });
+
+        // Вибираємо правильний `BottomNavigationView`
+        bottomNavigationView.getMenu().clear();
+        bottomNavigationView.inflateMenu(isAdmin ? R.menu.bottom_nav_menu_admin : R.menu.bottom_nav_menu_user);
+    }
+}
+
+
+
 //
 //            if (isAdmin) {
 //                switch (item.getItemId()) {
@@ -99,19 +117,4 @@ public class MainActivity extends AppCompatActivity {
 //                        selectedFragment = new MoreFragment();
 //                        break;
 //                }
-           // }
-
-            if (selectedFragment != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, selectedFragment)
-                        .commit();
-                return true;
-            }
-            return false;
-        });
-
-        // Вибираємо правильний `BottomNavigationView`
-        bottomNavigationView.getMenu().clear();
-        bottomNavigationView.inflateMenu(isAdmin ? R.menu.bottom_nav_menu_admin : R.menu.bottom_nav_menu_user);
-    }
-}
+// }

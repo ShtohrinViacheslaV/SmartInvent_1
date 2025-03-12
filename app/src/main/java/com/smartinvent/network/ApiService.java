@@ -28,14 +28,15 @@ public interface ApiService {
     @POST("api/checkTables")
     Call<Boolean> checkDatabaseTables(@Body DatabaseConfig config);
 
-//    @POST("api/setupDatabase")
-//    Call<Void> setupDatabase();
 
     @POST("api/setupDatabase")
-    Call<String> setupDatabase();
-
-    @POST("api/initializeDatabase")
     Call<Void> initializeDatabase(@Body DatabaseConfig config);
+
+//    @POST("api/setupDatabase")
+//    Call<String> initializeDatabase();
+
+//    @POST("api/initializeDatabase")
+//    Call<Void> initializeDatabase(@Body DatabaseConfig config);
 
     @POST("clear-database")
     Call<Void> clearDatabase(@Body DatabaseConfig config);

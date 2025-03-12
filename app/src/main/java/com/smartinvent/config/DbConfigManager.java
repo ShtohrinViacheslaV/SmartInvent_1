@@ -37,19 +37,7 @@ public class DbConfigManager {
         }
         return new DatabaseConfig(host, port, user, password, url);
     }
-//    public static DatabaseConfig loadConfig(Context context) {
-//        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-//        String host = prefs.getString(KEY_HOST, null);
-//        String port = prefs.getString(KEY_PORT, null);
-//        String user = prefs.getString(KEY_USER, null);
-//        String password = prefs.getString(KEY_PASSWORD, null);
-//        String url = prefs.getString(KEY_URL, null);
-//
-//        if (host == null || port == null || user == null || password == null || url == null) {
-//            return null; // Немає збереженої конфігурації
-//        }
-//        return new DatabaseConfig(host, port, user, password, url);
-//    }
+
 
     public static boolean isConfigAvailable(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -63,6 +51,21 @@ public class DbConfigManager {
         prefs.edit().clear().apply();
     }
 }
+
+
+//    public static DatabaseConfig loadConfig(Context context) {
+//        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+//        String host = prefs.getString(KEY_HOST, null);
+//        String port = prefs.getString(KEY_PORT, null);
+//        String user = prefs.getString(KEY_USER, null);
+//        String password = prefs.getString(KEY_PASSWORD, null);
+//        String url = prefs.getString(KEY_URL, null);
+//
+//        if (host == null || port == null || user == null || password == null || url == null) {
+//            return null; // Немає збереженої конфігурації
+//        }
+//        return new DatabaseConfig(host, port, user, password, url);
+//    }
 
 
 

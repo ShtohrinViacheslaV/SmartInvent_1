@@ -5,6 +5,7 @@ import com.smartinvent.models.DatabaseConfig;
 import com.smartinvent.service.DatabaseInitializationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,19 +17,27 @@ public class DatabaseController {
 
     private final DatabaseInitializationService databaseService;
 
-
     @PostMapping("/testConnection")
-    public ResponseEntity<?> testDbConnection(@RequestBody DatabaseConfig config) {
-        log.info("Отримано запит testConnection з конфігурацією: {}", config);
-        return ResponseEntity.ok("Connection successful!");
+    public ResponseEntity<String> testDbConnection(@RequestBody DatabaseConfig config) {
+        log.info("🔍 Перевіряємо підключення: {}", config);
+        boolean success = databaseService.testConnection(config);
+        return success ? ResponseEntity.ok("✅ Підключення успішне!") : ResponseEntity.badRequest().body("❌ Помилка підключення!");
     }
+
+//    @PostMapping("/testConnection")
+//    public ResponseEntity<?> testDbConnection(@RequestBody DatabaseConfig config) {
+//        log.info("Отримано запит testConnection з конфігурацією: {}", config);
+//        return ResponseEntity.ok("Connection successful!");
+//    }
 
 
     @PostMapping("/setupDatabase")
-    public ResponseEntity<String> setupDatabase() {
+    public ResponseEntity<String> setupDatabase(@RequestBody DatabaseConfig config) {
         databaseService.initializeDatabase();
         return ResponseEntity.ok("✅ База даних перевірена та ініціалізована!");
     }
+
+
 
     @PostMapping("/checkTables")
     public ResponseEntity<Boolean> checkTables() {

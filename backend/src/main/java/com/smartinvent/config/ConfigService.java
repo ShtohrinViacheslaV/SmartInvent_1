@@ -48,24 +48,7 @@ public class ConfigService {
         }
     }
 
-//    @PostConstruct
-//    public void loadConfig() {
-//        try {
-//            File configFile = new File(CONFIG_PATH);
-//            if (configFile.exists()) {
-//                databaseConfig = objectMapper.readValue(configFile, DatabaseConfig.class);
-//            } else {
-//                databaseConfig = new DatabaseConfig();
-//                databaseConfig.setUrl("");  // Запобігаємо NullPointerException
-//                databaseConfig.setUsername("");
-//                databaseConfig.setPassword("");
-//                saveConfig();
-//            }
-//            log.info("Config loaded successfully: {}", databaseConfig);
-//        } catch (IOException e) {
-//            log.error("Failed to load config", e);
-//        }
-//    }
+
 
     public DatabaseConfig getConfig() {
         return databaseConfig;
@@ -95,9 +78,27 @@ public class ConfigService {
         saveConfig();
     }
 
-
-
 }
+
+
+//    @PostConstruct
+//    public void loadConfig() {
+//        try {
+//            File configFile = new File(CONFIG_PATH);
+//            if (configFile.exists()) {
+//                databaseConfig = objectMapper.readValue(configFile, DatabaseConfig.class);
+//            } else {
+//                databaseConfig = new DatabaseConfig();
+//                databaseConfig.setUrl("");  // Запобігаємо NullPointerException
+//                databaseConfig.setUsername("");
+//                databaseConfig.setPassword("");
+//                saveConfig();
+//            }
+//            log.info("Config loaded successfully: {}", databaseConfig);
+//        } catch (IOException e) {
+//            log.error("Failed to load config", e);
+//        }
+//    }
 
 //package com.smartinvent.config;
 //

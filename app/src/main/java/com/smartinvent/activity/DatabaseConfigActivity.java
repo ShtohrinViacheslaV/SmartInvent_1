@@ -115,6 +115,7 @@ public class DatabaseConfigActivity extends AppCompatActivity {
                         showTableOptionsDialog(config);
                     } else {
                         createDatabaseTables(config);
+
                     }
                 } else {
                     System.out.println("Помилка: відповідь порожня або неуспішна");
@@ -154,6 +155,7 @@ public class DatabaseConfigActivity extends AppCompatActivity {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     createDatabaseTables(config);
+
                 } else {
                     Toast.makeText(DatabaseConfigActivity.this, "Не вдалося очистити БД", Toast.LENGTH_SHORT).show();
                 }
@@ -167,8 +169,10 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     }
 
     private void createDatabaseTables(DatabaseConfig config) {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+
+            ApiService apiService = ApiClient.getClient().create(ApiService.class);
         Call<Void> call = apiService.initializeDatabase(config);
+
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

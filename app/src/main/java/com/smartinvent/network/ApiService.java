@@ -38,7 +38,8 @@ public interface ApiService {
 //    @POST("api/initializeDatabase")
 //    Call<Void> initializeDatabase(@Body DatabaseConfig config);
 
-    @POST("clear-database")
+
+    @POST("/api/clearDatabase")
     Call<Void> clearDatabase(@Body DatabaseConfig config);
 
 //    @POST("config/save")

@@ -53,8 +53,8 @@ CREATE TABLE Product (
 
 
 
--- Таблиця Transaction
-CREATE TABLE Transaction (
+-- Таблиця Transactions
+CREATE TABLE Transactions (
                              transaction_id SERIAL PRIMARY KEY,
                              type VARCHAR(50) CHECK (type IN ('arrivals', 'outgoing', 'transfer', 'inventory')),
                              date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

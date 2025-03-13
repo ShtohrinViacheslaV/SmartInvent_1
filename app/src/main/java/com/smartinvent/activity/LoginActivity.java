@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.smartinvent.R;
 import com.smartinvent.config.ApiConfig;
+import com.smartinvent.config.DatabaseConfig;
 import com.smartinvent.config.DbConfigManager;
 import com.smartinvent.model.AuthRequest;
 import com.smartinvent.model.AuthResponse;
@@ -34,11 +35,20 @@ public class LoginActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.password);
 
         sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        updateApiClient(); // Оновлюємо API клієнт при старті
+//        updateApiClient(); // Оновлюємо API клієнт при старті
     }
 
     private void updateApiClient() {
         if (DbConfigManager.isConfigAvailable(this)) {
+            DatabaseConfig config = DbConfigManager.loadConfig(this);
+            if (config == null) {
+                Toast.makeText(this, "Будь ласка, налаштуйте базу даних!", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(this, DatabaseConfigActivity.class));
+                finish();
+                return;
+            }
+
+
             ApiConfig.setBaseUrl(DbConfigManager.loadConfig(this).getUrl());
             apiService = ApiClient.getService();
         } else {

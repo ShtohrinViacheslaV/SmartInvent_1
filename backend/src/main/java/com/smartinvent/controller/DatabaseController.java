@@ -30,18 +30,25 @@ public class DatabaseController {
 //        return ResponseEntity.ok("Connection successful!");
 //    }
 
+    @PostMapping("/clearDatabase")
+    public ResponseEntity<String> clearDatabase(@RequestBody DatabaseConfig config) {
+        databaseService.clearDatabase();
+        return ResponseEntity.ok("✅ Таблиці очищені!");
+    }
+
+
 
     @PostMapping("/setupDatabase")
     public ResponseEntity<String> setupDatabase(@RequestBody DatabaseConfig config) {
-        databaseService.initializeDatabase();
+        databaseService.initializeDatabase(config);
         return ResponseEntity.ok("✅ База даних перевірена та ініціалізована!");
     }
 
 
 
     @PostMapping("/checkTables")
-    public ResponseEntity<Boolean> checkTables() {
-        boolean tablesExist = databaseService.checkTables();
+    public ResponseEntity<Boolean> checkTables(@RequestBody DatabaseConfig config) {
+        boolean tablesExist = databaseService.checkTables(config);
         return ResponseEntity.ok(tablesExist);
     }
 }

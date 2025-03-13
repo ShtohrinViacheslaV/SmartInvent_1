@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 public class DbConfigManager {
     private static final String PREF_NAME = "db_config";
     private static final String KEY_HOST = "db_host";
+    private static final String KEY_DATABASE = "db_database";
     private static final String KEY_PORT = "db_port";
     private static final String KEY_USER = "db_user";
     private static final String KEY_PASSWORD = "db_password";
@@ -16,6 +17,7 @@ public class DbConfigManager {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(KEY_HOST, config.getHost());
         editor.putString(KEY_PORT, config.getPort());
+        editor.putString(KEY_DATABASE, config.getDatabase());
         editor.putString(KEY_USER, config.getUsername());
         editor.putString(KEY_PASSWORD, config.getPassword());
         editor.putString(KEY_URL, config.getUrl());
@@ -27,21 +29,22 @@ public class DbConfigManager {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         String host = prefs.getString(KEY_HOST, "");
         String port = prefs.getString(KEY_PORT, "");
+        String database = prefs.getString(KEY_DATABASE, "");
         String user = prefs.getString(KEY_USER, "");
         String password = prefs.getString(KEY_PASSWORD, "");
         String url = prefs.getString(KEY_URL, "");
 
         // Якщо хоча б одне поле порожнє, повертаємо null
-        if (host.isEmpty() || port.isEmpty() || user.isEmpty() || password.isEmpty() || url.isEmpty()) {
+        if (host.isEmpty() || port.isEmpty() || database.isEmpty() || user.isEmpty() || password.isEmpty() || url.isEmpty()) {
             return null;
         }
-        return new DatabaseConfig(host, port, user, password, url);
+        return new DatabaseConfig(host, port, database, user, password, url);
     }
 
 
     public static boolean isConfigAvailable(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        return prefs.contains(KEY_HOST) && prefs.contains(KEY_PORT) &&
+        return prefs.contains(KEY_HOST) && prefs.contains(KEY_PORT) && prefs.contains(KEY_DATABASE) &&
                 prefs.contains(KEY_USER) && prefs.contains(KEY_PASSWORD) &&
                 prefs.contains(KEY_URL);
     }

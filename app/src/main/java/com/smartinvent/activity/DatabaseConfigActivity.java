@@ -16,7 +16,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DatabaseConfigActivity extends AppCompatActivity {
-    private EditText hostInput, portInput, userInput, passwordInput, urlInput;
+    private EditText hostInput, portInput, databaseInput, userInput, passwordInput, urlInput;
     private Button testButton, saveButton;
     private RadioGroup connectionTypeGroup;
     private RadioButton radioManual, radioUrl;
@@ -31,6 +31,7 @@ public class DatabaseConfigActivity extends AppCompatActivity {
         radioUrl = findViewById(R.id.radio_url);
         hostInput = findViewById(R.id.hostInput);
         portInput = findViewById(R.id.portInput);
+        databaseInput = findViewById(R.id.databaseInput);
         userInput = findViewById(R.id.userInput);
         passwordInput = findViewById(R.id.passwordInput);
         urlInput = findViewById(R.id.urlInput);
@@ -55,6 +56,7 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     private void setManualInputVisibility(int visibility) {
         hostInput.setVisibility(visibility);
         portInput.setVisibility(visibility);
+        databaseInput.setVisibility(visibility);
         userInput.setVisibility(visibility);
         passwordInput.setVisibility(visibility);
         urlInput.setVisibility(visibility == View.VISIBLE ? View.GONE : View.VISIBLE);
@@ -64,7 +66,7 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     private void testConnection(boolean saveAfterSuccess) {
         DatabaseConfig config = getConfigFromFields();
         if (radioManual.isChecked() &&
-                (config.getHost().isEmpty() || config.getPort().isEmpty() ||
+                (config.getHost().isEmpty() || config.getPort().isEmpty() || config.getDatabase().isEmpty() ||
                         config.getUsername().isEmpty() || config.getPassword().isEmpty()) ||
                 (radioUrl.isChecked() && config.getUrl().isEmpty())) {
             Toast.makeText(this, "Заповніть всі поля!", Toast.LENGTH_SHORT).show();
@@ -112,14 +114,14 @@ public class DatabaseConfigActivity extends AppCompatActivity {
                     System.out.println("Чи існують таблиці: " + tablesExist);
 
                     if (tablesExist) {
+                        System.out.println("✅ База готова до використання.");
                         showTableOptionsDialog(config);
                     } else {
+                        System.out.println("⚠️ Проблема з базою, деякі таблиці можуть бути відсутні!");
                         createDatabaseTables(config);
-
                     }
                 } else {
                     System.out.println("Помилка: відповідь порожня або неуспішна");
-
                     Toast.makeText(DatabaseConfigActivity.this, "Помилка при перевірці БД", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -127,11 +129,12 @@ public class DatabaseConfigActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
                 System.out.println("Помилка запиту: " + t.getMessage());
-
                 Toast.makeText(DatabaseConfigActivity.this, "Помилка: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
+
+
 
     private void showTableOptionsDialog(DatabaseConfig config) {
         new AlertDialog.Builder(this)
@@ -197,6 +200,7 @@ public class DatabaseConfigActivity extends AppCompatActivity {
         if (savedConfig != null) {
             hostInput.setText(savedConfig.getHost());
             portInput.setText(savedConfig.getPort());
+            databaseInput.setText(savedConfig.getDatabase());
             userInput.setText(savedConfig.getUsername());
             passwordInput.setText(savedConfig.getPassword());
             urlInput.setText(savedConfig.getUrl());
@@ -207,6 +211,7 @@ public class DatabaseConfigActivity extends AppCompatActivity {
         return new DatabaseConfig(
                 hostInput.getText().toString(),
                 portInput.getText().toString(),
+                databaseInput.getText().toString(),
                 userInput.getText().toString(),
                 passwordInput.getText().toString(),
                 urlInput.getText().toString()

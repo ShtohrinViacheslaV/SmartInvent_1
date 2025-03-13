@@ -29,11 +29,12 @@ public class DatabaseConfigRequest {
         requestQueue = Volley.newRequestQueue(context);
     }
 
-    public void sendConfigToServer(String host, String port, String username, String password, String url, DatabaseConfigCallback callback) {
+    public void sendConfigToServer(String host, String port, String database, String username, String password, String url, DatabaseConfigCallback callback) {
         try {
             JSONObject requestBody = new JSONObject();
             requestBody.put("host", host);
             requestBody.put("port", port);
+            requestBody.put("database", database);
             requestBody.put("username", username);
             requestBody.put("password", password);
             requestBody.put("url", url);
@@ -51,6 +52,7 @@ public class DatabaseConfigRequest {
             JSONObject requestBody = new JSONObject();
             requestBody.put("host", config.getHost());
             requestBody.put("port", config.getPort());
+            requestBody.put("database", config.getDatabase());
             requestBody.put("username", config.getUsername());
             requestBody.put("password", config.getPassword());
             requestBody.put("url", config.getUrl());

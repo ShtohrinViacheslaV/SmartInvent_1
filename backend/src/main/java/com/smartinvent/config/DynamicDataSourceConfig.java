@@ -14,13 +14,22 @@ public class DynamicDataSourceConfig {
 
     private static DataSource currentDataSource;
 
-    public static void setDataSource(String url, String username, String password) {
-        log.info("🔄 Налаштовуємо підключення до БД: {}", url);
+    // Метод для налаштування підключення до БД
+    public static void setDataSource(String url, String host, String port, String database, String username, String password) {
+        String jdbcUrl;
+
+        if (url != null && !url.isEmpty()) {
+            jdbcUrl = url;
+        } else {
+            jdbcUrl = "jdbc:postgresql://" + host  + ":" + port + "/" + database;
+        }
+
+        log.info("🔄 Налаштовуємо підключення до БД: {}", jdbcUrl);
 
         HikariDataSource dataSource = DataSourceBuilder.create()
                 .type(HikariDataSource.class)
                 .driverClassName("org.postgresql.Driver")
-                .url(url)
+                .url(jdbcUrl)
                 .username(username)
                 .password(password)
                 .build();
@@ -28,16 +37,64 @@ public class DynamicDataSourceConfig {
         currentDataSource = dataSource;
     }
 
+
+    // Створення біну для DataSource
     @Bean
     @Primary
     public static DataSource getDataSource() {
         if (currentDataSource == null) {
             log.warn("⚠ База даних ще не налаштована!");
-            return null;
+            // Повертаємо локальну БД (SQLite) як запасну, якщо не налаштовано підключення до PostgreSQL
+            return DataSourceBuilder.create()
+                    .url("jdbc:sqlite:smartinvent_local.db")
+                    .driverClassName("org.sqlite.JDBC")
+                    .build();
         }
         return currentDataSource;
     }
 }
+
+
+//package com.smartinvent.config;
+//
+//import com.zaxxer.hikari.HikariDataSource;
+//import lombok.extern.slf4j.Slf4j;
+//import org.springframework.boot.jdbc.DataSourceBuilder;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.context.annotation.Primary;
+//import javax.sql.DataSource;
+//
+//@Slf4j
+//@Configuration
+//public class DynamicDataSourceConfig {
+//
+//    private static DataSource currentDataSource;
+//
+//    public static void setDataSource(String url, String username, String password) {
+//        log.info("🔄 Налаштовуємо підключення до БД: {}", url);
+//
+//        HikariDataSource dataSource = DataSourceBuilder.create()
+//                .type(HikariDataSource.class)
+//                .driverClassName("org.postgresql.Driver")
+//                .url(url)
+//                .username(username)
+//                .password(password)
+//                .build();
+//
+//        currentDataSource = dataSource;
+//    }
+//
+//    @Bean
+//    @Primary
+//    public static DataSource getDataSource() {
+//        if (currentDataSource == null) {
+//            log.warn("⚠ База даних ще не налаштована!");
+//            return null;
+//        }
+//        return currentDataSource;
+//    }
+//}
 
 
 //package com.smartinvent.config;

@@ -23,6 +23,8 @@ public class DatabaseConfigActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("DatabaseConfigActivity onCreate ");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_database_config);
 
@@ -38,8 +40,12 @@ public class DatabaseConfigActivity extends AppCompatActivity {
         testButton = findViewById(R.id.testButton);
         saveButton = findViewById(R.id.saveButton);
 
+
+        DbConfigManager.checkSavedConfig(this);///////////////////////////////////////////////
+
         // Завантаження збережених даних
         loadSavedConfig();
+        DbConfigManager.checkSavedConfig(this);//////////////////////////////////////////////рщщ
 
         connectionTypeGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.radio_manual) {
@@ -54,6 +60,8 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     }
 
     private void setManualInputVisibility(int visibility) {
+        System.out.println("DatabaseConfigActivity setManualInputVisibility ");
+
         hostInput.setVisibility(visibility);
         portInput.setVisibility(visibility);
         databaseInput.setVisibility(visibility);
@@ -63,7 +71,10 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     }
 
 
+
     private void testConnection(boolean saveAfterSuccess) {
+        System.out.println("DatabaseConfigActivity testConnection ");
+
         DatabaseConfig config = getConfigFromFields();
         if (radioManual.isChecked() &&
                 (config.getHost().isEmpty() || config.getPort().isEmpty() || config.getDatabase().isEmpty() ||
@@ -98,6 +109,9 @@ public class DatabaseConfigActivity extends AppCompatActivity {
 
 
     private void saveConfig(DatabaseConfig config) {
+        System.out.println("DatabaseConfigActivity saveConfig ");
+        DbConfigManager.checkSavedConfig(this);/////////////////////////////////////////////////////////////////
+
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
         System.out.println("Перевіряємо таблиці з конфігом: " + config);
@@ -135,8 +149,9 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     }
 
 
-
     private void showTableOptionsDialog(DatabaseConfig config) {
+        System.out.println("DatabaseConfigActivity showTableOptionsDialog ");
+
         new AlertDialog.Builder(this)
                 .setTitle("База даних вже існує")
                 .setMessage("База даних вже містить таблиці. Що ви хочете зробити?")
@@ -151,6 +166,8 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     }
 
     private void clearDatabase(DatabaseConfig config) {
+        System.out.println("DatabaseConfigActivity clearDatabase ");
+
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         Call<Void> call = apiService.clearDatabase(config);
         call.enqueue(new Callback<Void>() {
@@ -172,8 +189,9 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     }
 
     private void createDatabaseTables(DatabaseConfig config) {
+        System.out.println("DatabaseConfigActivity createDatabaseTables ");
 
-            ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
         Call<Void> call = apiService.initializeDatabase(config);
 
         call.enqueue(new Callback<Void>() {
@@ -196,6 +214,9 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     }
 
     private void loadSavedConfig() {
+        System.out.println("DatabaseConfigActivity loadSavedConfig ");
+        DbConfigManager.checkSavedConfig(this);///////////////////////////////////////////////
+
         DatabaseConfig savedConfig = DbConfigManager.loadConfig(this);
         if (savedConfig != null) {
             hostInput.setText(savedConfig.getHost());
@@ -205,9 +226,13 @@ public class DatabaseConfigActivity extends AppCompatActivity {
             passwordInput.setText(savedConfig.getPassword());
             urlInput.setText(savedConfig.getUrl());
         }
+        DbConfigManager.checkSavedConfig(this);///////////////////////////////////////////////
+
     }
 
     private DatabaseConfig getConfigFromFields() {
+        System.out.println("DatabaseConfigActivity getConfigFromFields ");
+
         return new DatabaseConfig(
                 hostInput.getText().toString(),
                 portInput.getText().toString(),
@@ -219,6 +244,69 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     }
 }
 
+
+
+
+//private void saveConfig(DatabaseConfig config) {
+//    ApiService apiService = ApiClient.getClient().create(ApiService.class);
+//
+//    System.out.println("Перевіряємо таблиці з конфігом: " + config);
+//
+//    // Перевіряємо, чи є таблиці
+//    Call<Boolean> call = apiService.checkDatabaseTables(config);
+//    call.enqueue(new Callback<Boolean>() {
+//        @Override
+//        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+//            System.out.println("Отримано відповідь від checkDatabaseTables: " + response.code());
+//
+//            if (response.isSuccessful() && response.body() != null) {
+//                boolean tablesExist = response.body();
+//                System.out.println("Чи існують таблиці: " + tablesExist);
+//
+//                // Додаємо перевірку: якщо це перший вхід, не показувати діалогове вікно
+//                if (!DbConfigManager.isConfigSaved(DatabaseConfigActivity.this)) {
+//                    System.out.println("🔹 Перший вхід, створюємо таблиці...");
+//                    createDatabaseTables(config);
+//                } else if (tablesExist) {
+//                    System.out.println("✅ База готова до використання.");
+//                    showTableOptionsDialog(config);
+//                } else {
+//                    System.out.println("⚠️ Проблема з базою, деякі таблиці можуть бути відсутні!");
+//                    createDatabaseTables(config);
+//                }
+//            } else {
+//                System.out.println("Помилка: відповідь порожня або неуспішна");
+//                Toast.makeText(DatabaseConfigActivity.this, "Помилка при перевірці БД", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//
+//        @Override
+//        public void onFailure(Call<Boolean> call, Throwable t) {
+//            System.out.println("Помилка запиту: " + t.getMessage());
+//            Toast.makeText(DatabaseConfigActivity.this, "Помилка: " + t.getMessage(), Toast.LENGTH_LONG).show();
+//        }
+//    });
+//}
+
+
+//    private void saveConfig(DatabaseConfig config) {
+//        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+//        apiService.initializeDatabase(config).enqueue(new Callback<Void>() {
+//            @Override
+//            public void onResponse(Call<Void> call, Response<Void> response) {
+//                if (response.isSuccessful()) {
+//                    Toast.makeText(DatabaseConfigActivity.this, "Таблиці створені!", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(DatabaseConfigActivity.this, "Помилка створення таблиць", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Void> call, Throwable t) {
+//                Toast.makeText(DatabaseConfigActivity.this, "Помилка: " + t.getMessage(), Toast.LENGTH_LONG).show();
+//            }
+//        });
+//    }
 
 
 

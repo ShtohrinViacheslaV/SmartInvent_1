@@ -19,27 +19,29 @@ public class DatabaseController {
 
     @PostMapping("/testConnection")
     public ResponseEntity<String> testDbConnection(@RequestBody DatabaseConfig config) {
+        System.out.println("DatabaseController testDbConnection ");
+
+
+
         log.info("🔍 Перевіряємо підключення: {}", config);
         boolean success = databaseService.testConnection(config);
         return success ? ResponseEntity.ok("✅ Підключення успішне!") : ResponseEntity.badRequest().body("❌ Помилка підключення!");
     }
 
-//    @PostMapping("/testConnection")
-//    public ResponseEntity<?> testDbConnection(@RequestBody DatabaseConfig config) {
-//        log.info("Отримано запит testConnection з конфігурацією: {}", config);
-//        return ResponseEntity.ok("Connection successful!");
+
+//    @PostMapping("/clearDatabase")
+//    public ResponseEntity<String> clearDatabase(@RequestBody DatabaseConfig config) {
+//        System.out.println("DatabaseController clearDatabase ");
+//
+//
+//        databaseService.clearDatabase();
+//        return ResponseEntity.ok("✅ Таблиці очищені!");
 //    }
-
-    @PostMapping("/clearDatabase")
-    public ResponseEntity<String> clearDatabase(@RequestBody DatabaseConfig config) {
-        databaseService.clearDatabase();
-        return ResponseEntity.ok("✅ Таблиці очищені!");
-    }
-
 
 
     @PostMapping("/setupDatabase")
     public ResponseEntity<String> setupDatabase(@RequestBody DatabaseConfig config) {
+        System.out.println("DatabaseController setupDatabase ");
         databaseService.initializeDatabase(config);
         return ResponseEntity.ok("✅ База даних перевірена та ініціалізована!");
     }
@@ -56,6 +58,17 @@ public class DatabaseController {
 
 
 
+
+
+
+
+
+
+
+
+
+
+//
 
 //
 //

@@ -18,8 +18,8 @@ import java.util.Map;
 public class DatabaseConfigRequest {
     private static final String TAG = "DatabaseConfigRequest";
 
-    private static final String SERVER_URL = "http://192.168.0.120:8080/api/config";
-//    private static final String SERVER_URL = "http://192.168.249.76:8080/api/config";
+//    private static final String SERVER_URL = "http://192.168.0.120:8080/api/config";
+    private static final String SERVER_URL = "http://192.168.249.76:8080/api/config";
     private final RequestQueue requestQueue;
     private final Context context;
 
@@ -30,6 +30,8 @@ public class DatabaseConfigRequest {
     }
 
     public void sendConfigToServer(String host, String port, String database, String username, String password, String url, DatabaseConfigCallback callback) {
+        System.out.println("DatabaseConfigRequest sendConfigToServer ");
+
         try {
             JSONObject requestBody = new JSONObject();
             requestBody.put("host", host);
@@ -48,6 +50,8 @@ public class DatabaseConfigRequest {
     }
 
     public void sendConfigToServer(DatabaseConfig config, DatabaseConfigCallback callback) {
+        System.out.println("DatabaseConfigRequest sendConfigToServer ");
+
         try {
             JSONObject requestBody = new JSONObject();
             requestBody.put("host", config.getHost());
@@ -65,6 +69,8 @@ public class DatabaseConfigRequest {
     }
 
     public void sendUrlToServer(String url, DatabaseConfigCallback callback) {
+        System.out.println("DatabaseConfigRequest sendUrlToServer ");
+
         try {
             JSONObject requestBody = new JSONObject();
             requestBody.put("url", url);
@@ -77,6 +83,8 @@ public class DatabaseConfigRequest {
     }
 
     private void sendRequest(JSONObject requestBody, DatabaseConfigCallback callback) {
+        System.out.println("DatabaseConfigRequest sendRequest ");
+
         StringRequest request = new StringRequest(Request.Method.POST, SERVER_URL,
                 response -> {
                     Log.d(TAG, "Success: " + response);
@@ -103,6 +111,7 @@ public class DatabaseConfigRequest {
     }
 
     public interface DatabaseConfigCallback {
+
         void onResult(boolean success);
     }
 
@@ -112,6 +121,8 @@ public class DatabaseConfigRequest {
     }
 
     private String getVolleyErrorDetails(VolleyError error) {
+        System.out.println("DatabaseConfigRequest getVolleyErrorDetails ");
+
         if (error.networkResponse != null) {
             return "Статус код: " + error.networkResponse.statusCode;
         }

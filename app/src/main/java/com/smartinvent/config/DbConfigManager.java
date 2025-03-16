@@ -12,7 +12,10 @@ public class DbConfigManager {
     private static final String KEY_PASSWORD = "db_password";
     private static final String KEY_URL = "db_url";
 
+
     public static void saveConfig(Context context, DatabaseConfig config) {
+        System.out.println("DbConfigManager saveConfig ");
+
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(KEY_HOST, config.getHost());
@@ -26,6 +29,8 @@ public class DbConfigManager {
 
 
     public static DatabaseConfig loadConfig(Context context) {
+        System.out.println("DbConfigManager loadConfig ");
+
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         String host = prefs.getString(KEY_HOST, "");
         String port = prefs.getString(KEY_PORT, "");
@@ -41,8 +46,26 @@ public class DbConfigManager {
         return new DatabaseConfig(host, port, database, user, password, url);
     }
 
+    public static void checkSavedConfig(Context context) {
+        DatabaseConfig config = DbConfigManager.loadConfig(context);
+        if (config != null) {
+            System.out.println("Host: " + config.getHost());
+            System.out.println("Port: " + config.getPort());
+            System.out.println("Database: " + config.getDatabase());
+            System.out.println("User: " + config.getUsername());
+            System.out.println("Password: " + config.getPassword());
+            System.out.println("URL: " + config.getUrl());
+        } else {
+            System.out.println("No database configuration found.");
+        }
+    }
+
+
+
 
     public static boolean isConfigAvailable(Context context) {
+        System.out.println("DbConfigManager isConfigAvailable ");
+
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.contains(KEY_HOST) && prefs.contains(KEY_PORT) && prefs.contains(KEY_DATABASE) &&
                 prefs.contains(KEY_USER) && prefs.contains(KEY_PASSWORD) &&
@@ -50,6 +73,8 @@ public class DbConfigManager {
     }
 
     public static void clearConfig(Context context) {
+        System.out.println("DbConfigManager clearConfig ");
+
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         prefs.edit().clear().apply();
     }

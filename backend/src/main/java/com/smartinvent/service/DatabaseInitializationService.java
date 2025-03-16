@@ -2,36 +2,42 @@ package com.smartinvent.service;
 
 import com.smartinvent.config.DynamicDataSourceConfig;
 import com.smartinvent.models.DatabaseConfig;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Service;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.*;
 import java.util.List;
 
-@Slf4j
+
+
 @Service
-//@RequiredArgsConstructor
+@Slf4j
 public class DatabaseInitializationService {
 
     private final JdbcTemplate jdbcTemplate;
-    private final DataSource dataSource;
+    private  DataSource dataSource;
 
 
     public DatabaseInitializationService(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.dataSource = dataSource;
+
     }
 
     private static final List<String> TABLE_NAMES = List.of(
@@ -40,8 +46,137 @@ public class DatabaseInitializationService {
     );
 
 
-    public boolean checkIfTableExists(String tableName, DatabaseConfig config) {
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private DataSource getDataSource(DatabaseConfig config) {
+        System.out.println("DatabaseInitializationService getDataSource ");
+
+
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUrl(config.getUrl());
+        dataSource.setUsername(config.getUsername());
+        dataSource.setPassword(config.getPassword());
+        return dataSource;
+    }
+
+
+
+    public boolean testConnection(DatabaseConfig config) {
+        System.out.println("DatabaseInitializationService testConnection ");
+
+
         try {
+
+            /*
+                    if (config.getUrl() == "")// norm check
+        {
+            DynamicDataSourceConfig.setDataSource(config.getUrl());
+        }
+        else
+        {
+            DynamicDataSourceConfig.setDataSource(
+                    config.getHost(),
+                    config.getPort(),
+                    config.getDatabase(),
+                    config.getUsername(),
+                    config.getPassword()
+            );
+        });
+             */
+            DynamicDataSourceConfig.setDataSource(
+                    config.getUrl(),  // URL, якщо є
+                    config.getHost(), // або передаємо окремі параметри
+                    config.getPort(),
+                    config.getDatabase(),
+                    config.getUsername(),
+                    config.getPassword()
+            );
+            log.info("📌 Параметри підключення 2 - host: {}, port: {}, database: {}", config.getHost(), config.getPort(), config.getDatabase());
+
+            DataSource dataSource = DynamicDataSourceConfig.getDataSource();
+            log.info("Using DataSource: {}", dataSource);
+
+            if (dataSource == null) {
+                log.error("❌ Підключення не вдалося!");
+                return false;
+            }
+            log.info("✅ Підключення успішне!");
+
+            return true;
+        } catch (Exception e) {
+            log.error("❌ Помилка підключення", e);
+            return false;
+        }
+    }
+
+    public void initializeDatabase(DatabaseConfig config) {
+        System.out.println("DatabaseInitializationService initializeDatabase ");
+
+        this.dataSource = getDataSource(config);
+        if (!checkTables(config)) {
+            log.info("⚠ Tables are missing, creating them now...");
+            executeSqlScript("sql/create_table.sql");
+            if (!checkTables(config)) {
+                log.error("❌ Failed to create the necessary tables!");
+            } else {
+                log.info("✅ Tables created and verified successfully.");
+            }
+        } else {
+            log.info("✅ All necessary tables already exist.");
+        }
+    }
+
+    /**
+     * Перевіряє, чи всі необхідні таблиці існують у базі даних.
+     * Якщо хоча б однієї таблиці немає — повертає false.
+     */
+    public boolean checkTables(DatabaseConfig config) {
+        System.out.println("DatabaseInitializationService checkTables ");
+
+        try {
+            for (String table : TABLE_NAMES) {
+                if (!checkIfTableExists(table, config)) {
+                    log.warn("⚠ DatabaseInitializationService checkTables Таблиця '{}' не знайдена в базі {}!", table, config.getUrl());
+                    return false;
+                }
+            }
+            log.info("✅ Всі необхідні таблиці існують у базі {}", config.getUrl());
+            return true;
+        } catch (Exception e) {
+            log.error("❌ Помилка перевірки таблиць у базі {}", config.getUrl(), e);
+            return false;
+        }
+    }
+
+
+
+
+    private void executeSqlScript(String scriptPath) {
+        System.out.println("DatabaseInitializationService executeSqlScript ");
+
+
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement()) {
+            String sql = new String(Files.readAllBytes(Paths.get("backend/src/main/resources/" + scriptPath)));
+            stmt.execute(sql);
+            log.info("✅ Tables created successfully!");
+
+
+        } catch (SQLException | IOException e) {
+            log.error("❌ Error executing SQL script", e);
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    public boolean checkIfTableExists(String tableName, DatabaseConfig config) {
+        System.out.println("DatabaseInitializationService checkIfTableExists ");
+
+        try {
+            // Перевірка підключення до бази даних
             DynamicDataSourceConfig.setDataSource(
                     config.getUrl(),
                     config.getHost(),
@@ -50,39 +185,183 @@ public class DatabaseInitializationService {
                     config.getUsername(),
                     config.getPassword()
             );
-            log.info("📌 Параметри підключення - host: {}, port: {}, database: {}", config.getHost(), config.getPort(), config.getDatabase());
+            log.info("📌 Параметри підключення - host: {}, port: {}, database: {}",
+                    config.getHost(), config.getPort(), config.getDatabase());
 
             DataSource tempDataSource = DynamicDataSourceConfig.getDataSource();
+            log.info("🛠 Використовуємо DataSource: {}", tempDataSource);
+
             if (tempDataSource == null) {
                 log.error("❌ Не вдалося створити DataSource для перевірки таблиць!");
                 return false;
             }
 
-            try {
-                String dbProductName = jdbcTemplate.getDataSource().getConnection().getMetaData().getDatabaseProductName();
+            // Ініціалізація JdbcTemplate
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(tempDataSource);
+
+            // Підключення до бази та перевірка таблиці
+            try (Connection conn = tempDataSource.getConnection()) {
+                String dbProductName = conn.getMetaData().getDatabaseProductName();
+                log.info("🛠 dbProductName: {}", dbProductName);
 
                 String sql;
+
                 if (dbProductName.equalsIgnoreCase("PostgreSQL")) {
                     sql = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?";
+                    log.info("🛠 Використовуємо SQL запит для перевірки таблиць в PostgreSQL");
                 } else if (dbProductName.equalsIgnoreCase("SQLite")) {
                     sql = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name = ?";
+                    log.info("🛠 Використовуємо SQL запит для перевірки таблиць в SQLite");
                 } else {
                     throw new UnsupportedOperationException("Непідтримувана база даних: " + dbProductName);
                 }
 
+                // Виконання запиту
                 Integer count = jdbcTemplate.queryForObject(sql, Integer.class, tableName);
                 return count != null && count > 0;
+
             } catch (Exception e) {
                 log.error("❌ Помилка перевірки таблиці {} у базі: {}", tableName, e.getMessage());
                 return false;
             }
 
+        } catch (Exception e) {
+            log.error("❌ Помилка при налаштуванні підключення для перевірки таблиці '{}': {}", tableName, e.getMessage());
+            return false;
         }
-        catch (Exception e) {
-            log.error("❌ Помилка перевірки таблиці '{}': {}", tableName, e.getMessage());
-        }
-        return false;
     }
+
+
+
+
+    public void clearDatabase() {
+        System.out.println("DatabaseInitializationService clearDatabase ");
+
+        try {
+            // Виконати SQL-операції для видалення даних з таблиць
+            String query = "DELETE FROM ?";  // використовуємо параметр для назви таблиці
+
+            for (String table : TABLE_NAMES) {
+                try {
+                    // Очищаємо кожну таблицю
+                    jdbcTemplate.execute("DELETE FROM " + table);
+                    log.info("✅ Дані з таблиці '{}' очищені.", table);
+                } catch (Exception e) {
+                    log.error("❌ Помилка очищення таблиці '{}'", table, e);
+                }
+            }
+
+            log.info("✅ База даних очищена!");
+        } catch (Exception e) {
+            log.error("❌ Помилка при очищенні бази даних", e);
+        }
+    }
+
+
+    /**
+     * Повторна перевірка після створення таблиць.
+     * Лише перевіряє факт створення без виведення зайвих логів.
+     */
+    private void validateTablesAfterCreation(DatabaseConfig config) {
+        System.out.println("DatabaseInitializationService validateTablesAfterCreation ");
+
+        if (areTablesCreated(config)) {
+            log.info("✅ Таблиці успішно створені! Тепер можна зберігати дані.");
+        } else {
+            log.error("❌ Помилка: не всі таблиці створені! Можливо, є проблеми із SQL-скриптом.");
+        }
+    }
+
+
+    /**
+     * Перевіряє, чи всі необхідні таблиці існують у базі даних.
+     * Використовується для повторної перевірки після створення таблиць.
+     */
+    private boolean areTablesCreated(DatabaseConfig config) {
+        System.out.println("DatabaseInitializationService areTablesCreated ");
+
+        for (String table : TABLE_NAMES) {
+            if (!checkIfTableExists(table, config)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+
+
+
+//    /**
+//     * Ініціалізує базу даних, якщо необхідні таблиці відсутні.
+//     */
+//
+//    public void initializeDatabase(DatabaseConfig config) {
+//        System.out.println("DatabaseInitializationService initializeDatabase ");
+//
+//        if (checkTables(config)) {
+//            log.info("✅ Всі необхідні таблиці вже існують.");
+//            return;
+//        }
+//
+//        log.info("⏳ Виконуємо SQL-скрипт для створення таблиць...");
+//        executeSqlScript("sql/create_table.sql");
+//
+//        // Викликаємо новий метод для повторної перевірки
+//        validateTablesAfterCreation(config);
+//    }
+
+
+
+//
+//    /**
+//     * Виконує SQL-скрипт, що знаходиться у classpath.
+//     */
+//    private void executeSqlScript(String scriptPath) {
+//        System.out.println("DatabaseInitializationService executeSqlScript ");
+//
+//        try {
+//            Resource resource = new ClassPathResource(scriptPath);
+//            if (!resource.exists()) {
+//                log.error("❌ SQL-скрипт {} не знайдено!", scriptPath);
+//                return;
+//            }
+//
+//            String sql = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+//            String[] sqlStatements = sql.split(";");
+//
+//            for (String statement : sqlStatements) {
+//                if (!statement.trim().isEmpty()) {
+//                    jdbcTemplate.execute(statement.trim());
+//                }
+//            }
+//
+//            log.info("✅ Таблиці успішно створені!");
+//        } catch (IOException e) {
+//            log.error("❌ Помилка читання SQL-скрипта: {}", scriptPath, e);
+//        } catch (Exception e) {
+//            log.error("❌ Помилка виконання SQL-скрипта", e);
+//        }
+//    }
+
+
+
+//    public void initializeDatabase(DatabaseConfig config) {
+//        if (checkTables(config)) {
+//            log.info("✅ Всі необхідні таблиці вже існують.");
+//            return;
+//        }
+//
+//        log.info("⏳ Виконуємо SQL-скрипт для створення таблиць...");
+//        executeSqlScript("sql/create_table.sql");
+//
+//        if (checkTables(config)) {
+//            log.info("✅ Таблиці успішно створені!");
+//        } else {
+//            log.error("❌ Помилка: таблиці не створені!");
+//        }
+//    }
+
 
 //            try (Connection conn = tempDataSource.getConnection()) {
 //                DatabaseMetaData metaData = conn.getMetaData();
@@ -109,131 +388,11 @@ public class DatabaseInitializationService {
 //    }
 
 
-    /**
-     * Перевіряє, чи всі необхідні таблиці існують у базі даних.
-     * Якщо хоча б однієї таблиці немає — повертає false.
-     */
-    public boolean checkTables(DatabaseConfig config) {
-        try {
-            for (String table : TABLE_NAMES) {
-                if (!checkIfTableExists(table, config)) {
-                    log.warn("⚠ Таблиця '{}' не знайдена в базі {}!", table, config.getUrl());
-                    return false;
-                }
-            }
-            log.info("✅ Всі необхідні таблиці існують у базі {}", config.getUrl());
-            return true;
-        } catch (Exception e) {
-            log.error("❌ Помилка перевірки таблиць у базі {}", config.getUrl(), e);
-            return false;
-        }
-    }
-
-
-    public void clearDatabase() {
-        try {
-            // Виконати SQL-операції для видалення даних з таблиць
-            String query = "DELETE FROM ?";  // використовуємо параметр для назви таблиці
-
-            for (String table : TABLE_NAMES) {
-                try {
-                    // Очищаємо кожну таблицю
-                    jdbcTemplate.execute("DELETE FROM " + table);
-                    log.info("✅ Дані з таблиці '{}' очищені.", table);
-                } catch (Exception e) {
-                    log.error("❌ Помилка очищення таблиці '{}'", table, e);
-                }
-            }
-
-            log.info("✅ База даних очищена!");
-        } catch (Exception e) {
-            log.error("❌ Помилка при очищенні бази даних", e);
-        }
-    }
-
-
-
-    public boolean testConnection(DatabaseConfig config) {
-        try {
-            DynamicDataSourceConfig.setDataSource(
-                    config.getUrl(),  // URL, якщо є
-                    config.getHost(), // або передаємо окремі параметри
-                    config.getPort(),
-                    config.getDatabase(),
-                    config.getUsername(),
-                    config.getPassword()
-            );
-            log.info("📌 Параметри підключення 2 - host: {}, port: {}, database: {}", config.getHost(), config.getPort(), config.getDatabase());
-
-            DataSource dataSource = DynamicDataSourceConfig.getDataSource();
-            if (dataSource == null) {
-                log.error("❌ Підключення не вдалося!");
-                return false;
-            }
-            log.info("✅ Підключення успішне!");
-            return true;
-        } catch (Exception e) {
-            log.error("❌ Помилка підключення", e);
-            return false;
-        }
-    }
-
-    /**
-     * Ініціалізує базу даних, якщо необхідні таблиці відсутні.
-     */
-    public void initializeDatabase(DatabaseConfig config) {
-        if (checkTables(config)) {
-            log.info("✅ Всі необхідні таблиці вже існують.");
-            return;
-        }
-
-        log.info("⏳ Виконуємо SQL-скрипт для створення таблиць...");
-        executeSqlScript("sql/create_table.sql");
-
-        if (checkTables(config)) {
-            log.info("✅ Таблиці успішно створені!");
-        } else {
-            log.error("❌ Помилка: таблиці не створені!");
-        }
-    }
-
-
-
-
-    /**
-     * Виконує SQL-скрипт, що знаходиться у classpath.
-     */
-    private void executeSqlScript(String scriptPath) {
-        try {
-            Resource resource = new ClassPathResource(scriptPath);
-            if (!resource.exists()) {
-                log.error("❌ SQL-скрипт {} не знайдено!", scriptPath);
-                return;
-            }
-
-            String sql = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-            String[] sqlStatements = sql.split(";");
-
-            for (String statement : sqlStatements) {
-                if (!statement.trim().isEmpty()) {
-                    jdbcTemplate.execute(statement.trim());
-                }
-            }
-
-            log.info("✅ Таблиці успішно створені!");
-        } catch (IOException e) {
-            log.error("❌ Помилка читання SQL-скрипта: {}", scriptPath, e);
-        } catch (Exception e) {
-            log.error("❌ Помилка виконання SQL-скрипта", e);
-        }
-    }
-}
-
 //    public boolean checkTables() {
 //        try {
 //            String query = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?";
 //
-//            for (String table : TABLE_NAMES) {
+//            for (String table : DatabaseInitializationService.TABLE_NAMES) {
 //                try {
 //                    Integer count = jdbcTemplate.queryForObject(query, Integer.class, table);
 //                    if (count == null || count == 0) {
@@ -252,144 +411,218 @@ public class DatabaseInitializationService {
 //            return false;
 //        }
 //    }
+//
+//
+//
+
+
+//
+//public class DatabaseInitializationService {
+//
+//    //    private final DynamicDataSourceConfig dynamicDataSourceConfig;
+//    private final JdbcTemplate jdbcTemplate;
+//
+//    @Autowired
+//    public DatabaseInitializationService(JdbcTemplate jdbcTemplate) {
+//        this.jdbcTemplate = jdbcTemplate;
+//    }
+//
+//    public boolean testConnection(DatabaseConfig config) {
+//        try {
+//            String jdbcUrl = config.getUrl();
+//
+//            // Якщо jdbcUrl не вказаний, будуємо його вручну
+//            if (jdbcUrl == null || jdbcUrl.isBlank()) {
+//                jdbcUrl = String.format("jdbc:postgresql://%s:%s/%s",
+//                        config.getHost(), config.getPort(), config.getDatabase());
+//            }
+//
+//            log.info("🔍 Використовуємо jdbcUrl: {}", jdbcUrl);
+//            log.info("🔍 Username: {}", config.getUsername());
+//            log.info("🔍 Password: {}", config.getPassword() == null ? "null" : "***");
+//            log.info("🔍 Host: {}", config.getHost());
+//            log.info("🔍 Port: {}", config.getPort());
+//            log.info("🔍 Database: {}", config.getDatabase());
+//
+//            HikariConfig hikariConfig = new HikariConfig();
+//            hikariConfig.setJdbcUrl(jdbcUrl);
+//            hikariConfig.setUsername(config.getUsername());
+//            hikariConfig.setPassword(config.getPassword());
+//            hikariConfig.setDriverClassName("org.postgresql.Driver");
+//
+//            HikariDataSource dataSource = new HikariDataSource(hikariConfig);
+//            dataSource.getConnection().close();
+//
+//            log.info("✅ Підключення успішне!");
+//            return true;
+//        } catch (Exception e) {
+//            log.error("❌ Помилка підключення: {}", e.getMessage(), e);
+//            return false;
+//        }
+//    }
+//
+//
+//
+//    public void clearDatabase() {
+//        List<String> tables = List.of("company", "employee", "category", "product", "storage", "transaction", "backup", "printout", "actionlog");
+//
+//        for (String table : tables) {
+//            String sql = "DELETE FROM " + table;
+//            jdbcTemplate.execute(sql);
+//        }
+//    }
+//
+//
+//    public void initializeDatabase(DatabaseConfig config) {
+//        testConnection(config); // Переконуємося, що підключення встановлено
+//
+//        // Приклад створення таблиці (завантаження SQL-файлу можна додати тут)
+//        String sql = "CREATE TABLE IF NOT EXISTS example_table (id SERIAL PRIMARY KEY, name VARCHAR(255))";
+//        jdbcTemplate.execute(sql);
+//        log.info("✅ База даних перевірена та ініціалізована!");
+//    }
+//
+//
+//    public boolean checkTables(DatabaseConfig config) {
+//        testConnection(config); // Переконуємося, що підключення встановлено
+//
+//        String sql = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public'";
+//        int count = jdbcTemplate.queryForObject(sql, Integer.class); // тут була помилка
+//        return count > 0;
+//    }
+//}
+
+
+
+
+
+
+
+
+
 
 
 
 //package com.smartinvent.service;
 //
-//import lombok.RequiredArgsConstructor;
+//import com.smartinvent.config.DynamicDataSourceConfig;
+//import com.smartinvent.models.DatabaseConfig;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.core.io.ClassPathResource;
 //import org.springframework.core.io.Resource;
 //import org.springframework.jdbc.core.JdbcTemplate;
 //import org.springframework.stereotype.Service;
-//import java.io.IOException;
+//
+//import javax.sql.DataSource;
 //import java.nio.charset.StandardCharsets;
+//import java.sql.Connection;
 //import java.util.List;
 //
 //@Slf4j
 //@Service
-//@RequiredArgsConstructor
 //public class DatabaseInitializationService {
 //
 //    private final JdbcTemplate jdbcTemplate;
+//    private final DataSource dataSource;
+//
+//    public DatabaseInitializationService(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+//        this.jdbcTemplate = jdbcTemplate;
+//        this.dataSource = dataSource;
+//    }
 //
 //    private static final List<String> TABLE_NAMES = List.of(
 //            "company", "employee", "category", "product",
-//            "storage", "transaction", "backup", "printout", "action_log"
+//            "storage", "transactions", "backup", "printout", "action_log"
 //    );
 //
+//    public boolean checkIfTableExists(String tableName, DatabaseConfig config) {
+//        try {
+//            DynamicDataSourceConfig.setDataSource(
+//                    config.getUrl(), config.getHost(), config.getPort(),
+//                    config.getDatabase(), config.getUsername(), config.getPassword()
+//            );
 //
-//    public boolean isDatabaseInitialized() {
-//        String query = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?";
-//
-//        for (String table : TABLE_NAMES) {
-//            Integer count = jdbcTemplate.queryForObject(query, Integer.class, table);
-//            if (count == null || count == 0) {
-//                log.warn("⚠ Таблиця '{}' не знайдена!", table);
+//            DataSource tempDataSource = DynamicDataSourceConfig.getDataSource();
+//            if (tempDataSource == null) {
+//                log.error("❌ Не вдалося створити DataSource!");
 //                return false;
 //            }
-//        }
-//        return true;
-//    }
-////    public boolean isDatabaseInitialized() {
-////        for (String table : TABLE_NAMES) {
-////            String query = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?";
-////            Integer count = jdbcTemplate.queryForObject(query, Integer.class, table);
-////            if (count == null || count == 0) {
-////                log.warn("⚠ Таблиця '{}' не знайдена!", table);
-////                return false;
-////            }
-////        }
-////        return true;
-////    }
 //
-//    public boolean checkTables() {
-//        try {
-//            for (String table : TABLE_NAMES) {
-//                String query = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?";
-//                Integer count = jdbcTemplate.queryForObject(query, Integer.class, table);
-//                if (count == null || count == 0) {
-//                    log.warn("⚠ Таблиця '{}' не знайдена!", table);
-//                    return false;
-//                }
+//            try (Connection conn = tempDataSource.getConnection()) {
+//                String dbProductName = conn.getMetaData().getDatabaseProductName();
+//                String sql = switch (dbProductName) {
+//                    case "PostgreSQL" -> "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?";
+//                    case "SQLite" -> "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name = ?";
+//                    default -> throw new UnsupportedOperationException("Непідтримувана БД: " + dbProductName);
+//                };
+//
+//                Integer count = jdbcTemplate.queryForObject(sql, Integer.class, tableName);
+//                return count != null && count > 0;
 //            }
-//            log.info("✅ Всі необхідні таблиці існують.");
-//            return true;
 //        } catch (Exception e) {
-//            log.error("❌ Помилка перевірки таблиць в БД", e);
-//            return false;
+//            log.error("❌ Помилка перевірки таблиці '{}': {}", tableName, e.getMessage());
+//        }
+//        return false;
+//    }
+//
+//    public boolean checkTables(DatabaseConfig config) {
+//        return TABLE_NAMES.stream().allMatch(table -> checkIfTableExists(table, config));
+//    }
+//
+//    public void clearDatabase() {
+//        for (String table : TABLE_NAMES) {
+//            try {
+//                jdbcTemplate.execute("DELETE FROM " + table);
+//                log.info("✅ Очищено '{}'", table);
+//            } catch (Exception e) {
+//                log.error("❌ Помилка очищення '{}'", table, e);
+//            }
 //        }
 //    }
 //
-//    public void initializeDatabase() {
-//
-//        if (isDatabaseInitialized()) {
-//            log.info("✅ Всі необхідні таблиці вже існують.");
-//            return ;
+//    public void initializeDatabase(DatabaseConfig config) {
+//        if (checkTables(config)) {
+//            log.info("✅ Всі таблиці існують.");
+//            return;
 //        }
 //
-//        log.info("⏳ Виконуємо SQL-скрипт для створення таблиць...");
 //        executeSqlScript("sql/create_table.sql");
 //
-//        if (isDatabaseInitialized()) {
-//            log.info("✅ Таблиці успішно створені!");
+//        if (checkTables(config)) {
+//            log.info("✅ Таблиці створено!");
 //        } else {
-//            log.error("❌ Помилка: таблиці не створені!");
+//            log.error("❌ Не всі таблиці створені!");
 //        }
 //    }
-//
 //
 //    private void executeSqlScript(String scriptPath) {
 //        try {
 //            Resource resource = new ClassPathResource(scriptPath);
-//            if (!resource.exists()) {
-//                log.error("❌ SQL-скрипт {} не знайдено!", scriptPath);
-//                return;
-//            }
-//
 //            String sql = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-//            String[] sqlStatements = sql.split(";");
-//
-//            for (String statement : sqlStatements) {
+//            for (String statement : sql.split(";")) {
 //                if (!statement.trim().isEmpty()) {
 //                    jdbcTemplate.execute(statement.trim());
 //                }
 //            }
-//
-//            log.info("✅ Таблиці успішно створені!");
-//        } catch (IOException e) {
-//            log.error("❌ Помилка читання SQL-скрипта: {}", scriptPath, e);
 //        } catch (Exception e) {
-//            log.error("❌ Помилка виконання SQL-скрипта", e);
+//            log.error("❌ Помилка виконання SQL-скрипта!", e);
 //        }
 //    }
-////    private void executeSqlScript(String scriptPath) {
-////        try {
-////            Resource resource = new ClassPathResource(scriptPath);
-////            String sql = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-////            log.info("📜 Виконуємо SQL:\n{}", sql);
-////            jdbcTemplate.execute(sql);
-////            log.info("✅ Таблиці успішно створені!");
-////        } catch (IOException e) {
-////            log.error("❌ Помилка читання SQL-скрипта", e);
-////        } catch (Exception e) {
-////            log.error("❌ Помилка виконання SQL-скрипта", e);
-////        }
-////    }
 //}
-//
-//
+
+
+
 //
 ////package com.smartinvent.service;
 ////
 ////import lombok.RequiredArgsConstructor;
 ////import lombok.extern.slf4j.Slf4j;
+////import org.springframework.core.io.ClassPathResource;
+////import org.springframework.core.io.Resource;
 ////import org.springframework.jdbc.core.JdbcTemplate;
 ////import org.springframework.stereotype.Service;
 ////import java.io.IOException;
-////import java.nio.file.Files;
-////import java.nio.file.Paths;
+////import java.nio.charset.StandardCharsets;
 ////import java.util.List;
 ////
 ////@Slf4j
@@ -404,18 +637,30 @@ public class DatabaseInitializationService {
 ////            "storage", "transaction", "backup", "printout", "action_log"
 ////    );
 ////
+////
 ////    public boolean isDatabaseInitialized() {
+////        String query = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?";
+////
 ////        for (String table : TABLE_NAMES) {
-////            String query = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?";
 ////            Integer count = jdbcTemplate.queryForObject(query, Integer.class, table);
 ////            if (count == null || count == 0) {
-////                log.warn("Таблиця '{}' не знайдена!", table);
+////                log.warn("⚠ Таблиця '{}' не знайдена!", table);
 ////                return false;
 ////            }
 ////        }
-////
 ////        return true;
 ////    }
+//////    public boolean isDatabaseInitialized() {
+//////        for (String table : TABLE_NAMES) {
+//////            String query = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?";
+//////            Integer count = jdbcTemplate.queryForObject(query, Integer.class, table);
+//////            if (count == null || count == 0) {
+//////                log.warn("⚠ Таблиця '{}' не знайдена!", table);
+//////                return false;
+//////            }
+//////        }
+//////        return true;
+//////    }
 ////
 ////    public boolean checkTables() {
 ////        try {
@@ -435,91 +680,204 @@ public class DatabaseInitializationService {
 ////        }
 ////    }
 ////
-////
 ////    public void initializeDatabase() {
+////
 ////        if (isDatabaseInitialized()) {
 ////            log.info("✅ Всі необхідні таблиці вже існують.");
-////            return;
+////            return ;
 ////        }
 ////
 ////        log.info("⏳ Виконуємо SQL-скрипт для створення таблиць...");
 ////        executeSqlScript("sql/create_table.sql");
+////
+////        if (isDatabaseInitialized()) {
+////            log.info("✅ Таблиці успішно створені!");
+////        } else {
+////            log.error("❌ Помилка: таблиці не створені!");
+////        }
 ////    }
+////
 ////
 ////    private void executeSqlScript(String scriptPath) {
 ////        try {
-////            String sql = new String(Files.readAllBytes(Paths.get(scriptPath)));
-////            jdbcTemplate.execute(sql);
+////            Resource resource = new ClassPathResource(scriptPath);
+////            if (!resource.exists()) {
+////                log.error("❌ SQL-скрипт {} не знайдено!", scriptPath);
+////                return;
+////            }
+////
+////            String sql = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+////            String[] sqlStatements = sql.split(";");
+////
+////            for (String statement : sqlStatements) {
+////                if (!statement.trim().isEmpty()) {
+////                    jdbcTemplate.execute(statement.trim());
+////                }
+////            }
+////
 ////            log.info("✅ Таблиці успішно створені!");
 ////        } catch (IOException e) {
-////            log.error("❌ Помилка читання SQL-скрипта", e);
+////            log.error("❌ Помилка читання SQL-скрипта: {}", scriptPath, e);
 ////        } catch (Exception e) {
 ////            log.error("❌ Помилка виконання SQL-скрипта", e);
 ////        }
 ////    }
+//////    private void executeSqlScript(String scriptPath) {
+//////        try {
+//////            Resource resource = new ClassPathResource(scriptPath);
+//////            String sql = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+//////            log.info("📜 Виконуємо SQL:\n{}", sql);
+//////            jdbcTemplate.execute(sql);
+//////            log.info("✅ Таблиці успішно створені!");
+//////        } catch (IOException e) {
+//////            log.error("❌ Помилка читання SQL-скрипта", e);
+//////        } catch (Exception e) {
+//////            log.error("❌ Помилка виконання SQL-скрипта", e);
+//////        }
+//////    }
 ////}
 ////
 ////
 ////
 //////package com.smartinvent.service;
 //////
+//////import lombok.RequiredArgsConstructor;
 //////import lombok.extern.slf4j.Slf4j;
+//////import org.springframework.jdbc.core.JdbcTemplate;
 //////import org.springframework.stereotype.Service;
-//////
-//////import javax.annotation.PostConstruct;
-//////import javax.sql.DataSource;
 //////import java.io.IOException;
 //////import java.nio.file.Files;
 //////import java.nio.file.Paths;
-//////import java.sql.*;
+//////import java.util.List;
 //////
 //////@Slf4j
 //////@Service
+//////@RequiredArgsConstructor
 //////public class DatabaseInitializationService {
 //////
-//////    private final DataSource dataSource;
+//////    private final JdbcTemplate jdbcTemplate;
 //////
-//////    public DatabaseInitializationService(DataSource dataSource) {
-//////        this.dataSource = dataSource;
-//////    }
+//////    private static final List<String> TABLE_NAMES = List.of(
+//////            "company", "employee", "category", "product",
+//////            "storage", "transaction", "backup", "printout", "action_log"
+//////    );
 //////
-//////    @PostConstruct
-//////    public void initializeDatabase() {
-//////        log.info("🔄 Перевірка та ініціалізація бази даних...");
-//////
-//////        if (!isDatabaseInitialized()) {
-//////            log.info("⏳ База даних порожня. Виконуємо SQL-скрипт для створення таблиць...");
-//////            executeSqlScript("sql/create_table.sql");
-//////        } else {
-//////            log.info("✅ Всі необхідні таблиці вже існують.");
-//////        }
-//////    }
-//////
-//////    private boolean isDatabaseInitialized() {
-//////        String checkQuery = "SELECT count(*) FROM information_schema.tables WHERE table_name = 'company'";
-//////
-//////        try (Connection conn = dataSource.getConnection();
-//////             PreparedStatement stmt = conn.prepareStatement(checkQuery);
-//////             ResultSet rs = stmt.executeQuery()) {
-//////            if (rs.next()) {
-//////                return rs.getInt(1) > 0; // Якщо таблиця існує, повертаємо true
+//////    public boolean isDatabaseInitialized() {
+//////        for (String table : TABLE_NAMES) {
+//////            String query = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?";
+//////            Integer count = jdbcTemplate.queryForObject(query, Integer.class, table);
+//////            if (count == null || count == 0) {
+//////                log.warn("Таблиця '{}' не знайдена!", table);
+//////                return false;
 //////            }
-//////        } catch (SQLException e) {
-//////            log.error("Помилка при перевірці бази даних", e);
 //////        }
-//////        return false;
+//////
+//////        return true;
+//////    }
+//////
+//////    public boolean checkTables() {
+//////        try {
+//////            for (String table : TABLE_NAMES) {
+//////                String query = "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?";
+//////                Integer count = jdbcTemplate.queryForObject(query, Integer.class, table);
+//////                if (count == null || count == 0) {
+//////                    log.warn("⚠ Таблиця '{}' не знайдена!", table);
+//////                    return false;
+//////                }
+//////            }
+//////            log.info("✅ Всі необхідні таблиці існують.");
+//////            return true;
+//////        } catch (Exception e) {
+//////            log.error("❌ Помилка перевірки таблиць в БД", e);
+//////            return false;
+//////        }
+//////    }
+//////
+//////
+//////    public void initializeDatabase() {
+//////        if (isDatabaseInitialized()) {
+//////            log.info("✅ Всі необхідні таблиці вже існують.");
+//////            return;
+//////        }
+//////
+//////        log.info("⏳ Виконуємо SQL-скрипт для створення таблиць...");
+//////        executeSqlScript("sql/create_table.sql");
 //////    }
 //////
 //////    private void executeSqlScript(String scriptPath) {
-//////        try (Connection conn = dataSource.getConnection();
-//////             Statement stmt = conn.createStatement()) {
-//////
-//////            String sql = new String(Files.readAllBytes(Paths.get("backend/src/main/resources/" + scriptPath)));
-//////            stmt.execute(sql);
+//////        try {
+//////            String sql = new String(Files.readAllBytes(Paths.get(scriptPath)));
+//////            jdbcTemplate.execute(sql);
 //////            log.info("✅ Таблиці успішно створені!");
-//////
-//////        } catch (SQLException | IOException e) {
+//////        } catch (IOException e) {
+//////            log.error("❌ Помилка читання SQL-скрипта", e);
+//////        } catch (Exception e) {
 //////            log.error("❌ Помилка виконання SQL-скрипта", e);
 //////        }
 //////    }
 //////}
+//////
+//////
+//////
+////////package com.smartinvent.service;
+////////
+////////import lombok.extern.slf4j.Slf4j;
+////////import org.springframework.stereotype.Service;
+////////
+////////import javax.annotation.PostConstruct;
+////////import javax.sql.DataSource;
+////////import java.io.IOException;
+////////import java.nio.file.Files;
+////////import java.nio.file.Paths;
+////////import java.sql.*;
+////////
+////////@Slf4j
+////////@Service
+////////public class DatabaseInitializationService {
+////////
+////////    private final DataSource dataSource;
+////////
+////////    public DatabaseInitializationService(DataSource dataSource) {
+////////        this.dataSource = dataSource;
+////////    }
+////////
+////////    @PostConstruct
+////////    public void initializeDatabase() {
+////////        log.info("🔄 Перевірка та ініціалізація бази даних...");
+////////
+////////        if (!isDatabaseInitialized()) {
+////////            log.info("⏳ База даних порожня. Виконуємо SQL-скрипт для створення таблиць...");
+////////            executeSqlScript("sql/create_table.sql");
+////////        } else {
+////////            log.info("✅ Всі необхідні таблиці вже існують.");
+////////        }
+////////    }
+////////
+////////    private boolean isDatabaseInitialized() {
+////////        String checkQuery = "SELECT count(*) FROM information_schema.tables WHERE table_name = 'company'";
+////////
+////////        try (Connection conn = dataSource.getConnection();
+////////             PreparedStatement stmt = conn.prepareStatement(checkQuery);
+////////             ResultSet rs = stmt.executeQuery()) {
+////////            if (rs.next()) {
+////////                return rs.getInt(1) > 0; // Якщо таблиця існує, повертаємо true
+////////            }
+////////        } catch (SQLException e) {
+////////            log.error("Помилка при перевірці бази даних", e);
+////////        }
+////////        return false;
+////////    }
+////////
+////////    private void executeSqlScript(String scriptPath) {
+////////        try (Connection conn = dataSource.getConnection();
+////////             Statement stmt = conn.createStatement()) {
+////////
+////////            String sql = new String(Files.readAllBytes(Paths.get("backend/src/main/resources/" + scriptPath)));
+////////            stmt.execute(sql);
+////////            log.info("✅ Таблиці успішно створені!");
+////////
+////////        } catch (SQLException | IOException e) {
+////////            log.error("❌ Помилка виконання SQL-скрипта", e);
+////////        }
+////////    }
+////////}

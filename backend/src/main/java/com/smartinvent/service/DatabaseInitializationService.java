@@ -20,10 +20,12 @@ import javax.sql.DataSource;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.util.HashSet;
 import java.util.List;
-
+import java.util.Set;
 
 
 @Service
@@ -31,12 +33,15 @@ import java.util.List;
 public class DatabaseInitializationService {
 
     private final JdbcTemplate jdbcTemplate;
-    private  DataSource dataSource;
+    private DataSource dataSource;
+    private final DynamicDataSourceConfig dynamicDataSourceConfig;
 
-
-    public DatabaseInitializationService(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    @Autowired
+    public DatabaseInitializationService(JdbcTemplate jdbcTemplate, DataSource dataSource, DynamicDataSourceConfig dynamicDataSourceConfig) {
         this.jdbcTemplate = jdbcTemplate;
         this.dataSource = dataSource;
+        this.dynamicDataSourceConfig = dynamicDataSourceConfig;
+
 
     }
 
@@ -61,30 +66,10 @@ public class DatabaseInitializationService {
     }
 
 
-
     public boolean testConnection(DatabaseConfig config) {
         System.out.println("DatabaseInitializationService testConnection ");
-
-
         try {
-
-            /*
-                    if (config.getUrl() == "")// norm check
-        {
-            DynamicDataSourceConfig.setDataSource(config.getUrl());
-        }
-        else
-        {
-            DynamicDataSourceConfig.setDataSource(
-                    config.getHost(),
-                    config.getPort(),
-                    config.getDatabase(),
-                    config.getUsername(),
-                    config.getPassword()
-            );
-        });
-             */
-            DynamicDataSourceConfig.setDataSource(
+            dynamicDataSourceConfig.setDataSource(
                     config.getUrl(),  // URL, якщо є
                     config.getHost(), // або передаємо окремі параметри
                     config.getPort(),
@@ -94,7 +79,9 @@ public class DatabaseInitializationService {
             );
             log.info("📌 Параметри підключення 2 - host: {}, port: {}, database: {}", config.getHost(), config.getPort(), config.getDatabase());
 
-            DataSource dataSource = DynamicDataSourceConfig.getDataSource();
+//            DataSource dataSource = DynamicDataSourceConfig.getDataSource();
+            DataSource dataSource = dynamicDataSourceConfig.getDataSource();
+
             log.info("Using DataSource: {}", dataSource);
 
             if (dataSource == null) {
@@ -116,6 +103,10 @@ public class DatabaseInitializationService {
         this.dataSource = getDataSource(config);
         if (!checkTables(config)) {
             log.info("⚠ Tables are missing, creating them now...");
+            Path path = Paths.get("backend/src/main/resources/sql/create_table.sql");
+            System.out.println("Checking file: " + path.toAbsolutePath());
+            System.out.println("File exists: " + Files.exists(path));
+
             executeSqlScript("sql/create_table.sql");
             if (!checkTables(config)) {
                 log.error("❌ Failed to create the necessary tables!");
@@ -127,16 +118,28 @@ public class DatabaseInitializationService {
         }
     }
 
-    /**
-     * Перевіряє, чи всі необхідні таблиці існують у базі даних.
-     * Якщо хоча б однієї таблиці немає — повертає false.
-     */
+
     public boolean checkTables(DatabaseConfig config) {
         System.out.println("DatabaseInitializationService checkTables ");
 
         try {
+            // Створення з'єднання один раз
+            dynamicDataSourceConfig.setDataSource(
+                    config.getUrl(),
+                    config.getHost(),
+                    config.getPort(),
+                    config.getDatabase(),
+                    config.getUsername(),
+                    config.getPassword()
+            );
+
+            DataSource tempDataSource = dynamicDataSourceConfig.getDataSource();
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(tempDataSource);
+
             for (String table : TABLE_NAMES) {
-                if (!checkIfTableExists(table, config)) {
+                if (!checkIfTableExists(table, jdbcTemplate)) {
+                    log.info("🔍 Checking if table '{}' exists...", table);
+
                     log.warn("⚠ DatabaseInitializationService checkTables Таблиця '{}' не знайдена в базі {}!", table, config.getUrl());
                     return false;
                 }
@@ -149,7 +152,34 @@ public class DatabaseInitializationService {
         }
     }
 
+    private boolean checkIfTableExists(String tableName, JdbcTemplate jdbcTemplate) {
+        System.out.println("DatabaseInitializationService checkIfTableExists ");
 
+        try (Connection conn = jdbcTemplate.getDataSource().getConnection()) {
+            String dbProductName = conn.getMetaData().getDatabaseProductName();
+            log.info("🛠 dbProductName: {}", dbProductName);
+
+            String sql;
+
+            if (dbProductName.equalsIgnoreCase("PostgreSQL")) {
+                sql = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?";
+                log.info("🛠 Використовуємо SQL запит для перевірки таблиць в PostgreSQL");
+            } else if (dbProductName.equalsIgnoreCase("SQLite")) {
+                sql = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name = ?";
+                log.info("🛠 Використовуємо SQL запит для перевірки таблиць в SQLite");
+            } else {
+                throw new UnsupportedOperationException("Непідтримувана база даних: " + dbProductName);
+            }
+
+            // Виконання запиту
+            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, tableName);
+            return count != null && count > 0;
+
+        } catch (Exception e) {
+            log.error("❌ Помилка перевірки таблиці {} у базі: {}", tableName, e.getMessage());
+            return false;
+        }
+    }
 
 
     private void executeSqlScript(String scriptPath) {
@@ -158,6 +188,7 @@ public class DatabaseInitializationService {
 
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
+            System.out.println("Connected to: " + conn.getMetaData().getURL());
             String sql = new String(Files.readAllBytes(Paths.get("backend/src/main/resources/" + scriptPath)));
             stmt.execute(sql);
             log.info("✅ Tables created successfully!");
@@ -167,70 +198,6 @@ public class DatabaseInitializationService {
             log.error("❌ Error executing SQL script", e);
         }
     }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    public boolean checkIfTableExists(String tableName, DatabaseConfig config) {
-        System.out.println("DatabaseInitializationService checkIfTableExists ");
-
-        try {
-            // Перевірка підключення до бази даних
-            DynamicDataSourceConfig.setDataSource(
-                    config.getUrl(),
-                    config.getHost(),
-                    config.getPort(),
-                    config.getDatabase(),
-                    config.getUsername(),
-                    config.getPassword()
-            );
-            log.info("📌 Параметри підключення - host: {}, port: {}, database: {}",
-                    config.getHost(), config.getPort(), config.getDatabase());
-
-            DataSource tempDataSource = DynamicDataSourceConfig.getDataSource();
-            log.info("🛠 Використовуємо DataSource: {}", tempDataSource);
-
-            if (tempDataSource == null) {
-                log.error("❌ Не вдалося створити DataSource для перевірки таблиць!");
-                return false;
-            }
-
-            // Ініціалізація JdbcTemplate
-            JdbcTemplate jdbcTemplate = new JdbcTemplate(tempDataSource);
-
-            // Підключення до бази та перевірка таблиці
-            try (Connection conn = tempDataSource.getConnection()) {
-                String dbProductName = conn.getMetaData().getDatabaseProductName();
-                log.info("🛠 dbProductName: {}", dbProductName);
-
-                String sql;
-
-                if (dbProductName.equalsIgnoreCase("PostgreSQL")) {
-                    sql = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?";
-                    log.info("🛠 Використовуємо SQL запит для перевірки таблиць в PostgreSQL");
-                } else if (dbProductName.equalsIgnoreCase("SQLite")) {
-                    sql = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name = ?";
-                    log.info("🛠 Використовуємо SQL запит для перевірки таблиць в SQLite");
-                } else {
-                    throw new UnsupportedOperationException("Непідтримувана база даних: " + dbProductName);
-                }
-
-                // Виконання запиту
-                Integer count = jdbcTemplate.queryForObject(sql, Integer.class, tableName);
-                return count != null && count > 0;
-
-            } catch (Exception e) {
-                log.error("❌ Помилка перевірки таблиці {} у базі: {}", tableName, e.getMessage());
-                return false;
-            }
-
-        } catch (Exception e) {
-            log.error("❌ Помилка при налаштуванні підключення для перевірки таблиці '{}': {}", tableName, e.getMessage());
-            return false;
-        }
-    }
-
 
 
 
@@ -256,38 +223,128 @@ public class DatabaseInitializationService {
             log.error("❌ Помилка при очищенні бази даних", e);
         }
     }
-
-
-    /**
-     * Повторна перевірка після створення таблиць.
-     * Лише перевіряє факт створення без виведення зайвих логів.
-     */
-    private void validateTablesAfterCreation(DatabaseConfig config) {
-        System.out.println("DatabaseInitializationService validateTablesAfterCreation ");
-
-        if (areTablesCreated(config)) {
-            log.info("✅ Таблиці успішно створені! Тепер можна зберігати дані.");
-        } else {
-            log.error("❌ Помилка: не всі таблиці створені! Можливо, є проблеми із SQL-скриптом.");
-        }
-    }
-
-
-    /**
-     * Перевіряє, чи всі необхідні таблиці існують у базі даних.
-     * Використовується для повторної перевірки після створення таблиць.
-     */
-    private boolean areTablesCreated(DatabaseConfig config) {
-        System.out.println("DatabaseInitializationService areTablesCreated ");
-
-        for (String table : TABLE_NAMES) {
-            if (!checkIfTableExists(table, config)) {
-                return false;
-            }
-        }
-        return true;
-    }
 }
+
+
+//    /**
+//     * Перевіряє, чи всі необхідні таблиці існують у базі даних.
+//     * Якщо хоча б однієї таблиці немає — повертає false.
+//     */
+//    public boolean checkTables(DatabaseConfig config) {
+//        System.out.println("DatabaseInitializationService checkTables ");
+//
+//        try {
+//            for (String table : TABLE_NAMES) {
+//                if (!checkIfTableExists(table, config)) {
+//                    log.info("🔍 Checking if table '{}' exists...", table);
+//
+//                    log.warn("⚠ DatabaseInitializationService checkTables Таблиця '{}' не знайдена в базі {}!", table, config.getUrl());
+//                    return false;
+//                }
+//            }
+//            log.info("✅ Всі необхідні таблиці існують у базі {}", config.getUrl());
+//            return true;
+//        } catch (Exception e) {
+//            log.error("❌ Помилка перевірки таблиць у базі {}", config.getUrl(), e);
+//            return false;
+//        }
+//    }
+
+
+
+//
+//
+//    public boolean checkIfTableExists(String tableName, DatabaseConfig config) {
+//        System.out.println("DatabaseInitializationService checkIfTableExists ");
+//
+//        try {
+//            // Перевірка підключення до бази даних
+//            dynamicDataSourceConfig.setDataSource(
+//                    config.getUrl(),
+//                    config.getHost(),
+//                    config.getPort(),
+//                    config.getDatabase(),
+//                    config.getUsername(),
+//                    config.getPassword()
+//            );
+//            log.info("📌 Параметри підключення - host: {}, port: {}, database: {}",
+//                    config.getHost(), config.getPort(), config.getDatabase());
+//
+////            DataSource tempDataSource = DynamicDataSourceConfig.getDataSource();
+//            DataSource tempDataSource = dynamicDataSourceConfig.getDataSource();
+//
+//            log.info("🛠 Використовуємо DataSource: {}", tempDataSource);
+//
+//            if (tempDataSource == null) {
+//                log.error("❌ Не вдалося створити DataSource для перевірки таблиць!");
+//                return false;
+//            }
+//
+//            // Ініціалізація JdbcTemplate
+//            JdbcTemplate jdbcTemplate = new JdbcTemplate(tempDataSource);
+//
+//            // Підключення до бази та перевірка таблиці
+//            try (Connection conn = tempDataSource.getConnection()) {
+//                String dbProductName = conn.getMetaData().getDatabaseProductName();
+//                log.info("🛠 dbProductName: {}", dbProductName);
+//
+//                String sql;
+//
+//                if (dbProductName.equalsIgnoreCase("PostgreSQL")) {
+//                    sql = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?";
+//                    log.info("🛠 Використовуємо SQL запит для перевірки таблиць в PostgreSQL");
+//                } else if (dbProductName.equalsIgnoreCase("SQLite")) {
+//                    sql = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name = ?";
+//                    log.info("🛠 Використовуємо SQL запит для перевірки таблиць в SQLite");
+//                } else {
+//                    throw new UnsupportedOperationException("Непідтримувана база даних: " + dbProductName);
+//                }
+//
+//                // Виконання запиту
+//                Integer count = jdbcTemplate.queryForObject(sql, Integer.class, tableName);
+//                return count != null && count > 0;
+//
+//            } catch (Exception e) {
+//                log.error("❌ Помилка перевірки таблиці {} у базі: {}", tableName, e.getMessage());
+//                return false;
+//            }
+//
+//        } catch (Exception e) {
+//            log.error("❌ Помилка при налаштуванні підключення для перевірки таблиці '{}': {}", tableName, e.getMessage());
+//            return false;
+//        }
+//    }
+
+//    /**
+//     * Повторна перевірка після створення таблиць.
+//     * Лише перевіряє факт створення без виведення зайвих логів.
+//     */
+//    private void validateTablesAfterCreation(DatabaseConfig config) {
+//        System.out.println("DatabaseInitializationService validateTablesAfterCreation ");
+//
+//        if (areTablesCreated(config)) {
+//            log.info("✅ Таблиці успішно створені! Тепер можна зберігати дані.");
+//        } else {
+//            log.error("❌ Помилка: не всі таблиці створені! Можливо, є проблеми із SQL-скриптом.");
+//        }
+//    }
+//
+//
+//    /**
+//     * Перевіряє, чи всі необхідні таблиці існують у базі даних.
+//     * Використовується для повторної перевірки після створення таблиць.
+//     */
+//    private boolean areTablesCreated(DatabaseConfig config) {
+//        System.out.println("DatabaseInitializationService areTablesCreated ");
+//
+//        for (String table : TABLE_NAMES) {
+//            if (!checkIfTableExists(table, config)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+//}
 
 
 

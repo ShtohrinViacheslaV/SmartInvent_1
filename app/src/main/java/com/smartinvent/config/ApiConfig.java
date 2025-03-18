@@ -1,8 +1,8 @@
 package com.smartinvent.config;
 
 public class ApiConfig {
-//    private static String BASE_URL = "http://192.168.0.120:8080";
-    private static String BASE_URL = "http://192.168.249.76:8080";
+    private static String BASE_URL = "http://192.168.0.120:8080";
+//    private static String BASE_URL = "http://192.168.249.76:8080";
 
 
     public static String getBaseUrl() {

@@ -10,11 +10,18 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class DatabaseConfig {
+
+
     private String host;
+
     private String port;
+
     private String database;
+
     private String url;
+
     private String username;
+
     private String password;
 
 

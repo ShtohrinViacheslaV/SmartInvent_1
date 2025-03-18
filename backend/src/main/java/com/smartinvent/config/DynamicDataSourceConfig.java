@@ -3,6 +3,7 @@ package com.smartinvent.config;
 
 
 import com.smartinvent.models.DatabaseConfig;
+import com.smartinvent.service.DatabaseInitializationService;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.annotation.PostConstruct;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
@@ -26,21 +28,29 @@ import java.util.Map;
 @Configuration
 public class DynamicDataSourceConfig {
 
-    private final DataSource defaultDataSource; // SQLite як резервна БД
+    private DataSource defaultDataSource; // SQLite як резервна БД
     private DataSource dynamicDataSource; // Основна БД (PostgreSQL)
+
+
+    @Autowired
+    @Lazy
+    private DatabaseInitializationService databaseInitializationService; // Додаємо сервіс для оновлення DataSource
 
     public DynamicDataSourceConfig() {
         log.info("⚙ Ініціалізація резервної SQLite БД...");
         this.defaultDataSource = createSQLiteDataSource();
     }
 
-    // Метод для встановлення PostgreSQL як основної БД
     public void setDataSource(String url, String host, String port, String database, String username, String password) {
         if (url == null || url.isEmpty()) {
             url = String.format("jdbc:postgresql://%s:%s/%s", host, port, database);
         }
 
         try {
+            if (this.dynamicDataSource != null) {
+                ((HikariDataSource) this.dynamicDataSource).close(); // Закриваємо попередній пул з'єднань
+            }
+
             HikariConfig hikariConfig = new HikariConfig();
             hikariConfig.setJdbcUrl(url);
             hikariConfig.setUsername(username);
@@ -48,23 +58,26 @@ public class DynamicDataSourceConfig {
             hikariConfig.setDriverClassName("org.postgresql.Driver");
             hikariConfig.setMaximumPoolSize(10);
 
-            if (this.dynamicDataSource != null) {
-                ((HikariDataSource) this.dynamicDataSource).close(); // Закриваємо попередній пул
-            }
-
             this.dynamicDataSource = new HikariDataSource(hikariConfig);
             log.info("✅ Створено новий DataSource для {}", url);
+
+            // Оновлюємо DataSource у DatabaseInitializationService
+            databaseInitializationService.updateDataSource(dynamicDataSource);
+
+            closeSQLiteDataSource();
+
         } catch (Exception e) {
             log.error("❌ Помилка при налаштуванні підключення до PostgreSQL", e);
         }
     }
 
     @Bean
-    @Primary
+//    @Primary
     public DataSource getDataSource() {
         log.debug("🔄 Отримання активного DataSource...");
         return (dynamicDataSource != null) ? dynamicDataSource : defaultDataSource;
     }
+
 
     private DataSource createSQLiteDataSource() {
         log.warn("⚠ Використовується SQLite як резервна БД.");
@@ -72,6 +85,14 @@ public class DynamicDataSourceConfig {
                 .url("jdbc:sqlite:smartinvent_local.db")
                 .driverClassName("org.sqlite.JDBC")
                 .build();
+    }
+
+    private void closeSQLiteDataSource() {
+        if (this.defaultDataSource instanceof HikariDataSource) {
+            log.info("🛑 Закриваємо SQLite DataSource...");
+            ((HikariDataSource) this.defaultDataSource).close();
+            this.defaultDataSource = null; // Прибираємо SQLite повністю
+        }
     }
 }
 

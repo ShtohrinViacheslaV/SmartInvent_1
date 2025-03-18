@@ -32,7 +32,7 @@ import java.util.Set;
 @Slf4j
 public class DatabaseInitializationService {
 
-    private final JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
     private DataSource dataSource;
     private final DynamicDataSourceConfig dynamicDataSourceConfig;
 
@@ -44,6 +44,13 @@ public class DatabaseInitializationService {
 
 
     }
+
+    public void updateDataSource(DataSource newDataSource) {
+        log.info("🔄 Оновлення DataSource у DatabaseInitializationService...");
+        this.dataSource = newDataSource;
+        this.jdbcTemplate = new JdbcTemplate(newDataSource);
+    }
+
 
     private static final List<String> TABLE_NAMES = List.of(
             "company", "employee", "category", "product",
@@ -81,6 +88,7 @@ public class DatabaseInitializationService {
 
 //            DataSource dataSource = DynamicDataSourceConfig.getDataSource();
             DataSource dataSource = dynamicDataSourceConfig.getDataSource();
+            updateDataSource(dataSource); // Оновлюємо DataSource
 
             log.info("Using DataSource: {}", dataSource);
 
@@ -100,7 +108,9 @@ public class DatabaseInitializationService {
     public void initializeDatabase(DatabaseConfig config) {
         System.out.println("DatabaseInitializationService initializeDatabase ");
 
-        this.dataSource = getDataSource(config);
+//        this.dataSource = getDataSource(config);
+        this.dataSource = dynamicDataSourceConfig.getDataSource();
+
         if (!checkTables(config)) {
             log.info("⚠ Tables are missing, creating them now...");
             Path path = Paths.get("backend/src/main/resources/sql/create_table.sql");

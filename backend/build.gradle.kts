@@ -47,8 +47,7 @@ dependencies {
 
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
-
-
+    implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
 
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")

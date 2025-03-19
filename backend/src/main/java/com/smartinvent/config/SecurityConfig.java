@@ -50,7 +50,7 @@ public class SecurityConfig {
         http
                 .securityMatcher("/api/**") // Захист тільки API-запитів
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/testConnection", "/api/checkTables", "api/setupDatabase").permitAll() // Доступ для всіх
+                        .requestMatchers("/api/auth/login", "/api/testConnection", "/api/checkTables", "/api/setupDatabase").permitAll() // Доступ для всіх
                         .requestMatchers("/api/config/save", "/api/companies", "/employees").hasRole("ADMIN") // Тільки для ADMIN
                         .requestMatchers("/api/testConnection").hasAnyRole("ADMIN", "USER") // Доступ для всіх авторизованих
                         .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()

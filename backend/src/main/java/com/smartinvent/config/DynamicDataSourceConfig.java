@@ -20,6 +20,8 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,12 +73,24 @@ public class DynamicDataSourceConfig {
         }
     }
 
-    @Bean
-//    @Primary
+//    @Bean
+////    @Primary
+//    public DataSource getDataSource() {
+//        log.debug("🔄 Отримання активного DataSource...");
+//        return (dynamicDataSource != null) ? dynamicDataSource : defaultDataSource;
+//    }
+
     public DataSource getDataSource() {
-        log.debug("🔄 Отримання активного DataSource...");
-        return (dynamicDataSource != null) ? dynamicDataSource : defaultDataSource;
+        if (dynamicDataSource != null) {
+            try (Connection conn = dynamicDataSource.getConnection()) {
+                return dynamicDataSource;
+            } catch (SQLException e) {
+                log.warn("❌ PostgreSQL недоступний, використовується SQLite");
+            }
+        }
+        return defaultDataSource;
     }
+
 
 
     private DataSource createSQLiteDataSource() {
@@ -88,12 +102,24 @@ public class DynamicDataSourceConfig {
     }
 
     private void closeSQLiteDataSource() {
-        if (this.defaultDataSource instanceof HikariDataSource) {
+        if (this.defaultDataSource instanceof AutoCloseable) {
             log.info("🛑 Закриваємо SQLite DataSource...");
-            ((HikariDataSource) this.defaultDataSource).close();
-            this.defaultDataSource = null; // Прибираємо SQLite повністю
+            try {
+                ((AutoCloseable) this.defaultDataSource).close();
+            } catch (Exception e) {
+                log.error("❌ Помилка закриття SQLite DataSource", e);
+            }
+            this.defaultDataSource = null;
         }
     }
+
+//    private void closeSQLiteDataSource() {
+//        if (this.defaultDataSource instanceof HikariDataSource) {
+//            log.info("🛑 Закриваємо SQLite DataSource...");
+//            ((HikariDataSource) this.defaultDataSource).close();
+//            this.defaultDataSource = null; // Прибираємо SQLite повністю
+//        }
+//    }
 }
 
 //

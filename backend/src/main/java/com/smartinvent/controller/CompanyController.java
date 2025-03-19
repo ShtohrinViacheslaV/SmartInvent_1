@@ -1,32 +1,35 @@
 package com.smartinvent.controller;
 
-import com.smartinvent.models.DatabaseConfig;
+import com.smartinvent.models.Company;
 import com.smartinvent.service.CompanyService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
-@RequestMapping("/api/company")
+@RequestMapping("/api/companies")
+@RequiredArgsConstructor
 public class CompanyController {
+
     private final CompanyService companyService;
 
-    @Autowired
-    public CompanyController(CompanyService companyService) {
-        this.companyService = companyService;
+
+    @PostMapping
+    public ResponseEntity<Company> registerCompany(@RequestBody Company company) {
+        if (companyService.existsByName(company.getName())) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        return ResponseEntity.ok(companyService.registerCompany(company));
     }
 
-    @PostMapping("/config")
-    public ResponseEntity<String> saveDatabaseConfig(@RequestBody DatabaseConfig config) {
-        companyService.saveDatabaseConfig(config);
-        return ResponseEntity.ok("Конфігурація бази даних збережена");
-    }
-
-    @GetMapping("/config")
-    public ResponseEntity<DatabaseConfig> getDatabaseConfig() {
-        return ResponseEntity.ok(companyService.getDatabaseConfig());
+    @GetMapping("/{id}")
+    public ResponseEntity<Company> getCompany(@PathVariable Long id) {
+        return ResponseEntity.ok(companyService.getCompanyById(id));
     }
 }
+
+
 
 
 //package com.smartinvent.controller;

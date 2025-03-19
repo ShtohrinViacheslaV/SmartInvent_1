@@ -60,6 +60,20 @@ public class SignUpCompanyActivity1 extends AppCompatActivity {
             }
         });
     }
+
+    public void signUpCompanyPage2(View v) {
+        saveCompanyData(v);
+    }
+
+    public void backToDatabase(View v) {
+        startActivity(new Intent(this, DatabaseConfigActivity.class));
+        finish();
+    }
+
+    public void backToLogin(View v) {
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
+    }
 }
 
 

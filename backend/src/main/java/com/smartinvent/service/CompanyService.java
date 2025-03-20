@@ -17,7 +17,8 @@ public class CompanyService {
 
     @Transactional
     public Company registerCompany(Company company) {
-        company.setCreatedAt(LocalDateTime.now());
+
+//        company.setCreatedAt(LocalDateTime.now());
         return companyRepository.save(company);
     }
 

@@ -39,12 +39,16 @@ public class SignUpCompanyActivity1 extends AppCompatActivity {
                 companyPhone.getText().toString(),
                 companyEmail.getText().toString()
         );
+        Log.d("SignUpCompanyActivity", "Company Data: " + company.toString());
+
 
         ApiService apiService = ApiClient.getService();
         apiService.createCompany(company).enqueue(new Callback<Company>() {
             @Override
             public void onResponse(Call<Company> call, Response<Company> response) {
                 if (response.isSuccessful()) {
+                    Log.i("SignUpCompanyActivity", "Company registration successful: " + response.body());
+
                     Toast.makeText(SignUpCompanyActivity1.this, "Компанія зареєстрована!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(SignUpCompanyActivity1.this, SignUpCompanyActivity2.class));
                     finish();

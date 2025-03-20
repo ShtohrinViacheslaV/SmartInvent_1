@@ -1,9 +1,14 @@
 package com.smartinvent.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "company")
 public class Company {
@@ -15,6 +20,8 @@ public class Company {
     private String address;
     private String phone;
     private String email;
+
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
 
@@ -74,5 +81,17 @@ public class Company {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "companyId=" + companyId +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

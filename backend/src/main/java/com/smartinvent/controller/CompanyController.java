@@ -20,6 +20,7 @@ public class CompanyController {
         if (companyService.existsByName(company.getName())) {
             return ResponseEntity.badRequest().body(null);
         }
+        System.out.println("CompanyController.registerCompany");
         return ResponseEntity.ok(companyService.registerCompany(company));
     }
 

@@ -5,12 +5,12 @@ import java.time.LocalDateTime;
 
 public class Company {
 
-    private Long companyId;
+//    private Long companyId;
     private String name;
     private String address;
     private String phone;
     private String email;
-    private LocalDateTime createdAt;
+//    private LocalDateTime createdAt;
 
 
     public Company() {
@@ -24,14 +24,14 @@ public class Company {
     }
 
 
-
-    public Long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
+//
+//    public Long getCompanyId() {
+//        return companyId;
+//    }
+//
+//    public void setCompanyId(Long companyId) {
+//        this.companyId = companyId;
+//    }
 
     public String getName() {
         return name;
@@ -65,11 +65,22 @@ public class Company {
         this.email = email;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+//    public LocalDateTime getCreatedAt() {
+//        return createdAt;
+//    }
+//
+//    public void setCreatedAt(LocalDateTime createdAt) {
+//        this.createdAt = createdAt;
+//    }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "Name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email +
+                '}';
     }
 }

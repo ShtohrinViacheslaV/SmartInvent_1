@@ -9,13 +9,14 @@ public class Product implements Parcelable {
     private String description;
     private String productWorkId;
     private Integer count;
-    private byte[] qrCode; // Поле для збереження QR-коду у вигляді байтового масиву
+//    private byte[] qrCode; // Поле для збереження QR-коду у вигляді байтового масиву
+    private String qrCode; // Змінюємо тип поля на String
     private Category category;
     private Storage storage; // Використовуємо об'єкт Storage замість `storageId`
 
 
     // Конструктор без ID
-    public Product(String name, String description, String productWorkId, Integer count, byte[] qrCode, Category category, Storage storage) {
+    public Product(String name, String description, String productWorkId, Integer count, String qrCode, Category category, Storage storage) {
         this.name = name;
         this.description = description;
         this.productWorkId = productWorkId;
@@ -26,7 +27,7 @@ public class Product implements Parcelable {
     }
 
     // Конструктор з ID
-    public Product(Long productId, String name, String description, String productWorkId, Integer count, byte[] qrCode, Category category, Storage storage) {
+    public Product(Long productId, String name, String description, String productWorkId, Integer count, String qrCode, Category category, Storage storage) {
         this.productId = productId;
         this.name = name;
         this.description = description;
@@ -51,7 +52,7 @@ public class Product implements Parcelable {
         } else {
             count = in.readInt();
         }
-        qrCode = in.createByteArray();
+        qrCode = in.readString();
         category = in.readParcelable(Category.class.getClassLoader());
         storage = in.readParcelable(Storage.class.getClassLoader());
     }
@@ -67,6 +68,10 @@ public class Product implements Parcelable {
             return new Product[size];
         }
     };
+
+    public Product() {
+
+    }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -85,7 +90,7 @@ public class Product implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeInt(count);
         }
-        dest.writeByteArray(qrCode);
+        dest.writeString(qrCode);
         dest.writeParcelable(category, flags);
         dest.writeParcelable(storage, flags);
     }
@@ -111,8 +116,8 @@ public class Product implements Parcelable {
     public Integer getCount() { return count; }
     public void setCount(Integer count) { this.count = count; }
 
-    public byte[] getQrCode() { return qrCode; }
-    public void setQrCode(byte[] qrCode) { this.qrCode = qrCode; }
+    public String getQrCode() { return qrCode; }
+    public void setQrCode(String qrCode) { this.qrCode = qrCode; }
 
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }

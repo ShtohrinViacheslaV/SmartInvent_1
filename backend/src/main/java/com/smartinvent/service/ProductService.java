@@ -13,32 +13,42 @@ import java.util.List;
 @Service
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
     private final QRCodeService qrCodeService;
 
-    public ProductService(QRCodeService qrCodeService) {
+    @Autowired
+    public ProductService(ProductRepository productRepository, QRCodeService qrCodeService) {
         this.productRepository = productRepository;
         this.qrCodeService = qrCodeService;
     }
 
 
-
     public Product createProduct(Product product) {
         try {
-            // Генерація QR-коду
-            byte[] qrCodeImage = qrCodeService.generateQrCodeImage(product.getProductId());
+            // Генеруємо QR-код до збереження
+            String qrCodeImage = qrCodeService.generateQrCodeImage(product.getProductWorkId());
             product.setQrCode(qrCodeImage);
 
-            // Збереження продукту
+            // Зберігаємо продукт один раз
             return productRepository.save(product);
         } catch (WriterException | IOException e) {
             throw new RuntimeException("Error generating QR code for product: " + product.getName(), e);
         }
     }
+
 //    public Product createProduct(Product product) {
-//        return productRepository.save(product);
+//        try {
+//            Product savedProduct = productRepository.save(product); // Спочатку зберігаємо продукт
+//
+//            String qrCodeImage = qrCodeService.generateQrCodeImage(savedProduct.getProductWorkId());
+//            savedProduct.setQrCode(qrCodeImage);
+//
+//            return productRepository.save(savedProduct); // Зберігаємо ще раз з QR-кодом
+//        } catch (WriterException | IOException e) {
+//            throw new RuntimeException("Error generating QR code for product: " + product.getName(), e);
+//        }
 //    }
+//
 
     public Product updateProduct(Long id, Product product) {
         Product existingProduct = productRepository.findById(id)
@@ -66,4 +76,15 @@ public class ProductService {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
     }
+
+
+    public List<Product> searchProducts(String query) {
+        return productRepository.findByNameContainingIgnoreCase(query);
+    }
+
+    public boolean isQrCodeUnique(String qrCode) {
+        return !productRepository.existsByQrCode(qrCode);
+    }
+
+
 }

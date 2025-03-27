@@ -2,26 +2,41 @@ package com.smartinvent.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.smartinvent.R;
 import com.smartinvent.model.Category;
 import com.smartinvent.model.Product;
 import com.smartinvent.model.Storage;
+import com.smartinvent.model.Transaction;
+import com.smartinvent.service.CategoryService;
 import com.smartinvent.service.ProductService;
+import com.smartinvent.service.StorageService;
+import com.smartinvent.service.TransactionService;
 import com.smartinvent.utils.QrCodeUtils;
+
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EditProductActivity extends AppCompatActivity {
 
     private EditText edtName, edtDescription, edtCount, edtProductWorkId;
-    private Spinner spinnerCategory, spinnerStorage;
+    private MaterialAutoCompleteTextView editspnCategory, editspnStorage;
     private Button btnSave, btnCancel, btnViewQrCode;
     private ImageView imgQrCode;
+
     private Product product;
-    private List<Category> categoryList;
-    private List<Storage> storageList;
     private ProductService productService;
+    private CategoryService categoryService;
+    private StorageService storageService;
+    private TransactionService transactionService;
+
+    private List<Category> categoryList = new ArrayList<>();
+    private List<Storage> storageList = new ArrayList<>();
+    private byte[] qrCodeBytes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,68 +47,112 @@ public class EditProductActivity extends AppCompatActivity {
         edtDescription = findViewById(R.id.edt_description);
         edtProductWorkId = findViewById(R.id.edt_product_work_id);
         edtCount = findViewById(R.id.edt_count);
-        spinnerCategory = findViewById(R.id.edt_spn_category);
-        spinnerStorage = findViewById(R.id.edt_spn_storage);
+        editspnCategory = findViewById(R.id.edt_spn_category);
+        editspnStorage = findViewById(R.id.edt_spn_storage);
         btnSave = findViewById(R.id.btn_edt_save);
         btnCancel = findViewById(R.id.btn_edt_cancel);
         btnViewQrCode = findViewById(R.id.btn_view_qr_code);
-        //imgQrCode = findViewById(R.id.img_qr_code);
 
         productService = new ProductService();
+        categoryService = new CategoryService();
+        storageService = new StorageService();
+        transactionService = new TransactionService();
 
-        // Отримуємо передані дані
         product = getIntent().getParcelableExtra("product");
-        categoryList = getIntent().getParcelableArrayListExtra("categories");
-        storageList = getIntent().getParcelableArrayListExtra("storage");
 
         if (product != null) {
-            edtName.setText(product.getName());
-            edtDescription.setText(product.getDescription());
-            edtProductWorkId.setText(product.getProductWorkId());
-            edtCount.setText(String.valueOf(product.getCount()));
-
-            setupSpinner(spinnerCategory, categoryList, product.getCategoryId());
-            setupSpinner(spinnerStorage, storageList, product.getStorageId());
+            fillProductDetails();
         }
+
+        loadCategories();
+        loadStorages();
 
         btnViewQrCode.setOnClickListener(v -> showQrCode());
         btnSave.setOnClickListener(v -> saveProduct());
         btnCancel.setOnClickListener(v -> finish());
     }
 
-    private void setupSpinner(Spinner spinner, List<?> list, Long selectedId) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    private void fillProductDetails() {
+        edtName.setText(product.getName());
+        edtDescription.setText(product.getDescription());
+        edtProductWorkId.setText(product.getProductWorkId());
+        edtCount.setText(String.valueOf(product.getCount()));
+        qrCodeBytes = Base64.decode(product.getQrCode(), Base64.DEFAULT);
+    }
 
-        int selectedIndex = -1;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) instanceof Category) {
-                Category category = (Category) list.get(i);
-                adapter.add(category.getName());
-                if (category.getCategoryId().equals(selectedId)) {
-                    selectedIndex = i;
-                }
-            } else if (list.get(i) instanceof Storage) {
-                Storage storage = (Storage) list.get(i);
-                adapter.add(storage.getName());
-                if (storage.getStorageId().equals(selectedId)) {
-                    selectedIndex = i;
+    private void loadCategories() {
+        categoryService.getAllCategories(new CategoryService.CategoryCallback() {
+            @Override
+            public void onSuccess(List<Category> categories) {
+                categoryList.clear();
+                if (categories != null) {
+                    categoryList.addAll(categories);
+                    List<String> categoryNames = new ArrayList<>();
+                    for (Category category : categories) {
+                        categoryNames.add(category.getName());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(EditProductActivity.this,
+                            android.R.layout.simple_dropdown_item_1line, categoryNames);
+                    editspnCategory.setAdapter(adapter);
+
+                    if (product != null) {
+                        for (Category category : categoryList) {
+                            if (category.getCategoryId().equals(product.getCategoryId())) {
+                                editspnCategory.setText(category.getName(), false);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
-        }
 
-        spinner.setAdapter(adapter);
-        if (selectedIndex != -1) {
-            spinner.setSelection(selectedIndex);
-        }
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(EditProductActivity.this, "Помилка завантаження категорій", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadStorages() {
+        storageService.getAllStorages(new StorageService.StorageCallback() {
+            @Override
+            public void onSuccess(List<Storage> storages) {
+                storageList.clear();
+                if (storages != null) {
+                    storageList.addAll(storages);
+                    List<String> storageNames = new ArrayList<>();
+                    for (Storage storage : storages) {
+                        storageNames.add(storage.getName());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(EditProductActivity.this,
+                            android.R.layout.simple_dropdown_item_1line, storageNames);
+                    editspnStorage.setAdapter(adapter);
+
+                    if (product != null) {
+                        for (Storage storage : storageList) {
+                            if (storage.getStorageId().equals(product.getStorageId())) {
+                                editspnStorage.setText(storage.getName(), false);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(EditProductActivity.this, "Помилка завантаження складів", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void showQrCode() {
         if (product != null) {
-            String qrData = product.getProductWorkId();
-            imgQrCode.setImageBitmap(QrCodeUtils.generateQrBitmap(qrData));
+            imgQrCode.setImageBitmap(QrCodeUtils.generateQrBitmap(product.getProductWorkId()));
         } else {
-            Toast.makeText(this, "Товар не знайдено", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "QR-код недоступний", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -104,30 +163,71 @@ public class EditProductActivity extends AppCompatActivity {
         String countStr = edtCount.getText().toString().trim();
 
         if (name.isEmpty() || countStr.isEmpty() || productWorkId.isEmpty()) {
-            Toast.makeText(this, "Заповніть всі поля!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Будь ласка, заповніть всі обов'язкові поля", Toast.LENGTH_SHORT).show();
             return;
         }
 
         int count = Integer.parseInt(countStr);
-        Category selectedCategory = categoryList.get(spinnerCategory.getSelectedItemPosition());
-        Storage selectedStorage = storageList.get(spinnerStorage.getSelectedItemPosition());
+        Category selectedCategory = null;
+        Storage selectedStorage = null;
+
+        String selectedCategoryName = editspnCategory.getText().toString().trim();
+        if (!selectedCategoryName.isEmpty()) {
+            for (Category category : categoryList) {
+                if (category.getName().equals(selectedCategoryName)) {
+                    selectedCategory = category;
+                    break;
+                }
+            }
+        }
+
+        String selectedStorageName = editspnStorage.getText().toString().trim();
+        if (!selectedStorageName.isEmpty()) {
+            for (Storage storage : storageList) {
+                if (storage.getName().equals(selectedStorageName)) {
+                    selectedStorage = storage;
+                    break;
+                }
+            }
+        }
 
         product.setName(name);
         product.setDescription(description);
         product.setProductWorkId(productWorkId);
         product.setCount(count);
-        product.setCategoryId(selectedCategory.getCategoryId());
-        product.setStorageId(selectedStorage.getStorageId());
 
-        productService.updateProduct(product, success -> {
-            if (success) {
-                Toast.makeText(this, "Зміни збережено!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent();
-                intent.putExtra("product", product);
-                setResult(RESULT_OK, intent);
-                finish();
-            } else {
-                Toast.makeText(this, "Помилка збереження!", Toast.LENGTH_SHORT).show();
+        if (selectedCategory != null) {
+            product.setCategoryId(selectedCategory.getCategoryId());
+        }
+
+        if (selectedStorage != null) {
+            product.setStorageId(selectedStorage.getStorageId());
+        }
+
+        if (qrCodeBytes == null) {
+            qrCodeBytes = productWorkId.getBytes(StandardCharsets.UTF_8);
+        }
+        product.setQrCode(Base64.encodeToString(qrCodeBytes, Base64.DEFAULT));
+
+        productService.updateProduct(product, new ProductService.ProductCallback() {
+            @Override
+            public void onSuccess(boolean success, Product updatedProduct) {
+                if (success) {
+                    addTransaction(product.getProductId(), "Редагування");
+                    Toast.makeText(EditProductActivity.this, "Товар оновлено!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(EditProductActivity.this, "Помилка оновлення!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void addTransaction(Long productId, String action) {
+        Transaction transaction = new Transaction(productId, action, System.currentTimeMillis());
+        transactionService.createTransaction(transaction, success -> {
+            if (!success) {
+                Toast.makeText(this, "Помилка запису в історію руху товарів", Toast.LENGTH_SHORT).show();
             }
         });
     }

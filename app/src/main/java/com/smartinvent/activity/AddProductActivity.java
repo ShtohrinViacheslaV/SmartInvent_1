@@ -138,10 +138,13 @@
 package com.smartinvent.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.smartinvent.R;
@@ -149,26 +152,31 @@ import com.smartinvent.model.Category;
 import com.smartinvent.model.Product;
 import com.smartinvent.model.Storage;
 import com.smartinvent.model.Transaction;
-import com.smartinvent.service.CategoryService;
-import com.smartinvent.service.ProductService;
-import com.smartinvent.service.StorageService;
-import com.smartinvent.service.TransactionService;
+import com.smartinvent.service.*;
 import com.smartinvent.utils.QrCodeUtils;
+import retrofit2.Callback;
+
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddProductActivity extends AppCompatActivity {
 
     private EditText addName, addDescription, addCount, addProductWorkId;
     private ImageView imgQrCode;
-    private Spinner addspnCategory, addspnStorage;
+    private MaterialAutoCompleteTextView addspnCategory, addspnStorage;
     private Button btnScanQr, btnGenerateQr, addbtnSave, addbtnCancel;
+
     private byte[] qrCodeBytes;
     private Product product;
     private ProductService productService;
     private CategoryService categoryService;
     private StorageService storageService;
     private TransactionService transactionService;
+    private StorageApi storageApi;
+
+    private List<Category> categoryList;
+    private List<Storage> storageList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,6 +200,10 @@ public class AddProductActivity extends AppCompatActivity {
         storageService = new StorageService();
         transactionService = new TransactionService();
 
+
+        categoryList = new ArrayList<>();
+        storageList = new ArrayList<>();
+
         loadCategories();
         loadStorages();
 
@@ -201,42 +213,89 @@ public class AddProductActivity extends AppCompatActivity {
         addbtnCancel.setOnClickListener(v -> finish());
     }
 
+
     private void loadCategories() {
+        Log.d("DEBUG", "Запит на отримання категорій...");
+
         categoryService.getAllCategories(new CategoryService.CategoryCallback() {
             @Override
             public void onSuccess(List<Category> categories) {
-                ArrayAdapter<Category> adapter = new ArrayAdapter<>(
-                        AddProductActivity.this,
-                        android.R.layout.simple_spinner_item,
-                        categories
-                );
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                addspnCategory.setAdapter(adapter);
+                Log.d("DEBUG", "Отримано категорії: " + categories.size());
+
+                categoryList.clear(); // Очищаємо, щоб не було дублікатів
+
+                if (categories != null && !categories.isEmpty()) {
+                    categoryList.addAll(categories);
+                    List<String> categoryNames = new ArrayList<>();
+                    for (Category category : categories) {
+                        categoryNames.add(category.getName());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            AddProductActivity.this,
+                            android.R.layout.simple_dropdown_item_1line,
+                            categoryNames
+                    );
+                    addspnCategory.setThreshold(1);
+                    addspnCategory.setAdapter(adapter);
+                } else {
+                    Log.w("AddProductActivity", "⚠️ Категорії відсутні");
+                    addspnCategory.setAdapter(null); // Очищаємо адаптер, якщо категорій немає
+                }
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                Toast.makeText(AddProductActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                Log.e("API_ERROR", "❌ Помилка завантаження категорій" + errorMessage);
+                Toast.makeText(AddProductActivity.this, "Помилка завантаження категорій", Toast.LENGTH_SHORT).show();
+                categoryList.clear();
+                addspnCategory.setAdapter(null);
             }
         });
     }
 
+
     private void loadStorages() {
+        Log.d("DEBUG", "Запит на отримання складів...");
         storageService.getAllStorages(new StorageService.StorageCallback() {
             @Override
             public void onSuccess(List<Storage> storages) {
-                ArrayAdapter<Storage> adapter = new ArrayAdapter<>(
-                        AddProductActivity.this,
-                        android.R.layout.simple_spinner_item,
-                        storages
-                );
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                addspnStorage.setAdapter(adapter);
+                Log.d("DEBUG", "Отримано склади: " + storages.size());
+
+                storageList.clear();
+                Log.d("DEBUG", "storageList.clear()...");
+
+                if (storages != null && !storages.isEmpty()) {
+                    Log.d("DEBUG", "storages != null && !storages.isEmpty()...");
+
+                    storageList.addAll(storages);
+                    List<String> storageNames = new ArrayList<>();
+                    for (Storage storage : storages) {
+                        storageNames.add(storage.getName());
+                    }
+                    Log.d("DEBUG", "ArrayAdapter...");
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            AddProductActivity.this,
+                            android.R.layout.simple_dropdown_item_1line,
+                            storageNames
+                    );
+                    Log.d("DEBUG", "setAdapter...");
+
+                    addspnStorage.setThreshold(1);
+                    addspnStorage.setAdapter(adapter);
+                } else {
+                    Log.w("AddProductActivity", "⚠️ Склади відсутні");
+                    addspnStorage.setAdapter(null);
+                }
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                Toast.makeText(AddProductActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                Log.e("API_ERROR", "❌ Помилка завантаження складів" + errorMessage);
+                Toast.makeText(AddProductActivity.this, "Помилка завантаження складів", Toast.LENGTH_SHORT).show();
+                storageList.clear();
+                addspnStorage.setAdapter(null);
             }
         });
     }
@@ -252,52 +311,93 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
     private void generateQrCode() {
-        String generatedQr = "QR-" + System.currentTimeMillis();
-        qrCodeBytes = generatedQr.getBytes(StandardCharsets.UTF_8);
-        imgQrCode.setImageBitmap(QrCodeUtils.generateQrBitmap(generatedQr));
+        String productWorkId = addProductWorkId.getText().toString().trim();
+
+        if (productWorkId.isEmpty()) {
+            Toast.makeText(this, "Спочатку введіть код товару!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        qrCodeBytes = productWorkId.getBytes(StandardCharsets.UTF_8);
+        Bitmap qrBitmap = QrCodeUtils.generateQrBitmap(productWorkId);
+        imgQrCode.setImageBitmap(qrBitmap);
     }
 
     private void saveProduct() {
         String name = addName.getText().toString().trim();
         String description = addDescription.getText().toString().trim();
-        String productWorkId = "PW-" + System.currentTimeMillis(); // Можливо, потрібно запитати у користувача
+        String productWorkId = addProductWorkId.getText().toString().trim();
         String countStr = addCount.getText().toString().trim();
 
         if (name.isEmpty() || countStr.isEmpty() || productWorkId.isEmpty()) {
-            Toast.makeText(this, "Заповніть всі поля!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Будь ласка, заповніть всі обов'язкові поля", Toast.LENGTH_SHORT).show();
             return;
         }
 
         int count = Integer.parseInt(countStr);
-        Category selectedCategory = (Category) addspnCategory.getSelectedItem();
-        Storage selectedStorage = (Storage) addspnStorage.getSelectedItem();
+        Category selectedCategory = null;
+        Storage selectedStorage = null;
 
-        if (selectedCategory == null || selectedStorage == null) {
-            Toast.makeText(this, "Оберіть категорію та склад!", Toast.LENGTH_SHORT).show();
-            return;
+        String selectedCategoryName = addspnCategory.getText().toString().trim();
+        if (!selectedCategoryName.isEmpty() && categoryList != null) {
+            for (Category category : categoryList) {
+                if (category.getName().equals(selectedCategoryName)) {
+                    selectedCategory = category;
+                    break;
+                }
+            }
         }
 
-        //Product product = new Product(name, description, productWorkId, count, qrCodeBytes,selectedCategory.getCategoryId(), selectedStorage.getStorageId());
-        product.setName(name);
-        product.setDescription(description);
-        product.setProductWorkId(productWorkId);
-        product.setCount(count);
-        product.setCategoryId(selectedCategory.getCategoryId());
-        product.setStorageId(selectedStorage.getStorageId());
+        String selectedStorageName = addspnStorage.getText().toString().trim();
+        if (!selectedStorageName.isEmpty() && storageList != null) {
+            for (Storage storage : storageList) {
+                if (storage.getName().equals(selectedStorageName)) {
+                    selectedStorage = storage;
+                    break;
+                }
+            }
+        }
 
+        Product newProduct = new Product();
+        newProduct.setName(name);
+        newProduct.setDescription(description);
+        newProduct.setProductWorkId(productWorkId);
+        newProduct.setCount(count);
 
-        productService.createProduct(product, success -> {
-            if (success) {
-                Toast.makeText(this, "Товар додано!", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                Toast.makeText(this, "Помилка збереження!", Toast.LENGTH_SHORT).show();
+        if (selectedCategory != null) {
+            newProduct.setCategoryId(selectedCategory.getCategoryId());
+        } else {
+            Log.w("saveProduct", "⚠️ Категорія не вибрана, буде null");
+        }
+
+        if (selectedStorage != null) {
+            newProduct.setStorageId(selectedStorage.getStorageId());
+        } else {
+            Log.w("saveProduct", "⚠️ Склад не вибраний, буде null");
+        }
+
+        if (qrCodeBytes == null) {
+            qrCodeBytes = productWorkId.getBytes(StandardCharsets.UTF_8);
+        }
+        newProduct.setQrCode(Base64.encodeToString(qrCodeBytes, Base64.DEFAULT));
+
+        productService.createProduct(newProduct, new ProductService.ProductCallback() {
+            @Override
+            public void onSuccess(boolean success, Product createdProduct) {
+                if (success && createdProduct != null) {
+                    addTransaction(createdProduct.getProductId(), "Додавання");
+                    Toast.makeText(AddProductActivity.this, "Товар додано!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(AddProductActivity.this, "Помилка збереження!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
 
-    private void addTransaction(Long productId, String action) {
+
+        private void addTransaction(Long productId, String action) {
         Transaction transaction = new Transaction(productId, action, System.currentTimeMillis());
         transactionService.createTransaction(transaction, success -> {
             if (!success) {
@@ -306,6 +406,9 @@ public class AddProductActivity extends AppCompatActivity {
         });
     }
 }
+
+
+
 //
 //
 ////package com.smartinvent.activity;

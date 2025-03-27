@@ -12,7 +12,7 @@ public class Employee {
     private String firstName;
     private String lastName;
     private String email;
-    private Integer employeeWorkId;
+    private String employeeWorkId;
     private String passwordHash;
     private String role;
 
@@ -63,11 +63,11 @@ public class Employee {
         this.email = email;
     }
 
-    public Integer getEmployeeWorkId() {
+    public String getEmployeeWorkId() {
         return employeeWorkId;
     }
 
-    public void setEmployeeWorkId(Integer employeeWorkId) {
+    public void setEmployeeWorkId(String employeeWorkId) {
         this.employeeWorkId = employeeWorkId;
     }
 

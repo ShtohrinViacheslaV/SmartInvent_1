@@ -16,28 +16,28 @@ public class TransactionController {
     private TransactionService transactionService;
 
     // Отримання всіх транзакцій
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Transaction>> getAllTransactions() {
         List<Transaction> transactions = transactionService.getAllTransactions();
         return ResponseEntity.ok(transactions);
     }
 
     // Додавання нової транзакції
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) {
         Transaction createdTransaction = transactionService.createTransaction(transaction);
         return ResponseEntity.ok(createdTransaction);
     }
 
     // Оновлення транзакції
-    @PutMapping("/{id}")
+    @PostMapping("/update/{id}")
     public ResponseEntity<Transaction> updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
         Transaction updatedTransaction = transactionService.updateTransaction(id, transaction);
         return ResponseEntity.ok(updatedTransaction);
     }
 
     // Видалення транзакції
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
         return ResponseEntity.noContent().build();

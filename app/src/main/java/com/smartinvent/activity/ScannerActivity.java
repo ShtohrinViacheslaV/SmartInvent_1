@@ -2,6 +2,7 @@ package com.smartinvent.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -14,15 +15,6 @@ public class ScannerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         startQrScanner();
     }
-
-//    private void startQrScanner() {
-//        IntentIntegrator integrator = new IntentIntegrator(this);
-//        integrator.setOrientationLocked(false);
-//        integrator.setPrompt("🔍 Наведіть камеру на QR-код товару");
-//        integrator.setBeepEnabled(true);
-//        integrator.setCaptureActivity(CustomScannerActivity.class); // Використовуємо кастомну активність
-//        integrator.initiateScan();
-    //}
 
     private void startQrScanner() {
         IntentIntegrator integrator = new IntentIntegrator(this);
@@ -37,10 +29,14 @@ public class ScannerActivity extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() != null) {
+                String scannedCode = result.getContents().trim();
+                Log.d("QR_SCAN", "Просканований код: " + scannedCode);
+
                 Intent intent = new Intent();
-                intent.putExtra("scannedCode", result.getContents());
+                intent.putExtra("scannedCode", scannedCode);
                 setResult(RESULT_OK, intent);
             } else {
+                Log.d("QR_SCAN", "QR-код порожній або сканування скасовано");
                 setResult(RESULT_CANCELED);
             }
             finish();
@@ -48,4 +44,6 @@ public class ScannerActivity extends AppCompatActivity {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+
 }

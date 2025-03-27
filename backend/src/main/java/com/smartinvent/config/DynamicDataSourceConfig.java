@@ -2,15 +2,21 @@ package com.smartinvent.config;
 
 
 
+import com.smartinvent.BackendApplication;
 import com.smartinvent.models.DatabaseConfig;
+//import com.smartinvent.repositories.DatabaseConfigRepository;
 import com.smartinvent.service.DatabaseInitializationService;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -21,9 +27,12 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
 
 
 @Slf4j
@@ -113,14 +122,9 @@ public class DynamicDataSourceConfig {
         }
     }
 
-//    private void closeSQLiteDataSource() {
-//        if (this.defaultDataSource instanceof HikariDataSource) {
-//            log.info("🛑 Закриваємо SQLite DataSource...");
-//            ((HikariDataSource) this.defaultDataSource).close();
-//            this.defaultDataSource = null; // Прибираємо SQLite повністю
-//        }
-//    }
 }
+
+
 
 //
 //@Slf4j

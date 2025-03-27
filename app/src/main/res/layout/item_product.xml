@@ -1,38 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:background="?attr/selectableItemBackground">
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:layout_margin="8dp"
+                                   app:cardCornerRadius="12dp"
+                                   app:cardElevation="4dp"
+                                   app:cardBackgroundColor="@color/white">
 
-    <TextView
-            android:id="@+id/productName"
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Назва товару"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:gravity="center_vertical">
 
-    <TextView
-            android:id="@+id/productDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Опис товару"
-            android:textSize="14sp"/>
+        <!-- Основна інформація про товар -->
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-    <TextView
-            android:id="@+id/productWorkId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Робочий ID"
-            android:textSize="14sp"/>
+            <!-- Назва товару -->
+            <TextView
+                    android:id="@+id/productName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Назва товару"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:maxLines="2"
+                    android:ellipsize="end"/>
 
-    <TextView
-            android:id="@+id/productCount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Кількість"
-            android:textSize="14sp"/>
-</LinearLayout>
+            <!-- Код товару + склад + категорія -->
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3"> <!-- Сума ваг для рівного поділу -->
+
+                <TextView
+                        android:id="@+id/productWorkId"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Код"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/darker_gray"
+                        android:gravity="center"/>
+
+                <TextView
+                        android:id="@+id/productStorage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Склад"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/darker_gray"
+                        android:gravity="center"/>
+
+                <TextView
+                        android:id="@+id/productCategory"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Категорія"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/darker_gray"
+                        android:gravity="center"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Кількість товару -->
+        <TextView
+                android:id="@+id/productCount"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="00"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/darker_gray"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
+
+
+
+        <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout-->
+<!--        xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:padding="8dp"-->
+<!--        android:background="?attr/selectableItemBackground">-->
+
+<!--    <TextView-->
+<!--            android:id="@+id/productName"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Назва товару"-->
+<!--            android:textSize="16sp"-->
+<!--            android:textStyle="bold"/>-->
+
+<!--    <TextView-->
+<!--            android:id="@+id/productDescription"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Опис товару"-->
+<!--            android:textSize="14sp"/>-->
+
+<!--    <TextView-->
+<!--            android:id="@+id/productWorkId"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Робочий ID"-->
+<!--            android:textSize="14sp"/>-->
+
+<!--    <TextView-->
+<!--            android:id="@+id/productCount"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Кількість"-->
+<!--            android:textSize="14sp"/>-->
+<!--</LinearLayout>-->

@@ -130,7 +130,7 @@ public class MainScannerFragment extends Fragment {
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
                     String scannedCode = result.getData().getStringExtra("scannedCode");
-                    checkProductOnServer(Long.parseLong(scannedCode));
+                    checkProductOnServer(scannedCode);
                 } else {
                     Toast.makeText(getContext(), "Сканування скасовано", Toast.LENGTH_SHORT).show();
                 }
@@ -149,15 +149,15 @@ public class MainScannerFragment extends Fragment {
         qrScannerLauncher.launch(intent);
     }
 
-    private void checkProductOnServer(Long productId) {
+    private void checkProductOnServer(String productWorkId) {
         try {
-            productApi.getProductById(productId).enqueue(new Callback<Product>() {
+            productApi.getProductById(productWorkId).enqueue(new Callback<Product>() {
                 @Override
                 public void onResponse(Call<Product> call, Response<Product> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         openProductDetails(response.body());
                     } else {
-                        showAddProductDialog(String.valueOf(productId));
+                        showAddProductDialog(String.valueOf(productWorkId));
                     }
                 }
 
@@ -177,13 +177,13 @@ public class MainScannerFragment extends Fragment {
         startActivity(intent);
     }
 
-    private void showAddProductDialog(String productId) {
+    private void showAddProductDialog(String productWorkId) {
         new AlertDialog.Builder(getContext())
                 .setTitle("Товар не знайдено")
                 .setMessage("Додати новий товар?")
                 .setPositiveButton("Так", (dialog, which) -> {
                     Intent intent = new Intent(getActivity(), AddProductActivity.class);
-                    intent.putExtra("product_id", productId);
+                    intent.putExtra("productWorkId", productWorkId);
                     startActivity(intent);
                 })
                 .setNegativeButton("Ні", (dialog, which) -> dialog.dismiss())

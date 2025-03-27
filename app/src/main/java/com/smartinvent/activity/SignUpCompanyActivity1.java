@@ -16,6 +16,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import java.io.IOException;
+
 public class SignUpCompanyActivity1 extends AppCompatActivity {
 
     private EditText companyName, companyAddress, companyPhone, companyEmail, companyWebsite;
@@ -48,14 +50,20 @@ public class SignUpCompanyActivity1 extends AppCompatActivity {
             public void onResponse(Call<Company> call, Response<Company> response) {
                 if (response.isSuccessful()) {
                     Log.i("SignUpCompanyActivity", "Company registration successful: " + response.body());
-
                     Toast.makeText(SignUpCompanyActivity1.this, "Компанія зареєстрована!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(SignUpCompanyActivity1.this, SignUpCompanyActivity2.class));
                     finish();
                 } else {
-                    Toast.makeText(SignUpCompanyActivity1.this, "Помилка реєстрації компанії", Toast.LENGTH_SHORT).show();
+                    try {
+                        String errorBody = response.errorBody().string();
+                        Log.e("SignUpCompanyActivity", "Помилка реєстрації компанії: " + errorBody);
+                    } catch (IOException e) {
+                        Log.e("SignUpCompanyActivity", "Помилка читання помилки сервера", e);
+                    }
+                    Toast.makeText(SignUpCompanyActivity1.this, "Помилка реєстрації компанії: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
+
 
             @Override
             public void onFailure(Call<Company> call, Throwable t) {

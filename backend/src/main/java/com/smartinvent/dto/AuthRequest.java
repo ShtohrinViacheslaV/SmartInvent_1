@@ -6,15 +6,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AuthRequest {
-    private String email;
+    private String employeeWorkId;
     private String password;
 
-    public String getEmail() {
-        return email;
+    public String getEmployeeWorkId() {
+        return employeeWorkId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmployeeWorkId(String employeeWorkId) {
+        this.employeeWorkId = employeeWorkId;
     }
 
     public String getPassword() {

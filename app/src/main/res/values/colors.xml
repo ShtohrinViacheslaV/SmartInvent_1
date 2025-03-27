@@ -2,6 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="lightGray">#9AB2EF</color>
+    <color name="darkGray">#636363</color>
     <color name="delft_blue">#283673</color>
     <color name="middle_yellow">#FFEB3B</color>
     <color name="primary">#283673</color>

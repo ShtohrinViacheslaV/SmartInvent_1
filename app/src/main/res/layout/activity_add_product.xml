@@ -99,6 +99,7 @@
                 android:hint="     Категорія"
                 android:layout_marginTop="5dp">
 
+
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/add_spn_category"
                     android:layout_width="match_parent"

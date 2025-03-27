@@ -1,6 +1,7 @@
 package com.smartinvent.controller;
 
 
+import com.smartinvent.config.DynamicDataSourceConfig;
 import com.smartinvent.models.DatabaseConfig;
 import com.smartinvent.service.DatabaseInitializationService;
 import com.zaxxer.hikari.HikariDataSource;
@@ -23,12 +24,14 @@ public class DatabaseController {
 
     private final DatabaseInitializationService databaseService;
     private final DataSource dataSource;
+    private DynamicDataSourceConfig dynamicDataSourceConfig;
 
     @Autowired
     public DatabaseController(DataSource dataSource, DatabaseInitializationService databaseService) {
         this.dataSource = dataSource;
         this.databaseService = databaseService;
     }
+
 
     @PostMapping("/testConnection")
     public ResponseEntity<String> testDbConnection(@RequestBody DatabaseConfig config) {

@@ -36,9 +36,12 @@ public class SignUpCompanyActivity2 extends AppCompatActivity {
                 adminFirstName.getText().toString(),
                 adminLastName.getText().toString(),
                 adminEmail.getText().toString(),
-                "ADMIN" // Встановлюємо роль адміністратора
+                adminWorkId.getText().toString(),
+                adminPassword.getText().toString(),
+                "ADMIN"
         );
-        admin.setEmployeeWorkId(Integer.parseInt(adminWorkId.getText().toString()));
+
+        admin.setEmployeeWorkId(adminWorkId.getText().toString());
         admin.setPasswordHash(adminPassword.getText().toString());
 
         ApiService apiService = ApiClient.getService();

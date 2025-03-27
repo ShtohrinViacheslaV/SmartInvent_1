@@ -16,28 +16,28 @@ public class CategoryController {
     private CategoryService categoryService;
 
     // Отримання всіх категорій
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);
     }
 
     // Додавання нової категорії
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Category> createCategory(@RequestBody Category category) {
         Category createdCategory = categoryService.createCategory(category);
         return ResponseEntity.ok(createdCategory);
     }
 
     // Оновлення категорії
-    @PutMapping("/{id}")
+    @PostMapping("/update/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
         Category updatedCategory = categoryService.updateCategory(id, category);
         return ResponseEntity.ok(updatedCategory);
     }
 
     // Видалення категорії
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();

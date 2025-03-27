@@ -21,7 +21,7 @@ public class EmployeeService {
         return employeeRepository.save(admin);
     }
 
-    public boolean existsByEmployeeWorkId(Integer employeeWorkId) {
+    public boolean existsByEmployeeWorkId(String employeeWorkId) {
         return employeeRepository.existsByEmployeeWorkId(employeeWorkId);
     }
 }

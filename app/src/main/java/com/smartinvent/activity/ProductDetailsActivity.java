@@ -3,6 +3,7 @@ package com.smartinvent.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,10 +16,9 @@ import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
-    private TextView txtName, txtDescription, txtProductWorkId, txtCount, txtCategory;
-    private Button btnEditProduct, btnBackToScanner;
-    private Product product;
-    private List<Category> categoryList = new ArrayList<>(); // Ініціалізуємо, щоб уникнути помилок
+    private TextView txtName, txtDescription, txtProductWorkId, txtCount, txtCategory, txtStorage;
+    private ImageView imgQrCode;
+    private Button btnEditProduct, btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,53 +31,36 @@ public class ProductDetailsActivity extends AppCompatActivity {
         txtProductWorkId = findViewById(R.id.txt_product_work_id);
         txtCount = findViewById(R.id.txt_count);
         txtCategory = findViewById(R.id.txt_category);
+        txtStorage = findViewById(R.id.txt_storage);
+        imgQrCode = findViewById(R.id.img_qr_code);
+
         btnEditProduct = findViewById(R.id.btn_edit_product);
-        btnBackToScanner = findViewById(R.id.btn_back_to_scanner);
+        btnBack = findViewById(R.id.btn_back);
 
         // Отримання переданого товару
-        product = getIntent().getParcelableExtra("product");
+        Product product = getIntent().getParcelableExtra("product");
         if (product != null) {
             txtName.setText(product.getName());
             txtDescription.setText(product.getDescription());
             txtProductWorkId.setText("Код роботи: " + product.getProductWorkId());
             txtCount.setText("Кількість: " + product.getCount());
             txtCategory.setText("Категорія: " + (product.getCategory() != null ? product.getCategory().getName() : "Немає"));
+            txtStorage.setText("Склад: " + (product.getStorage() != null ? product.getStorage().getName() : "Немає"));
+
+//            generateQrCode(product.getProductWorkId());
+
         }
 
-        // Завантаження категорій
-        loadCategories();
 
-        // Обробник натискання кнопки редагування товару
         btnEditProduct.setOnClickListener(v -> {
             Intent intent = new Intent(this, EditProductActivity.class);
             intent.putExtra("product", product);
-            intent.putParcelableArrayListExtra("categories", new ArrayList<>(categoryList));
             startActivity(intent);
         });
 
-        // Обробник натискання кнопки повернення до сканера
-        btnBackToScanner.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MainScannerActivity.class);
-            startActivity(intent);
-            finish();
-        });
+        btnBack.setOnClickListener(v -> finish());
     }
 
-    // Завантаження списку категорій із сервера
-    private void loadCategories() {
-        CategoryService categoryService = new CategoryService();
-        categoryService.getAllCategories(new CategoryService.CategoryCallback() {
-            @Override
-            public void onSuccess(List<Category> categories) {
-                categoryList = categories; // Зберігаємо список категорій
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                Toast.makeText(ProductDetailsActivity.this, "Помилка завантаження категорій: " + errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 }
 
 

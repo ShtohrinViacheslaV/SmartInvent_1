@@ -34,10 +34,18 @@
                     android:padding="8dp"/>
 
             <Button
+                    android:id="@+id/btn_search_product"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Пошук"
+                    android:padding="8dp"
+                    android:layout_marginStart="8dp"/>
+
+            <Button
                     android:id="@+id/btn_scan_qr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🔍 QR"
+                    android:text="Пошук за QR"
                     android:padding="8dp"
                     android:layout_marginStart="8dp"/>
         </LinearLayout>
@@ -49,26 +57,57 @@
                 android:layout_weight="1"
                 android:background="@android:color/white"/>
 
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            android:layout_marginTop="8dp">
 
             <Button
                     android:id="@+id/btn_add_product"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Додати товар"
+                    android:layout_weight="1"
+                    android:text="Додати"
+                    android:textSize="14sp"
+                    android:gravity="center"
                     android:padding="8dp"/>
 
             <Button
                     android:id="@+id/btn_edit_product"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="Редагувати"
+                    android:textSize="14sp"
+                    android:gravity="center"
                     android:padding="8dp"
                     android:enabled="false"/>
+
+            <Button
+                    android:id="@+id/btn_refresh"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Оновити"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:padding="8dp"/>
+
+            <Button
+                    android:id="@+id/btn_details_product"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Інфо"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:enabled="false"/>
+
+
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

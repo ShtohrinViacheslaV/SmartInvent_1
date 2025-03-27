@@ -1,23 +1,23 @@
 package com.smartinvent.model;
 
 public class AuthRequest {
-    private String email;
+    private Integer employeeWorkId;
     private String password;
 
     public AuthRequest() {
     }
 
-    public AuthRequest(String email, String password) {
-        this.email = email;
+    public AuthRequest(Integer employeeWorkId, String password) {
+        this.employeeWorkId = employeeWorkId;
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public Integer getEmployeeWorkId() {
+        return employeeWorkId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmployeeWorkId(Integer employeeWorkId) {
+        this.employeeWorkId = employeeWorkId;
     }
 
     public String getPassword() {

@@ -2,6 +2,7 @@ package com.smartinvent.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -21,7 +22,13 @@ public class MainScannerActivity extends AppCompatActivity {
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     String scannedCode = result.getData().getStringExtra("scannedCode");
-                    checkProductOnServer(Long.parseLong(scannedCode));
+                    Log.d("QR_SCAN", "Отримано код: " + scannedCode); // ✅ Логування
+
+                    if (scannedCode != null && !scannedCode.isEmpty()) {
+                        checkProductOnServer(scannedCode);
+                    } else {
+                        Toast.makeText(this, "Помилка: порожній код", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(this, "Сканування скасовано", Toast.LENGTH_SHORT).show();
                 }
@@ -37,51 +44,38 @@ public class MainScannerActivity extends AppCompatActivity {
     private void startQrScanner() {
         Intent intent = new Intent(this, ScannerActivity.class);
         qrScannerLauncher.launch(intent);
-
-//        IntentIntegrator integrator = new IntentIntegrator(this);
-//        integrator.setOrientationLocked(false);
-//        integrator.setPrompt("Наведіть камеру на QR-код товару");
-//        integrator.setBeepEnabled(true);
-//        integrator.initiateScan();
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-//        if (result != null) {
-//            if (result.getContents() != null) {
-//                String scannedCode = result.getContents();
-//                checkProductOnServer(scannedCode);
-//            } else {
-//                Toast.makeText(this, "Сканування скасовано", Toast.LENGTH_SHORT).show();
-//                finish();
-//            }
-//        } else {
-//            super.onActivityResult(requestCode, resultCode, data);
-//        }
-//    }
+    private void checkProductOnServer(String productWorkId) {
+        Log.d("QR_SCAN", "Отриманий код: " + productWorkId);
 
-    private void checkProductOnServer(Long productId) {
         try {
-            productApi.getProductById(productId).enqueue(new Callback<Product>() {
+            productApi.getProductById(productWorkId).enqueue(new Callback<Product>() {
                 @Override
                 public void onResponse(Call<Product> call, Response<Product> response) {
+                    Log.d("QR_SCAN", "HTTP код відповіді: " + response.code());
+
                     if (response.isSuccessful() && response.body() != null) {
+                        Log.d("QR_SCAN", "Товар знайдено: " + response.body().toString());
                         openProductDetails(response.body());
                     } else {
-                        showAddProductDialog(String.valueOf(productId));
+                        Log.d("QR_SCAN", "Товар не знайдено, пропонуємо створення нового");
+                        showAddProductDialog(String.valueOf(productWorkId));
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Product> call, Throwable t) {
+                    Log.e("QR_SCAN", "Помилка підключення до сервера: ", t);
                     Toast.makeText(MainScannerActivity.this, "Помилка підключення до сервера", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (NumberFormatException e) {
+            Log.e("QR_SCAN", "Помилка формату ID товару: " + productWorkId, e);
             Toast.makeText(this, "Помилка: невірний формат ID товару", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 
     private void openProductDetails(Product product) {
@@ -91,13 +85,13 @@ public class MainScannerActivity extends AppCompatActivity {
         finish();
     }
 
-    private void showAddProductDialog(String productId) {
+    private void showAddProductDialog(String productWorkId) {
         new AlertDialog.Builder(this)
                 .setTitle("Товар не знайдено")
                 .setMessage("Додати новий товар?")
                 .setPositiveButton("Так", (dialog, which) -> {
                     Intent intent = new Intent(this, AddProductActivity.class);
-                    intent.putExtra("product_id", productId);
+                    intent.putExtra("productWorkId", productWorkId);
                     startActivity(intent);
                     finish();
                 })

@@ -16,28 +16,28 @@ public class StorageController {
     private StorageService storageService;
 
     // Отримання всіх складів
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Storage>> getAllStorages() {
         List<Storage> storages = storageService.getAllStorages();
         return ResponseEntity.ok(storages);
     }
 
     // Додавання нового складу
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Storage> createStorage(@RequestBody Storage storage) {
         Storage createdStorage = storageService.createStorage(storage);
         return ResponseEntity.ok(createdStorage);
     }
 
     // Оновлення складу
-    @PutMapping("/{id}")
+    @PostMapping("/update/{id}")
     public ResponseEntity<Storage> updateStorage(@PathVariable Long id, @RequestBody Storage storage) {
         Storage updatedStorage = storageService.updateStorage(id, storage);
         return ResponseEntity.ok(updatedStorage);
     }
 
     // Видалення складу
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteStorage(@PathVariable Long id) {
         storageService.deleteStorage(id);
         return ResponseEntity.noContent().build();

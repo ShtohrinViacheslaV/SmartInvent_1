@@ -5,6 +5,8 @@ import com.smartinvent.service.QRCodeService;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Base64;
+
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,18 +16,18 @@ class QRCodeControllerTest {
 
     @Test
     void testGenerateQrCode_Success() throws Exception {
-        Long productId = 123456789L;
-        byte[] qrCodeImage = new byte[]{1, 2, 3, 4}; // Мок дані
+        String productWorkId = "123456789";
+        byte[] qrCodeImage = new byte[]{1, 2, 3, 4}; // Приклад байтового масиву зображення
 
         // Мокаємо сервіс
         QRCodeService qrCodeService = mock(QRCodeService.class);
-        when(qrCodeService.generateQrCodeImage(productId)).thenReturn(qrCodeImage);
+        when(qrCodeService.generateQrCodeImage(productWorkId)).thenReturn(Base64.getEncoder().encodeToString(qrCodeImage));
 
         // Створюємо контролер
         QRCodeController qrCodeController = new QRCodeController(qrCodeService);
 
         // Викликаємо метод
-        ResponseEntity<byte[]> response = qrCodeController.generateQrCode(productId);
+        ResponseEntity<byte[]> response = qrCodeController.generateQrCode(productWorkId);
 
         // Перевіряємо відповідь
         assertEquals(200, response.getStatusCodeValue());
@@ -35,17 +37,17 @@ class QRCodeControllerTest {
 
     @Test
     void testGenerateQrCode_Exception() throws Exception {
-        Long productId = 123456789L;
+        String productWorkId = "123456789";
 
         // Мокаємо сервіс із винятком
         QRCodeService qrCodeService = mock(QRCodeService.class);
-        when(qrCodeService.generateQrCodeImage(productId)).thenThrow(new IOException("Test Exception"));
+        when(qrCodeService.generateQrCodeImage(productWorkId)).thenThrow(new IOException("Test Exception"));
 
         // Створюємо контролер
         QRCodeController qrCodeController = new QRCodeController(qrCodeService);
 
         // Викликаємо метод
-        ResponseEntity<byte[]> response = qrCodeController.generateQrCode(productId);
+        ResponseEntity<byte[]> response = qrCodeController.generateQrCode(productWorkId);
 
         // Перевіряємо, що повертається 500 статус
         assertEquals(500, response.getStatusCodeValue());

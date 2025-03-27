@@ -15,31 +15,47 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    // Отримання всіх продуктів
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
 
-    // Додавання нового продукту
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         Product createdProduct = productService.createProduct(product);
         return ResponseEntity.ok(createdProduct);
     }
 
-    // Оновлення продукту
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
         Product updatedProduct = productService.updateProduct(id, product);
         return ResponseEntity.ok(updatedProduct);
     }
 
-    // Видалення продукту
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam String query) {
+        List<Product> products = productService.searchProducts(query);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        Product product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
+    }
+
+    @GetMapping("/checkQrCode")
+    public ResponseEntity<Boolean> isQrCodeUnique(@RequestParam String qrCode) {
+        boolean isUnique = productService.isQrCodeUnique(qrCode);
+        return ResponseEntity.ok(isUnique);
+    }
+
+
 }

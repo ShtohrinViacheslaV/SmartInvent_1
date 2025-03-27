@@ -4,10 +4,12 @@ import com.smartinvent.dto.AuthRequest;
 import com.smartinvent.dto.AuthResponse;
 import com.smartinvent.models.Employee;
 import com.smartinvent.repositories.EmployeeRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @RestController
@@ -23,21 +25,22 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-//    @GetMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-            Optional<Employee> employeeOpt = employeeRepository.findByEmail(request.getEmail());
+        Optional<Employee> employeeOpt = employeeRepository.findByEmployeeWorkId(request.getEmployeeWorkId());
 
-            if (employeeOpt.isPresent()) {
-                Employee employee = employeeOpt.get();
-                if (passwordEncoder.matches(request.getPassword(), employee.getPasswordHash())) {
-                    return ResponseEntity.ok(new AuthResponse(
-                            employee.getEmployeeId(),
-                            employee.getRole(),
-                            employee.getFirstName(),
-                            employee.getLastName()
-                    ));
-                }
+        if (employeeOpt.isPresent()) {
+            Employee employee = employeeOpt.get();
+            if (passwordEncoder.matches(request.getPassword(), employee.getPasswordHash())) {
+                return ResponseEntity.ok(new AuthResponse(
+                        employee.getEmployeeId(),
+                        employee.getRole(),
+                        employee.getFirstName(),
+                        employee.getLastName()
+                ));
             }
-            return ResponseEntity.status(401).body("Invalid email or password");
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Collections.singletonMap("error", "Invalid work ID or password"));
+    }
+
 }

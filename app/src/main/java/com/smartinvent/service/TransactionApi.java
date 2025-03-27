@@ -6,6 +6,6 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface TransactionApi {
-    @POST("transactions")
+    @POST("api/transactions/create")
     Call<Void> createTransaction(@Body Transaction transaction);
 }

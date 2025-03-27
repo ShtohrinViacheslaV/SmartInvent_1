@@ -43,9 +43,9 @@ public class ProductActivity extends AppCompatActivity {
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        productAdapter = new ProductAdapter(null, product ->
-                Toast.makeText(ProductActivity.this, "Вибрано: " + product.getName(), Toast.LENGTH_SHORT).show()
-        );
+//        productAdapter = new ProductAdapter(null, product ->
+//                Toast.makeText(ProductActivity.this, "Вибрано: " + product.getName(), Toast.LENGTH_SHORT).show()
+//        );
         recyclerView.setAdapter(productAdapter);
 
         productApi = ApiClient.getClient().create(ProductApi.class);

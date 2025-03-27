@@ -14,7 +14,7 @@ CREATE TABLE Employee (
                           first_name VARCHAR(100) NOT NULL,
                           last_name VARCHAR(100) NOT NULL,
                           email VARCHAR(100) NOT NULL,
-                          empoyee_work_id INT NOT NULL UNIQUE,
+                          empoyee_work_id VARCHAR(100) NOT NULL UNIQUE,
                           password_hash VARCHAR(255) NOT NULL UNIQUE,
                           role VARCHAR(20) CHECK (role IN ('ADMIN', 'USER'))
 );
@@ -22,7 +22,7 @@ CREATE TABLE Employee (
 CREATE TABLE Category (
                           category_id SERIAL PRIMARY KEY,
                           name VARCHAR(100) NOT NULL,
-                          description TEXT,
+                          description VARCHAR(255),
                           product_type VARCHAR(255)
 );
 
@@ -33,7 +33,7 @@ CREATE TABLE Storage (
                          storage_id SERIAL PRIMARY KEY,
                          name VARCHAR(100) NOT NULL,
                          location VARCHAR(255),
-                         details TEXT
+                         details VARCHAR(255)
 );
 
 
@@ -44,7 +44,7 @@ CREATE TABLE Product (
                          description TEXT,
                          product_work_id VARCHAR(100),
                          count INT NOT NULL,
-                         qrCode BYTEA,
+                         qrCode TEXT,
                          category_id INT REFERENCES Category(category_id),
                          storage_id INT REFERENCES Storage(storage_id)
 

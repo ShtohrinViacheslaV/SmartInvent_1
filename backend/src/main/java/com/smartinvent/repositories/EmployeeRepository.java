@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    boolean existsByEmployeeWorkId(Integer employeeWorkId);
-    Optional<Employee> findByEmail(String email);  // Додаємо метод пошуку за email
+    boolean existsByEmployeeWorkId(String employeeWorkId);
+    Optional<Employee> findByEmployeeWorkId(String employeeWorkId);  // Додаємо метод пошуку за workId
 
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/api/qr-code")
@@ -22,15 +23,17 @@ public class QRCodeController {
         this.qrCodeService = qrCodeService;
     }
 
-    @GetMapping("/{productId}")
-    public ResponseEntity<byte[]> generateQrCode(@PathVariable Long productId) {
+    @GetMapping("/{productWorkId}")
+    public ResponseEntity<byte[]> generateQrCode(@PathVariable String productWorkId) {
         try {
-            byte[] qrCodeImage = qrCodeService.generateQrCodeImage(productId);
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Content-Type", "image/png");
-            return new ResponseEntity<>(qrCodeImage, headers, HttpStatus.OK);
-        } catch (WriterException | IOException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            String qrCodeBase64 = qrCodeService.generateQrCodeImage(productWorkId);
+            byte[] qrCodeBytes = Base64.getDecoder().decode(qrCodeBase64);
+
+            return ResponseEntity.ok()
+                    .header("Content-Type", "image/png")
+                    .body(qrCodeBytes);
+        } catch (WriterException | IOException | IllegalArgumentException e) {
+            return ResponseEntity.status(500).build();
         }
     }
 }

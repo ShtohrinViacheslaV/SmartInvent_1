@@ -16,7 +16,7 @@ public class StorageService {
     }
 
     public void getAllStorages(StorageCallback callback) {
-        storageApi.getStorages().enqueue(new Callback<List<Storage>>() {
+        storageApi.getAllStorages().enqueue(new Callback<List<Storage>>() {
             @Override
             public void onResponse(Call<List<Storage>> call, Response<List<Storage>> response) {
                 if (response.isSuccessful() && response.body() != null) {

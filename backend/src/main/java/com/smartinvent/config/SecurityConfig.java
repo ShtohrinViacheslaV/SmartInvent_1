@@ -1,11 +1,19 @@
 package com.smartinvent.config;
 
+import com.smartinvent.service.EmployeeDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,9 +25,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+    private final EmployeeDetailsService employeeDetailsService; // Сервіс, що вантажить користувачів із БД
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -27,44 +37,83 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("adminpass"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails user = User.builder()
-                .username("user")
-                .password(passwordEncoder().encode("userpass"))
-                .roles("USER")
-                .build();
-
-        logger.info("Створено користувачів: admin (ADMIN), user (USER)");
-
-        return new InMemoryUserDetailsManager(admin, user);
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/api/**") // Захист тільки API-запитів
+                .csrf(csrf -> csrf.disable()) // REST API – відключаємо CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/testConnection", "/api/checkTables", "/api/setupDatabase", "/api/companies").permitAll() // Доступ для всіх
-                        .requestMatchers("/api/config/save", "/api/companies", "/api/employees").hasRole("ADMIN") // Тільки для ADMIN
-                        .requestMatchers("/api/testConnection").hasAnyRole("ADMIN", "USER") // Доступ для всіх авторизованих
-                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
-                        .requestMatchers("/api/checkTables").authenticated()
-                        .anyRequest().authenticated() // Всі інші запити потребують авторизації
+                        // Відкриті ендпоінти (без авторизації)
+                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/companies/**", "/api/employees/**", "/api/testConnection", "/api/testConnection", "/api/inventory/**", "/api/products/**", "/api/transactions/**", "/api/checkTables", "/api/setupDatabase", "/api/categories/**", "/api/storages/**").permitAll()
+
+                        // Доступ лише для ADMIN
+                        .requestMatchers("/api/config/save").hasRole("ADMIN")
+
+                        // Доступ для USER та ADMIN
+//                        .requestMatchers("/api/testConnection", "/api/inventory/**").hasAnyRole("ADMIN", "USER")
+
+                        // Усі інші запити вимагають авторизації
+                        .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.disable()) // Відключаємо CSRF для REST API
-                .httpBasic(withDefaults()); // Використовуємо Basic Auth
+                .userDetailsService(employeeDetailsService) // Використовуємо наш кастомний UserDetailsService
+                .httpBasic(withDefaults()); // Basic Auth
 
         logger.info("SecurityFilterChain налаштовано!");
-
         return http.build();
     }
 }
+
+
+
+
+//@Configuration
+//@EnableWebSecurity
+//public class SecurityConfig {
+//
+//    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+//
+//    @Bean
+//    public BCryptPasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+//
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        UserDetails admin = User.builder()
+//                .username("admin")
+//                .password(passwordEncoder().encode("adminpass"))
+//                .roles("ADMIN")
+//                .build();
+//
+//        UserDetails user = User.builder()
+//                .username("user")
+//                .password(passwordEncoder().encode("userpass"))
+//                .roles("USER")
+//                .build();
+//
+//        logger.info("Створено користувачів: admin (ADMIN), user (USER)");
+//
+//        return new InMemoryUserDetailsManager(admin, user);
+//    }
+//
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .securityMatcher("/api/**") // Захист тільки API-запитів
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/api/auth/login", "/api/testConnection", "/api/checkTables", "/api/setupDatabase", "/api/companies", "/api/employees").permitAll() // Доступ для всіх
+//                        .requestMatchers("/api/config/save","/api/auth/login", "/api/auth/register", "/api/companies", "/api/employees").hasRole("ADMIN") // Тільки для ADMIN
+//                        .requestMatchers("/api/testConnection").hasAnyRole("ADMIN", "USER") // Доступ для всіх авторизованих
+////                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+//                        .requestMatchers("/api/checkTables").authenticated()
+//                        .anyRequest().authenticated() // Всі інші запити потребують авторизації
+//                )
+//                .csrf(csrf -> csrf.disable()) // Відключаємо CSRF для REST API
+//                .httpBasic(withDefaults()); // Використовуємо Basic Auth
+//
+//        logger.info("SecurityFilterChain налаштовано!");
+//
+//        return http.build();
+//    }
+//}
 
 
 //package com.smartinvent.config;

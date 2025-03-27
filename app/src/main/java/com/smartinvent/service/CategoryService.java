@@ -16,7 +16,7 @@ public class CategoryService {
     }
 
     public void getAllCategories(CategoryCallback callback) {
-        categoryApi.getCategories().enqueue(new Callback<List<Category>>() {
+        categoryApi.getAllCategories().enqueue(new Callback<List<Category>>() {
             @Override
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
                 if (response.isSuccessful() && response.body() != null) {

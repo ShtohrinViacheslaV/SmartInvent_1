@@ -15,8 +15,9 @@ import jakarta.persistence.*;
        private String description;
        private String productWorkId;
        private Integer count;
-       @Lob // Використовується для збереження великих об'єктів
-       private byte[] qrCode;
+//       @Lob // Використовується для збереження великих об'єктів
+//       private byte[] qrCode;
+       private String qrCode;
 
        @ManyToOne
        @JoinColumn(name = "category_id")
@@ -30,7 +31,7 @@ import jakarta.persistence.*;
        public Product() {
        }
 
-       public Product(Long productId, String name, String description, String productWorkId, Integer count, byte[] qrCode, Category category, Storage storage) {
+       public Product(Long productId, String name, String description, String productWorkId, Integer count, String qrCode, Category category, Storage storage) {
            this.productId = productId;
            this.name = name;
            this.description = description;
@@ -81,11 +82,11 @@ import jakarta.persistence.*;
            this.count = count;
        }
 
-       public byte[] getQrCode() {
+       public String getQrCode() {
            return qrCode;
        }
 
-       public void setQrCode(byte[] qrCode) {
+       public void setQrCode(String qrCode) {
            this.qrCode = qrCode;
        }
 

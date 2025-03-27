@@ -118,6 +118,8 @@ public class DatabaseConfigActivity extends AppCompatActivity {
 
         // Перевіряємо, чи є таблиці
         Call<Boolean> call = apiService.checkDatabaseTables(config);
+
+
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {

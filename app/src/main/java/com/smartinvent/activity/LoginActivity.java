@@ -3,6 +3,7 @@ package com.smartinvent.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,7 +23,7 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText emailInput, passwordInput;
+    private EditText workIdInput, passwordInput;
     private ApiService apiService;
     private SharedPreferences sharedPreferences;
 
@@ -31,11 +32,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        emailInput = findViewById(R.id.username);
+        workIdInput = findViewById(R.id.username);
         passwordInput = findViewById(R.id.password);
 
         sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-//        updateApiClient(); // Оновлюємо API клієнт при старті
+        updateApiClient(); // Оновлюємо API клієнт при старті
     }
 
     private void updateApiClient() {
@@ -47,9 +48,15 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
                 return;
             }
+            String apiUrl = ApiConfig.getBaseUrl();
 
+            if (apiUrl == null || (!apiUrl.startsWith("http://") && !apiUrl.startsWith("https://"))) {
+                Toast.makeText(this, "Невірний URL сервера API!", Toast.LENGTH_LONG).show();
+                return;
+            }
 
-            ApiConfig.setBaseUrl(DbConfigManager.loadConfig(this).getUrl());
+            System.out.println("API URL: " + apiUrl);
+            ApiConfig.setBaseUrl(apiUrl);
             apiService = ApiClient.getService();
         } else {
             apiService = null;
@@ -57,21 +64,42 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View v) {
-        String email = emailInput.getText().toString().trim();
-        String password = passwordInput.getText().toString().trim();
-        boolean isAdminLogin = v.getId() == R.id.login_admin;
+        try {
 
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Будь ласка, введіть логін і пароль", Toast.LENGTH_SHORT).show();
-            return;
+            String workIdStr = workIdInput.getText().toString().trim();
+            String password = passwordInput.getText().toString().trim();
+            boolean isAdminLogin = v.getId() == R.id.login_admin;
+
+            if (workIdStr.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Будь ласка, введіть логін і пароль", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int employeeWorkId;
+
+            try {
+                employeeWorkId = Integer.parseInt(workIdStr);
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Невірний формат Work ID", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!DbConfigManager.isConfigAvailable(this)) {
+                handleNoDatabase(isAdminLogin);
+                return;
+            }
+
+            if (apiService == null) {
+                Toast.makeText(this, "Немає підключення до API", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            authenticateUser(employeeWorkId, password, isAdminLogin);
         }
-
-        if (!DbConfigManager.isConfigAvailable(this)) {
-            handleNoDatabase(isAdminLogin);
-            return;
+        catch (Exception e) {
+            Log.e("LoginActivity", "Помилка у login()", e);
+            Toast.makeText(this, "Помилка авторизації", Toast.LENGTH_SHORT).show();
         }
-
-        authenticateUser(email, password, isAdminLogin);
     }
 
     private void handleNoDatabase(boolean isAdminLogin) {
@@ -89,8 +117,8 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void authenticateUser(String email, String password, boolean isAdminLogin) {
-        apiService.login(new AuthRequest(email, password)).enqueue(new Callback<AuthResponse>() {
+    private void authenticateUser(int employeeWorkId, String password, boolean isAdminLogin) {
+        apiService.login(new AuthRequest(employeeWorkId, password)).enqueue(new Callback<AuthResponse>() {
             @Override
             public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

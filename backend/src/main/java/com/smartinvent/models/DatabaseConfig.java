@@ -1,16 +1,19 @@
 package com.smartinvent.models;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@ConfigurationProperties(prefix = "database")
+//@Configuration
 @Getter
 @Setter
 public class DatabaseConfig {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String host;
 
@@ -24,6 +27,26 @@ public class DatabaseConfig {
 
     private String password;
 
+    public DatabaseConfig(String host, String port, String database, String url, String username, String password) {
+        this.host = host;
+        this.port = port;
+        this.database = database;
+        this.url = url;
+        this.username = username;
+        this.password = password;
+    }
+
+    public DatabaseConfig() {
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getHost() {
         return host;

@@ -9,18 +9,34 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
 
+/**
+ * Клас-контроллер для обробки запитів, пов'язаних з перевіркою стану сервера
+ */
 @Slf4j
 @RestController
 @RequestMapping("/health")
 public class HealthCheckController {
 
+    /**
+     * Об'єкт контексту додатка
+     */
     private final ApplicationContext context;
 
+    /**
+     * Конструктор класу
+     *
+     * @param context - контекст додатка
+     */
     @Autowired
     public HealthCheckController(ApplicationContext context) {
         this.context = context;
     }
 
+    /**
+     * Метод для перевірки стану сервера
+     *
+     * @return - відповідь про стан сервера
+     */
     @GetMapping
     public String checkHealth() {
         DataSource dataSource = context.getBeanProvider(DataSource.class).getIfAvailable();

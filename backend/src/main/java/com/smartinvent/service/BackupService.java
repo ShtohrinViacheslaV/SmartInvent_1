@@ -2,17 +2,27 @@ package com.smartinvent.service;
 
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.nio.file.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * BackupService клас для роботи з резервними копіями бази даних.
+ */
 @Service
 public class BackupService {
 
+    /**
+     * Директорія для зберігання резервних копій.
+     */
     private static final String BACKUP_DIRECTORY = "E:\\SmartInvent Projects\\smartinvent-backend\\src\\main\\resources\\backup";
 
-    // Створення резервної копії
+    /**
+     * Метод для створення резервної копії бази даних.
+     *
+     * @throws IOException виняток, якщо виникла помилка під час створення резервної копії
+     */
     public void createBackup() throws IOException {
         String backupFileName = BACKUP_DIRECTORY + "backup_" + System.currentTimeMillis() + ".sql";
 
@@ -33,7 +43,12 @@ public class BackupService {
         }
     }
 
-    // Відновлення з резервної копії
+    /**
+     * Метод для відновлення бази даних з резервної копії.
+     *
+     * @param backupFile назва файлу резервної копії
+     * @throws IOException виняток, якщо виникла помилка під час відновлення з резервної копії
+     */
     public void restoreBackup(String backupFile) throws IOException {
         String backupFilePath = BACKUP_DIRECTORY + backupFile;
 
@@ -54,7 +69,11 @@ public class BackupService {
         }
     }
 
-    // Експорт даних у файл
+    /**
+     * Метод для експортування даних з бази даних у форматі CSV.
+     *
+     * @throws IOException виняток, якщо виникла помилка під час експортування даних
+     */
     public void exportData() throws IOException {
         String exportFileName = BACKUP_DIRECTORY + "export_" + System.currentTimeMillis() + ".csv";
 
@@ -76,7 +95,12 @@ public class BackupService {
         }
     }
 
-    // Імпорт даних з файлу
+    /**
+     * Метод для імпортування даних з CSV у базу даних.
+     *
+     * @param importFile назва файлу для імпортування
+     * @throws IOException виняток, якщо виникла помилка під час імпортування даних
+     */
     public void importData(String importFile) throws IOException {
         String importFilePath = BACKUP_DIRECTORY + importFile;
 
@@ -98,7 +122,11 @@ public class BackupService {
         }
     }
 
-    // Інші методи для взаємодії з BackupRepository (якщо необхідно)
+    /**
+     * Метод для отримання всіх резервних копій.
+     *
+     * @return список всіх резервних копій
+     */
     public List<String> getAllBackups() {
         File folder = new File(BACKUP_DIRECTORY);
         File[] listOfFiles = folder.listFiles();

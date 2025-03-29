@@ -2,40 +2,59 @@ package com.smartinvent.service;
 
 import com.smartinvent.config.DynamicDataSourceConfig;
 import com.smartinvent.models.DatabaseConfig;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Service;
 
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-
-import java.io.IOException;
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.*;
-import java.util.HashSet;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
-import java.util.Set;
 
-
+/**
+ * Сервіс для ініціалізації бази даних.
+ */
 @Service
 @Slf4j
 public class DatabaseInitializationService {
 
-    private JdbcTemplate jdbcTemplate;
-    private DataSource dataSource;
+    /**
+     * Список назв таблиць, які повинні бути в базі даних.
+     */
+    private static final List<String> TABLE_NAMES = List.of(
+            "company", "employee", "category", "product",
+            "storage", "transactions", "backup", "printout", "action_log"
+    );
+
+    /**
+     * JdbcTemplate для виконання SQL-запитів.
+     */
     private final DynamicDataSourceConfig dynamicDataSourceConfig;
 
+    /**
+     * JdbcTemplate для виконання SQL-запитів.
+     */
+    private JdbcTemplate jdbcTemplate;
+
+    /**
+     * DataSource для підключення до бази даних.
+     */
+    private DataSource dataSource;
+
+    /**
+     * Конструктор класу.
+     *
+     * @param jdbcTemplate            JdbcTemplate для виконання SQL-запитів
+     * @param dataSource              DataSource для підключення до бази даних
+     * @param dynamicDataSourceConfig конфігурація динамічного джерела даних
+     */
     @Autowired
     public DatabaseInitializationService(JdbcTemplate jdbcTemplate, DataSource dataSource, DynamicDataSourceConfig dynamicDataSourceConfig) {
         this.jdbcTemplate = jdbcTemplate;
@@ -45,6 +64,11 @@ public class DatabaseInitializationService {
 
     }
 
+    /**
+     * Оновлення DataSource у сервісі.
+     *
+     * @param newDataSource новий DataSource
+     */
     public void updateDataSource(DataSource newDataSource) {
         log.info("🔄 Оновлення DataSource у DatabaseInitializationService...");
         this.dataSource = newDataSource;
@@ -52,14 +76,14 @@ public class DatabaseInitializationService {
     }
 
 
-    private static final List<String> TABLE_NAMES = List.of(
-            "company", "employee", "category", "product",
-            "storage", "transactions", "backup", "printout", "action_log"
-    );
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Метод для перевірки наявності таблиць у базі даних.
+     *
+     * @param config конфігурація бази даних
+     * @return true, якщо всі таблиці існують, інакше - false
+     */
     private DataSource getDataSource(DatabaseConfig config) {
         System.out.println("DatabaseInitializationService getDataSource ");
 
@@ -72,7 +96,12 @@ public class DatabaseInitializationService {
         return dataSource;
     }
 
-
+    /**
+     * Метод для перевірки наявності таблиць у базі даних.
+     *
+     * @param config конфігурація бази даних
+     * @return true, якщо всі таблиці існують, інакше - false
+     */
     public boolean testConnection(DatabaseConfig config) {
         System.out.println("DatabaseInitializationService testConnection ");
         try {
@@ -105,6 +134,11 @@ public class DatabaseInitializationService {
         }
     }
 
+    /**
+     * Ініціалізація бази даних.
+     *
+     * @param config конфігурація бази даних
+     */
     public void initializeDatabase(DatabaseConfig config) {
         System.out.println("DatabaseInitializationService initializeDatabase ");
 
@@ -128,7 +162,12 @@ public class DatabaseInitializationService {
         }
     }
 
-
+    /**
+     * Перевірка наявності таблиць у базі даних.
+     *
+     * @param config конфігурація бази даних
+     * @return true, якщо всі таблиці існують, інакше - false
+     */
     public boolean checkTables(DatabaseConfig config) {
         System.out.println("DatabaseInitializationService checkTables ");
 
@@ -162,6 +201,13 @@ public class DatabaseInitializationService {
         }
     }
 
+    /**
+     * Перевірка наявності таблиці у базі даних.
+     *
+     * @param tableName    назва таблиці
+     * @param jdbcTemplate JdbcTemplate для виконання SQL-запитів
+     * @return true, якщо таблиця існує, інакше - false
+     */
     private boolean checkIfTableExists(String tableName, JdbcTemplate jdbcTemplate) {
         System.out.println("DatabaseInitializationService checkIfTableExists ");
 
@@ -191,10 +237,13 @@ public class DatabaseInitializationService {
         }
     }
 
-
+    /**
+     * Виконання SQL-скрипту.
+     *
+     * @param scriptPath шлях до SQL-скрипту
+     */
     private void executeSqlScript(String scriptPath) {
         System.out.println("DatabaseInitializationService executeSqlScript ");
-
 
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
@@ -209,8 +258,9 @@ public class DatabaseInitializationService {
         }
     }
 
-
-
+    /**
+     * Очищення бази даних.
+     */
     public void clearDatabase() {
         System.out.println("DatabaseInitializationService clearDatabase ");
 

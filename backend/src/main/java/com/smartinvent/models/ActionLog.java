@@ -1,9 +1,12 @@
 package com.smartinvent.models;
 
-import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 
+/**
+ * Клас-сутність для зберігання інформації про дії користувачів
+ */
 @Entity
 @Table(name = "action_log")
 public class ActionLog {

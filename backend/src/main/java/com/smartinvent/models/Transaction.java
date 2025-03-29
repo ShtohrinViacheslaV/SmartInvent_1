@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Клас Transaction відображає сутність "Транзакція" в базі даних
+ */
 @Entity
 @Table(name = "transactions")
 public class Transaction {

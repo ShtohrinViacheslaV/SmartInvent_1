@@ -15,17 +15,35 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+/**
+ * Конфігурація безпеки додатку
+ *
+ * @see org.springframework.context.annotation.Configuration
+ * @see org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+    /**
+     * Логер для виведення інформації
+     */
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
+    /**
+     * Метод для створення кодувальника паролів
+     *
+     * @return - кодувальник паролів
+     */
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Метод для створення користувачів
+     *
+     * @return - сервіс для роботи з користувачами
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails admin = User.builder()
@@ -45,6 +63,13 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(admin, user);
     }
 
+    /**
+     * Метод для налаштування фільтра безпеки
+     *
+     * @param http - об'єкт для налаштування безпеки
+     * @return - фільтр безпеки
+     * @throws Exception - виняток, якщо виникає помилка
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -124,18 +149,6 @@ public class SecurityConfig {
 //        return http.build();
 //    }
 //}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //package com.smartinvent.config;

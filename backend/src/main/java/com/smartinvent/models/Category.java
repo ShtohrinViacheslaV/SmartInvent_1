@@ -1,8 +1,12 @@
 package com.smartinvent.models;
 
 import jakarta.persistence.*;
+
 import java.util.Objects;
 
+/**
+ * Клас-сутність для зберігання інформації про категорії товарів
+ */
 @Entity
 @Table(name = "category")
 public class Category {
@@ -51,7 +55,12 @@ public class Category {
         this.productType = productType;
     }
 
-
+    /**
+     * equals - метод для порівняння двох об'єктів
+     *
+     * @param o - об'єкт, з яким порівнюється поточний об'єкт
+     * @return - результат порівняння
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -60,6 +69,11 @@ public class Category {
         return Objects.equals(categoryId, category.categoryId);
     }
 
+    /**
+     * hashCode - метод для отримання хеш-коду об'єкта
+     *
+     * @return - хеш-код об'єкта
+     */
     @Override
     public int hashCode() {
         return Objects.hash(categoryId);

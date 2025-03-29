@@ -12,16 +12,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
+/**
+ * Клас-контроллер для обробки запитів, пов'язаних з QR-кодами
+ */
 @RestController
 @RequestMapping("/api/qr-code")
 public class QRCodeController {
 
+    /**
+     * Об'єкт сервісу для роботи з QR-кодами
+     */
     private final QRCodeService qrCodeService;
 
+    /**
+     * Конструктор
+     *
+     * @param qrCodeService - сервіс для роботи з QR-кодами
+     */
     public QRCodeController(QRCodeService qrCodeService) {
         this.qrCodeService = qrCodeService;
     }
 
+    /**
+     * Метод для генерації QR-коду для продукту
+     *
+     * @param productId - ідентифікатор продукту
+     * @return - зображення QR-коду
+     */
     @GetMapping("/{productId}")
     public ResponseEntity<byte[]> generateQrCode(@PathVariable Long productId) {
         try {

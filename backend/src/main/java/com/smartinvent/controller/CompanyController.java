@@ -6,15 +6,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+/**
+ * Клас-контроллер для обробки запитів, пов'язаних з компаніями
+ */
 @RestController
 @RequestMapping("/api/companies")
 @RequiredArgsConstructor
 public class CompanyController {
 
+    /**
+     * Об'єкт сервісу для роботи з компаніями
+     */
     private final CompanyService companyService;
 
-
+    /**
+     * Метод для реєстрації нової компанії
+     *
+     * @param company - об'єкт компанії
+     * @return - відповідь про результат реєстрації компанії
+     */
     @PostMapping
     public ResponseEntity<Company> registerCompany(@RequestBody Company company) {
         if (companyService.existsByName(company.getName())) {
@@ -24,13 +34,17 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.registerCompany(company));
     }
 
+    /**
+     * Метод getCompany для отримання компанії по її ідентифікатору
+     *
+     * @param id - ідентифікатор компанії
+     * @return - компанія з вказаним ідентифікатором
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Company> getCompany(@PathVariable Long id) {
         return ResponseEntity.ok(companyService.getCompanyById(id));
     }
 }
-
-
 
 
 //package com.smartinvent.controller;

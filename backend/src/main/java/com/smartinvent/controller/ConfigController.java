@@ -6,17 +6,35 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Клас-контроллер для обробки запитів, пов'язаних з конфігурацією
+ */
 @RestController
 @RequestMapping("/api/config")
 @RequiredArgsConstructor
 public class ConfigController {
+
+    /**
+     * Об'єкт сервісу для роботи з конфігурацією
+     */
     private final ConfigService configService;
 
+    /**
+     * Метод для отримання конфігурації
+     *
+     * @return - конфігурація
+     */
     @GetMapping
     public ResponseEntity<DatabaseConfig> getConfig() {
         return ResponseEntity.ok(configService.getDatabaseConfig());
     }
 
+    /**
+     * Метод для оновлення конфігурації
+     *
+     * @param newConfig - нова конфігурація
+     * @return - відповідь про успішність оновлення
+     */
     @PostMapping
     public ResponseEntity<Void> updateConfig(@RequestBody DatabaseConfig newConfig) {
         configService.setDatabaseConfig(newConfig);
@@ -24,12 +42,6 @@ public class ConfigController {
         return ResponseEntity.ok().build();
     }
 }
-
-
-
-
-
-
 
 
 //

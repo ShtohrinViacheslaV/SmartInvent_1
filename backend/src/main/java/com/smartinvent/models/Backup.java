@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Клас-сутність для зберігання інформації про резервні копії
+ */
 @Entity
 @Table(name = "backup")
 public class Backup {

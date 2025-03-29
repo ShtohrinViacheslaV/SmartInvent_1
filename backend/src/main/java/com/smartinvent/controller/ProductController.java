@@ -8,35 +8,61 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Клас-контроллер для обробки запитів, пов'язаних з продуктами
+ */
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
 
+    /**
+     * Об'єкт сервісу для роботи з продуктами
+     */
     @Autowired
     private ProductService productService;
 
-    // Отримання всіх продуктів
+    /**
+     * Метод для отримання всіх продуктів
+     *
+     * @return - список продуктів
+     */
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
 
-    // Додавання нового продукту
+    /**
+     * Метод для створення нового продукту
+     *
+     * @param product - об'єкт продукту
+     * @return - створений продукт
+     */
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         Product createdProduct = productService.createProduct(product);
         return ResponseEntity.ok(createdProduct);
     }
 
-    // Оновлення продукту
+    /**
+     * Метод для оновлення інформації про продукт
+     *
+     * @param id      - ідентифікатор продукту
+     * @param product - об'єкт продукту
+     * @return - оновлений продукт
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
         Product updatedProduct = productService.updateProduct(id, product);
         return ResponseEntity.ok(updatedProduct);
     }
 
-    // Видалення продукту
+    /**
+     * Метод для видалення продукту
+     *
+     * @param id - ідентифікатор продукту
+     * @return - видалений продукт
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);

@@ -6,23 +6,44 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Сервіс для роботи з конфігурацією
+*/
 @Slf4j
 @Service
 public class ConfigService {
+    /**
+     * Шлях до файлу конфігурації
+     */
     private static final String CONFIG_PATH = "config.json";
+
+    /**
+     * Об'єкт для роботи з JSON файлами
+     */
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Getter @Setter
+    /**
+     * Об'єкт конфігурації
+     */
+    @Getter
+    @Setter
     private DatabaseConfig databaseConfig;
 
+    /**
+     * Конструктор класу
+     */
     public ConfigService() {
         loadConfig();
     }
 
+    /**
+     * Метод для завантаження конфігурації з файлу
+     */
     @PostConstruct
     public void loadConfig() {
         try {
@@ -48,22 +69,37 @@ public class ConfigService {
         }
     }
 
-
-
+    /**
+     * Метод getConfig повертає об'єкт конфігурації
+     *
+     * @return об'єкт конфігурації
+     */
     public DatabaseConfig getConfig() {
         return databaseConfig;
     }
 
+    /**
+     * Метод updateConfig оновлює конфігурацію
+     *
+     * @param newConfig - новий об'єкт конфігурації
+     */
     public void updateConfig(DatabaseConfig newConfig) {
         this.databaseConfig = newConfig;
         saveConfig();
     }
 
-        public boolean isConfigFileExists() {
+    /**
+     * Метод isConfigFileExists перевіряє, чи існує файл конфігурації
+     *
+     * @return true, якщо файл існує, false - в іншому випадку
+     */
+    public boolean isConfigFileExists() {
         return new File(CONFIG_PATH).exists();
     }
 
-
+    /**
+     * Метод для збереження конфігурації у файл
+     */
     public void saveConfig() {
         try {
             objectMapper.writeValue(new File(CONFIG_PATH), databaseConfig);
@@ -73,11 +109,15 @@ public class ConfigService {
         }
     }
 
+    /**
+     * Метод для збереження конфігурації у файл
+     *
+     * @param config - об'єкт конфігурації
+     */
     public void saveConfig(DatabaseConfig config) {
         this.databaseConfig = config;
         saveConfig();
     }
-
 }
 
 

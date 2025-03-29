@@ -7,23 +7,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-
 import java.util.List;
 
+/**
+ * ProductService клас для роботи з Product об'єктами.
+ */
 @Service
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    /**
+     * ProductRepository об'єкт для роботи з Product об'єктами.
+     *
+     * @see com.smartinvent.repositories.ProductRepository
+     */
     private final QRCodeService qrCodeService;
 
+    /**
+     * ProductRepository об'єкт для роботи з Product об'єктами.
+     *
+     * @see com.smartinvent.repositories.ProductRepository
+     */
+    @Autowired
+    private ProductRepository productRepository;
+
+    /**
+     * Конструктор класу ProductService.
+     *
+     * @param qrCodeService QRCodeService об'єкт для роботи з QR-кодами продуктів
+     */
     public ProductService(QRCodeService qrCodeService) {
         this.productRepository = productRepository;
         this.qrCodeService = qrCodeService;
     }
 
-
-
+    /**
+     * Метод createProduct для створення нового Product об'єкта.
+     *
+     * @param product Product об'єкт
+     * @return створений Product об'єкт
+     */
     public Product createProduct(Product product) {
         try {
             // Генерація QR-коду
@@ -40,6 +62,13 @@ public class ProductService {
 //        return productRepository.save(product);
 //    }
 
+    /**
+     * Метод updateProduct для оновлення Product об'єкта за його id.
+     *
+     * @param id      id Product об'єкта
+     * @param product Product об'єкт
+     * @return оновлений Product об'єкт
+     */
     public Product updateProduct(Long id, Product product) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
@@ -52,16 +81,32 @@ public class ProductService {
         return productRepository.save(existingProduct);
     }
 
+    /**
+     * Метод deleteProduct для видалення Product об'єкта за його id.
+     *
+     * @param id id Product об'єкта
+     */
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
         productRepository.delete(product);
     }
 
+    /**
+     * Метод getAllProducts для отримання всіх Product об'єктів.
+     *
+     * @return список всіх Product об'єктів
+     */
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
+    /**
+     * Метод getProductById для отримання Product об'єкта за його id.
+     *
+     * @param id id Product об'єкта
+     * @return Product об'єкт
+     */
     public Product getProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));

@@ -5,6 +5,9 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Клас для зберігання конфігурації бази даних
+ */
 @Configuration
 @ConfigurationProperties(prefix = "database")
 @Getter

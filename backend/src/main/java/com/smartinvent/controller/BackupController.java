@@ -3,16 +3,29 @@ package com.smartinvent.controller;
 import com.smartinvent.service.BackupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Клас-контроллер для обробки запитів, пов'язаних з резервними копіями
+ */
 @RestController
 @RequestMapping("/api/backup")
 public class BackupController {
 
+    /**
+     * Об'єкт сервісу для роботи з резервними копіями
+     */
     @Autowired
     private BackupService backupService;
 
-    // Створення резервної копії
+    /**
+     * Метод для створення резервної копії
+     *
+     * @return - відповідь про результат створення резервної копії
+     */
     @PostMapping("/create")
     public ResponseEntity<String> createBackup() {
         try {
@@ -23,7 +36,12 @@ public class BackupController {
         }
     }
 
-    // Відновлення з резервної копії
+    /**
+     * Метод для відновлення резервної копії
+     *
+     * @param backupFile - файл резервної копії
+     * @return - відповідь про результат відновлення резервної копії
+     */
     @PostMapping("/restore")
     public ResponseEntity<String> restoreBackup(@RequestParam String backupFile) {
         try {
@@ -34,7 +52,11 @@ public class BackupController {
         }
     }
 
-    // Експорт даних у файл
+    /**
+     * Метод для експортування даних
+     *
+     * @return - відповідь про результат експортування даних
+     */
     @PostMapping("/export")
     public ResponseEntity<String> exportData() {
         try {
@@ -45,7 +67,12 @@ public class BackupController {
         }
     }
 
-    // Імпорт даних з файлу
+    /**
+     * Метод для імпортування даних
+     *
+     * @param importFile - файл для імпортування даних
+     * @return - відповідь про результат імпортування даних
+     */
     @PostMapping("/import")
     public ResponseEntity<String> importData(@RequestParam String importFile) {
         try {

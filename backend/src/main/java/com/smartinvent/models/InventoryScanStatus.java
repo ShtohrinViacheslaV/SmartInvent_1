@@ -1,5 +1,8 @@
 package com.smartinvent.models;
 
+/**
+ * Статуси інвентаризації
+ */
 public enum InventoryScanStatus {
     CONFIRMED,       // ✅ Підтверджено (товар знайдено і він відповідає опису)
     DAMAGED,         // ⚠️ Пошкоджений або неповний

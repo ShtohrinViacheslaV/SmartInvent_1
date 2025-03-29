@@ -2,6 +2,9 @@ package com.smartinvent.models;
 
 import jakarta.persistence.*;
 
+/**
+ * Клас Storage відображає сутність "Склад" в базі даних
+ */
 @Entity
 @Table(name = "storage")
 public class Storage {
@@ -12,8 +15,6 @@ public class Storage {
     private String name;
     private String location;
     private String details;
-
-
 
     public Long getStorageId() {
         return storageId;

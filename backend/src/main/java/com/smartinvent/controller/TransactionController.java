@@ -8,35 +8,61 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Клас-контроллер для обробки запитів, пов'язаних з транзакціями
+ */
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
 
+    /**
+     * Об'єкт сервісу для роботи з транзакціями
+     */
     @Autowired
     private TransactionService transactionService;
 
-    // Отримання всіх транзакцій
+    /**
+     * Метод для отримання всіх транзакцій
+     *
+     * @return - список транзакцій
+     */
     @GetMapping
     public ResponseEntity<List<Transaction>> getAllTransactions() {
         List<Transaction> transactions = transactionService.getAllTransactions();
         return ResponseEntity.ok(transactions);
     }
 
-    // Додавання нової транзакції
+    /**
+     * Метод createTransaction для створення нової транзакції
+     *
+     * @param transaction - об'єкт транзакції
+     * @return - створена транзакція
+     */
     @PostMapping
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) {
         Transaction createdTransaction = transactionService.createTransaction(transaction);
         return ResponseEntity.ok(createdTransaction);
     }
 
-    // Оновлення транзакції
+    /**
+     * Метод updateTransaction для оновлення інформації про транзакцію
+     *
+     * @param id          - ідентифікатор транзакції
+     * @param transaction - об'єкт транзакції
+     * @return - оновлена транзакція
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Transaction> updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
         Transaction updatedTransaction = transactionService.updateTransaction(id, transaction);
         return ResponseEntity.ok(updatedTransaction);
     }
 
-    // Видалення транзакції
+    /**
+     * Метод deleteTransaction для видалення транзакції
+     *
+     * @param id - ідентифікатор транзакції
+     * @return - видалена транзакція з бази даних
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);

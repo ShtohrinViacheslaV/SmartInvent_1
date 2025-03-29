@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.smartinvent"},{"l":"com.smartinvent.config"},{"l":"com.smartinvent.controller"},{"l":"com.smartinvent.dto"},{"l":"com.smartinvent.models"},{"l":"com.smartinvent.repositories"},{"l":"com.smartinvent.service"}];updateSearchResults();

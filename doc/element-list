@@ -1,0 +1,7 @@
+com.smartinvent
+com.smartinvent.config
+com.smartinvent.controller
+com.smartinvent.dto
+com.smartinvent.models
+com.smartinvent.repositories
+com.smartinvent.service

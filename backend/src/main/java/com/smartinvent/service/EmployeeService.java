@@ -7,13 +7,33 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * EmployeeService клас для роботи з Employee об'єктами.
+ */
 @Service
 @RequiredArgsConstructor
 public class EmployeeService {
 
+    /**
+     * EmployeeRepository об'єкт для роботи з Employee об'єктами.
+     *
+     * @see com.smartinvent.repositories.EmployeeRepository
+     */
     private final EmployeeRepository employeeRepository;
+
+    /**
+     * PasswordEncoder об'єкт для шифрування паролів.
+     *
+     * @see org.springframework.security.crypto.password.PasswordEncoder
+     */
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Метод registerAdmin для реєстрації адміністратора.
+     *
+     * @param admin Employee об'єкт
+     * @return Employee об'єкт
+     */
     @Transactional
     public Employee registerAdmin(Employee admin) {
         admin.setRole("ADMIN");
@@ -21,6 +41,12 @@ public class EmployeeService {
         return employeeRepository.save(admin);
     }
 
+    /**
+     * existsByEmployeeWorkId метод для перевірки наявності працівника за його id.
+     *
+     * @param employeeWorkId id працівника
+     * @return true, якщо працівник з таким id існує, інакше - false
+     */
     public boolean existsByEmployeeWorkId(Integer employeeWorkId) {
         return employeeRepository.existsByEmployeeWorkId(employeeWorkId);
     }

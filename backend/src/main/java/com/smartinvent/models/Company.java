@@ -5,9 +5,10 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-
+/**
+ * Клас-сутність для зберігання інформації про компанії
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "company")
@@ -28,6 +29,14 @@ public class Company {
     public Company() {
     }
 
+    /**
+     * Конструктор Company з параметрами
+     *
+     * @param name    - назва компанії
+     * @param address - адреса компанії
+     * @param phone   - телефон компанії
+     * @param email   - електронна пошта компанії
+     */
     public Company(String name, String address, String phone, String email) {
         this.name = name;
         this.address = address;
@@ -83,6 +92,11 @@ public class Company {
         this.createdAt = createdAt;
     }
 
+    /**
+     * toString - метод для отримання рядкового представлення об'єкта
+     *
+     * @return - рядкове представлення об'єкта
+     */
     @Override
     public String toString() {
         return "Company{" +

@@ -2,6 +2,9 @@ package com.smartinvent.models;
 
 import jakarta.persistence.*;
 
+/**
+ * Клас Employee відображає сутність "Співробітник" в базі даних
+ */
 @Entity
 @Table(name = "employee")
 public class Employee {
@@ -18,9 +21,17 @@ public class Employee {
 
 
     // Конструктор без параметрів
-    public Employee() {}
+    public Employee() {
+    }
 
-    // Конструктор для тестів
+    /**
+     * Конструктор з параметрами
+     *
+     * @param firstName ім'я співробітника
+     * @param lastName  прізвище співробітника
+     * @param email     електронна пошта співробітника
+     * @param role      роль співробітника
+     */
     public Employee(String firstName, String lastName, String email, String role) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -29,7 +40,6 @@ public class Employee {
         this.passwordHash = passwordHash;
         this.role = role;
     }
-
 
     public Long getEmployeeId() {
         return employeeId;

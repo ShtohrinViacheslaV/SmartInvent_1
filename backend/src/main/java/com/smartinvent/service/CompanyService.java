@@ -6,15 +6,26 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
+/**
+ * CompanyService клас для роботи з Company об'єктами.
+ */
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
 
+    /**
+     * CompanyRepository об'єкт для роботи з Company об'єктами.
+     *
+     * @see com.smartinvent.repositories.CompanyRepository
+     */
     private final CompanyRepository companyRepository;
 
-
+    /**
+     * Метод для створення нового Company об'єкта.
+     *
+     * @param company Company об'єкт
+     * @return створений Company об'єкт
+     */
     @Transactional
     public Company registerCompany(Company company) {
 
@@ -22,15 +33,33 @@ public class CompanyService {
         return companyRepository.save(company);
     }
 
+    /**
+     * Метод getCompanyById для отримання Company об'єкта за його id.
+     *
+     * @param id id Company об'єкта
+     * @return Company об'єкт
+     */
     public Company getCompanyById(Long id) {
         return companyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Компанію не знайдено"));
     }
 
+    /**
+     * Метод existsByName для перевірки наявності компанії за назвою.
+     *
+     * @param name назва компанії
+     * @return true, якщо компанія з такою назвою існує, інакше - false
+     */
     public boolean existsByName(String name) {
         return companyRepository.existsByName(name);
     }
 
+    /**
+     * Метод existsByPhone для перевірки наявності компанії за телефоном.
+     *
+     * @param phone телефон компанії
+     * @return true, якщо компанія з таким телефоном існує, інакше - false
+     */
     public boolean existsByPhone(String phone) {
         return companyRepository.existsByPhone(phone);
     }

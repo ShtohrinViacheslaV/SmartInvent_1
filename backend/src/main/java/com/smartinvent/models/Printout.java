@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Клас Printout відображає сутність "Видача" в базі даних
+ */
 @Entity
 @Table(name = "printout")
 public class Printout {

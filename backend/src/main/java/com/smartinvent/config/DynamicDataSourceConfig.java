@@ -1,48 +1,62 @@
 package com.smartinvent.config;
 
 
-
-import com.smartinvent.models.DatabaseConfig;
 import com.smartinvent.service.DatabaseInitializationService;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
-
+/**
+ * Клас для динамічного переключення між різними джерелами даних
+ */
 @Slf4j
 @Configuration
 public class DynamicDataSourceConfig {
-
+    /**
+     * Джерело даних за замовчуванням (SQLite)
+     */
     private DataSource defaultDataSource; // SQLite як резервна БД
+
+    /**
+     * Джерело даних для PostgreSQL (основна БД)
+     */
     private DataSource dynamicDataSource; // Основна БД (PostgreSQL)
 
-
+    /**
+     * Сервіс для оновлення DataSource
+     * Щоб уникнути циклічної залежності, використовуємо анотацію @Lazy
+     * Це дозволяє відкласти створення біна до моменту його першого виклику
+     */
     @Autowired
     @Lazy
     private DatabaseInitializationService databaseInitializationService; // Додаємо сервіс для оновлення DataSource
 
+    /**
+     * Конструктор для ініціалізації резервної SQLite БД
+     */
     public DynamicDataSourceConfig() {
         log.info("⚙ Ініціалізація резервної SQLite БД...");
         this.defaultDataSource = createSQLiteDataSource();
     }
 
+    /**
+     * Метод для встановлення PostgreSQL як основної БД
+     *
+     * @param url      URL для підключення до БД
+     * @param host     Хост
+     * @param port     Порт
+     * @param database Назва БД
+     * @param username Ім'я користувача
+     * @param password Пароль
+     */
     public void setDataSource(String url, String host, String port, String database, String username, String password) {
         if (url == null || url.isEmpty()) {
             url = String.format("jdbc:postgresql://%s:%s/%s", host, port, database);
@@ -80,6 +94,11 @@ public class DynamicDataSourceConfig {
 //        return (dynamicDataSource != null) ? dynamicDataSource : defaultDataSource;
 //    }
 
+    /**
+     * Метод для отримання активного DataSource
+     *
+     * @return Активне джерело даних
+     */
     public DataSource getDataSource() {
         if (dynamicDataSource != null) {
             try (Connection conn = dynamicDataSource.getConnection()) {
@@ -91,8 +110,11 @@ public class DynamicDataSourceConfig {
         return defaultDataSource;
     }
 
-
-
+    /**
+     * Створення резервної SQLite DataSource
+     *
+     * @return SQLite DataSource
+     */
     private DataSource createSQLiteDataSource() {
         log.warn("⚠ Використовується SQLite як резервна БД.");
         return DataSourceBuilder.create()
@@ -101,6 +123,9 @@ public class DynamicDataSourceConfig {
                 .build();
     }
 
+    /**
+     * Закриття SQLite DataSource
+     */
     private void closeSQLiteDataSource() {
         if (this.defaultDataSource instanceof AutoCloseable) {
             log.info("🛑 Закриваємо SQLite DataSource...");
@@ -335,8 +360,6 @@ public class DynamicDataSourceConfig {
 //}
 
 
-
-
 //
 //@Slf4j
 //@Configuration
@@ -424,7 +447,7 @@ public class DynamicDataSourceConfig {
 //    }
 //}
 
-    //    public static void setDataSource(String url, String host, String port, String database, String username, String password) {
+//    public static void setDataSource(String url, String host, String port, String database, String username, String password) {
 //        System.out.println("DynamicDataSourceConfig setDataSource ");
 //
 //        String jdbcUrl;
@@ -470,10 +493,7 @@ public class DynamicDataSourceConfig {
 //        return dataSource;
 //    }
 ////
-    // Створення біну для DataSource
-
-
-
+// Створення біну для DataSource
 
 
 //

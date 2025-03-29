@@ -48,4 +48,28 @@ To set up the project locally, follow these steps:
 - **Kotlin**: Used for some parts of the project.
 - **Gradle**: Build automation tool.
 - **SQL**: Database management.
+
+## Code Documentation Rules
+
+Java uses Javadoc, a standard tool for creating documentation. 
+Documentation is added in the form of special comments:
+
+/**
+* A class that represents a user in the system.
+*/
+public class User {
+    private String name;
+    private int age;
+    
+    /**
+    * Constructor of the User class.
+    * @param name Username
+    * @param age User's age
+    */
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+
 - **Spring Boot**: Framework for building the application.

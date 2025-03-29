@@ -1,4 +1,4 @@
-# SmartInvent_1
+# 🚀 SmartInvent_1
 
 SmartInvent_1 is an inventory management application designed to help users manage products, categories, and storages efficiently. 
 The application allows users to add products, generate unique QR codes for each product, and track product transactions.
@@ -48,28 +48,64 @@ To set up the project locally, follow these steps:
 - **Kotlin**: Used for some parts of the project.
 - **Gradle**: Build automation tool.
 - **SQL**: Database management.
+- **Spring Boot**: Framework for building the application.
 
-## Code Documentation Rules
+## 📌 Code Documentation Rules
 
-Java uses Javadoc, a standard tool for creating documentation. 
-Documentation is added in the form of special comments:
+This project is developed in **Java** and follows industry standards for clean code and documentation.  
+We use **Javadoc** for code documentation to ensure clarity and maintainability.
 
+### ✅ **General Guidelines**
+- Use **Javadoc** (`/** ... */`) to document code.
+- Include **descriptive comments** explaining the purpose and behavior of code.
+- Use the standard **Javadoc tags**:
+  - `@param` – Describes method parameters.
+  - `@return` – Describes the return value.
+  - `@throws` – Specifies possible exceptions.
+  - `@see` – Links related methods or classes.
+  - `@since` – Specifies version information.
+
+### 📝 **Javadoc Example**
+```java
 /**
-* A class that represents a user in the system.
-*/
+ * Represents a user in the system.
+ * Stores basic information such as name and age.
+ */
 public class User {
     private String name;
     private int age;
     
     /**
-    * Constructor of the User class.
-    * @param name Username
-    * @param age User's age
-    */
+     * Constructor for new user.
+     *
+     * @param name User's name.
+     * @param age User's age.
+     */
     public User(String name, int age) {
         this.name = name;
         this.age = age;
     }
-}
 
-- **Spring Boot**: Framework for building the application.
+    /**
+     * Gets the user's name.
+     *
+     * @return The name of the user.
+     */
+    public String getName() {
+        return name;
+    }
+}
+```
+
+### ⚙️ **Generating Javadoc**
+To generate documentation, run the following command:
+
+```sh
+javadoc -encoding UTF-8 -charset UTF-8 -d docs src/*.java
+```
+
+#### 🔧 **Using IntelliJ IDEA**
+1. Go to **Tools** → **Generate JavaDoc**.
+2. Set `-encoding UTF-8 -charset UTF-8` in **additional options**.
+3. Click **OK**.
+

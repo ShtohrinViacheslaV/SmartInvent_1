@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class DatabaseConfigRequest {
     private static final String TAG = "DatabaseConfigRequest";
-    private static final String SERVER_URL = "http://192.168.0.120:8080/api/config";
+    private static final String SERVER_URL = "http://192.168.0.64:8080/api/config";
     private final RequestQueue requestQueue;
     private final Context context;
 

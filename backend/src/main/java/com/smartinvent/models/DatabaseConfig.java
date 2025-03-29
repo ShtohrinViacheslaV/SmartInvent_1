@@ -1,11 +1,27 @@
 package com.smartinvent.models;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
+@ConfigurationProperties(prefix = "database")
+@Getter
+@Setter
 public class DatabaseConfig {
+
+
     private String host;
+
     private String port;
+
+    private String database;
+
     private String url;
+
     private String username;
+
     private String password;
 
 
@@ -23,6 +39,14 @@ public class DatabaseConfig {
 
     public void setPort(String port) {
         this.port = port;
+    }
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(String database) {
+        this.database = database;
     }
 
     public String getUsername() {

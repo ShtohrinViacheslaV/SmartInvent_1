@@ -27,11 +27,14 @@ public class DatabaseConfigRequest {
         requestQueue = Volley.newRequestQueue(context);
     }
 
-    public void sendConfigToServer(String host, String port, String username, String password, String url, DatabaseConfigCallback callback) {
+    public void sendConfigToServer(String host, String port, String database, String username, String password, String url, DatabaseConfigCallback callback) {
+        System.out.println("DatabaseConfigRequest sendConfigToServer ");
+
         try {
             JSONObject requestBody = new JSONObject();
             requestBody.put("host", host);
             requestBody.put("port", port);
+            requestBody.put("database", database);
             requestBody.put("username", username);
             requestBody.put("password", password);
             requestBody.put("url", url);
@@ -45,10 +48,13 @@ public class DatabaseConfigRequest {
     }
 
     public void sendConfigToServer(DatabaseConfig config, DatabaseConfigCallback callback) {
+        System.out.println("DatabaseConfigRequest sendConfigToServer ");
+
         try {
             JSONObject requestBody = new JSONObject();
             requestBody.put("host", config.getHost());
             requestBody.put("port", config.getPort());
+            requestBody.put("database", config.getDatabase());
             requestBody.put("username", config.getUsername());
             requestBody.put("password", config.getPassword());
             requestBody.put("url", config.getUrl());
@@ -61,6 +67,8 @@ public class DatabaseConfigRequest {
     }
 
     public void sendUrlToServer(String url, DatabaseConfigCallback callback) {
+        System.out.println("DatabaseConfigRequest sendUrlToServer ");
+
         try {
             JSONObject requestBody = new JSONObject();
             requestBody.put("url", url);
@@ -73,6 +81,8 @@ public class DatabaseConfigRequest {
     }
 
     private void sendRequest(JSONObject requestBody, DatabaseConfigCallback callback) {
+        System.out.println("DatabaseConfigRequest sendRequest ");
+
         StringRequest request = new StringRequest(Request.Method.POST, SERVER_URL,
                 response -> {
                     Log.d(TAG, "Success: " + response);
@@ -99,6 +109,7 @@ public class DatabaseConfigRequest {
     }
 
     public interface DatabaseConfigCallback {
+
         void onResult(boolean success);
     }
 
@@ -108,6 +119,8 @@ public class DatabaseConfigRequest {
     }
 
     private String getVolleyErrorDetails(VolleyError error) {
+        System.out.println("DatabaseConfigRequest getVolleyErrorDetails ");
+
         if (error.networkResponse != null) {
             return "Статус код: " + error.networkResponse.statusCode;
         }

@@ -4,6 +4,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
 }
 
+
 group = "com.smartinvent"
 version = "0.0.1-SNAPSHOT"
 
@@ -31,6 +32,9 @@ dependencies {
     implementation("org.projectlombok:lombok:1.18.30")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
+    implementation("org.xerial:sqlite-jdbc:3.47.0.0")
+    implementation("org.hibernate.orm:hibernate-core:6.6.9.Final")
+    implementation("org.hibernate.orm:hibernate-community-dialects:6.6.9.Final")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -43,8 +47,7 @@ dependencies {
 
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
-
-
+    implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
 
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")

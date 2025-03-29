@@ -62,6 +62,16 @@ public class SignUpCompanyActivity2 extends AppCompatActivity {
         });
     }
 
+
+    public void backToSignUpCompanyActivity1(View v) {
+        startActivity(new Intent(this, SignUpCompanyActivity1.class));
+        finish();
+    }
+
+    public void databaseActivity(View v) {
+        saveAdminData(v);
+    }
+
 }
 
 

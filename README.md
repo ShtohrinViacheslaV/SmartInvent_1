@@ -50,6 +50,28 @@ To set up the project locally, follow these steps:
 - **SQL**: Database management.
 - **Spring Boot**: Framework for building the application.
 
+## 💻 System Requirements
+
+To run this project, ensure you have the following dependencies installed:
+
+- **Java 17+** for backend development.
+- **Android Studio** for mobile application development.
+- **PostgreSQL** as the database management system.
+- **Gradle** for project build automation.
+- **ZXing library** for QR code generation and scanning.
+
+## 🏛 Architectural Patterns and Design Principles
+
+SmartInvent_1 follows modern software development patterns to ensure scalability, maintainability, and efficiency:
+
+- **Model-View-Controller (MVC)**: Separates business logic (Model), user interface (View), and request handling (Controller) to enhance modularity.
+- **Repository Pattern**: Provides a clear separation between the business logic and data access layer.
+- **Dependency Injection (DI)**: Utilized via Spring Boot to manage component dependencies efficiently.
+- **Singleton Pattern**: Applied for managing configurations and database connections.
+- **Observer Pattern**: Used for event-driven updates, particularly in real-time inventory tracking.
+- **RESTful API Design**: Backend services expose RESTful endpoints for seamless communication with the mobile application.
+
+
 ## 📌 Code Documentation Rules
 
 This project is developed in **Java** and follows industry standards for clean code and documentation.  
@@ -109,3 +131,9 @@ javadoc -encoding UTF-8 -charset UTF-8 -d docs src/*.java
 2. Set `-encoding UTF-8 -charset UTF-8` in **additional options**.
 3. Click **OK**.
 
+
+## 📜 License
+
+This project is licensed under a custom restrictive license. You may view the source code but are not permitted to modify, copy, or distribute it without explicit permission.
+
+For more details, refer to the [LICENSE](LICENSE) file.

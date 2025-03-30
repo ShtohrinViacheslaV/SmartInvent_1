@@ -1,7 +1,6 @@
 //package com.smartinvent.config;
 //
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+//import com.zaxxer.hikari.HikariDataSource;
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;
@@ -12,66 +11,31 @@
 //@Configuration
 //public class DataSourceConfig {
 //
-//    private static final Logger logger = LoggerFactory.getLogger(DataSourceConfig.class);
+//    @Value("${db.mode}")
+//    private String dbMode;
 //
-//    @Value("${spring.datasource.url}")
-//    private String url;
-//
-//    @Value("${spring.datasource.username}")
-//    private String username;
-//
-//    @Value("${spring.datasource.password}")
-//    private String password;
-//
-//
-//    @Bean(name = "defaultDataSource")
+//    @Bean
 //    public DataSource dataSource() {
-//        if (url == null || url.isEmpty() || username == null || username.isEmpty()) {
-//            logger.error("Помилка: Невірні параметри підключення до БД!");
-//            throw new IllegalStateException("Параметри БД не можуть бути порожніми");
+//        if ("postgres".equalsIgnoreCase(dbMode)) {
+//            return createPostgresDataSource();
+//        } else {
+//            return createSQLiteDataSource();
 //        }
+//    }
 //
-//        logger.info("Підключення до бази даних: {}", url);
+//    private DataSource createPostgresDataSource() {
+//        HikariDataSource ds = new HikariDataSource();
+//        ds.setJdbcUrl(System.getProperty("db.url", "jdbc:postgresql://default-host/default-db"));
+//        ds.setUsername(System.getProperty("db.user", "postgres"));
+//        ds.setPassword(System.getProperty("db.password", "password"));
+//        ds.setDriverClassName("org.postgresql.Driver");
+//        return ds;
+//    }
 //
-//        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//        dataSource.setDriverClassName("org.postgresql.Driver");
-//        dataSource.setUrl(url);
-//        dataSource.setUsername(username);
-//        dataSource.setPassword(password);
-//
-//        return dataSource;
+//    private DataSource createSQLiteDataSource() {
+//        DriverManagerDataSource ds = new DriverManagerDataSource();
+//        ds.setUrl("jdbc:sqlite:smartinvent_local.db");
+//        ds.setDriverClassName("org.sqlite.JDBC");
+//        return ds;
 //    }
 //}
-//
-//
-////package com.smartinvent.config;
-////
-////import org.springframework.beans.factory.annotation.Value;
-////import org.springframework.context.annotation.Bean;
-////import org.springframework.context.annotation.Configuration;
-////import org.springframework.jdbc.datasource.DriverManagerDataSource;
-////
-////import javax.sql.DataSource;
-////
-////@Configuration
-////public class DataSourceConfig {
-////
-////    @Value("${spring.datasource.url}")
-////    private String url;
-////
-////    @Value("${spring.datasource.username}")
-////    private String username;
-////
-////    @Value("${spring.datasource.password}")
-////    private String password;
-////
-////    @Bean
-////    public DataSource dataSource() {
-////        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-////        dataSource.setDriverClassName("org.postgresql.Driver");
-////        dataSource.setUrl(url);
-////        dataSource.setUsername(username);
-////        dataSource.setPassword(password);
-////        return dataSource;
-////    }
-////}

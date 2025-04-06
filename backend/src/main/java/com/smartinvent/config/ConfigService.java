@@ -35,11 +35,11 @@ public class ConfigService {
             }
 
             // Перевірка, чи всі поля ініціалізовані
-            if (databaseConfig.getHost() == null) databaseConfig.setHost("");
-            if (databaseConfig.getPort() == null) databaseConfig.setPort("");
-            if (databaseConfig.getUsername() == null) databaseConfig.setUsername("");
-            if (databaseConfig.getPassword() == null) databaseConfig.setPassword("");
-            if (databaseConfig.getUrl() == null) databaseConfig.setUrl("");
+            if (databaseConfig.getHost() == null){ databaseConfig.setHost("");}
+            if (databaseConfig.getPort() == null){ databaseConfig.setPort("");}
+            if (databaseConfig.getUsername() == null){ databaseConfig.setUsername("");}
+            if (databaseConfig.getPassword() == null){ databaseConfig.setPassword("");}
+            if (databaseConfig.getUrl() == null){ databaseConfig.setUrl("");}
 
 
             log.info("Config loaded successfully: {}", databaseConfig);

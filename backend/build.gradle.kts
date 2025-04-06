@@ -2,6 +2,8 @@ plugins {
     java
     id("org.springframework.boot") version "3.4.2"
     id("io.spring.dependency-management") version "1.1.7"
+    id("checkstyle")
+
 }
 
 
@@ -15,16 +17,17 @@ java {
     }
 }
 
-//java {
-//    toolchain {
-//        languageVersion = JavaLanguageVersion.of(17)
+checkstyle {
+    toolVersion = "10.17.0"
+    configFile = file("tools/checkstyle/checkstyle.xml")
+    isIgnoreFailures = false
+}
+//configurations.all {
+//    resolutionStrategy {
+//        force("com.google.guava:guava:32.0.1-jre")
 //    }
 //}
-
-//repositories {
-//    mavenCentral()
-//}
-
+//
 
 dependencies {
     implementation("org.apache.commons:commons-compress:1.27.1")

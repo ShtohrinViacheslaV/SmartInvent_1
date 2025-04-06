@@ -26,7 +26,7 @@ public class ConfigService {
     @PostConstruct
     public void loadConfig() {
         try {
-            File configFile = new File(CONFIG_PATH);
+            final File configFile = new File(CONFIG_PATH);
             if (configFile.exists()) {
                 databaseConfig = objectMapper.readValue(configFile, DatabaseConfig.class);
             } else {

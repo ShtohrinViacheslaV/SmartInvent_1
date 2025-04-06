@@ -2,36 +2,19 @@ package com.smartinvent.config;
 
 
 
-import com.smartinvent.BackendApplication;
-import com.smartinvent.models.DatabaseConfig;
-//import com.smartinvent.repositories.DatabaseConfigRepository;
 import com.smartinvent.service.DatabaseInitializationService;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+
 
 
 
@@ -41,7 +24,6 @@ public class DynamicDataSourceConfig {
 
     private DataSource defaultDataSource; // SQLite як резервна БД
     private DataSource dynamicDataSource; // Основна БД (PostgreSQL)
-
 
     @Autowired
     @Lazy
@@ -62,7 +44,7 @@ public class DynamicDataSourceConfig {
                 ((HikariDataSource) this.dynamicDataSource).close(); // Закриваємо попередній пул з'єднань
             }
 
-            HikariConfig hikariConfig = new HikariConfig();
+            final HikariConfig hikariConfig = new HikariConfig();
             hikariConfig.setJdbcUrl(url);
             hikariConfig.setUsername(username);
             hikariConfig.setPassword(password);

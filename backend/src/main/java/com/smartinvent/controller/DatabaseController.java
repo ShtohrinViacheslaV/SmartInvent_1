@@ -4,17 +4,18 @@ package com.smartinvent.controller;
 import com.smartinvent.config.DynamicDataSourceConfig;
 import com.smartinvent.models.DatabaseConfig;
 import com.smartinvent.service.DatabaseInitializationService;
-import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
+
 
 @RestController
 @RequestMapping("/api")
@@ -38,7 +39,7 @@ public class DatabaseController {
         System.out.println("DatabaseController testDbConnection ");
 
         log.info("🔍 Перевіряємо підключення: {}", config);
-        boolean success = databaseService.testConnection(config);
+        final boolean success = databaseService.testConnection(config);
         return success ? ResponseEntity.ok("✅ Підключення успішне!") : ResponseEntity.badRequest().body("❌ Помилка підключення!");
     }
 
@@ -54,7 +55,7 @@ public class DatabaseController {
 
     @PostMapping("/checkTables")
     public ResponseEntity<Boolean> checkTables(@RequestBody DatabaseConfig config) {
-        boolean tablesExist = databaseService.checkTables(config);
+        final boolean tablesExist = databaseService.checkTables(config);
         return ResponseEntity.ok(tablesExist);
     }
 }

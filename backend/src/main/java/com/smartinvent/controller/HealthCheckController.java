@@ -23,7 +23,7 @@ public class HealthCheckController {
 
     @GetMapping
     public String checkHealth() {
-        DataSource dataSource = context.getBeanProvider(DataSource.class).getIfAvailable();
+        final DataSource dataSource = context.getBeanProvider(DataSource.class).getIfAvailable();
 
         if (dataSource == null) {
             log.warn("⚠️ WARNING: No database configured.");

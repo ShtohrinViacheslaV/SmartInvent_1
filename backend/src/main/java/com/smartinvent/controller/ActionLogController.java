@@ -30,7 +30,7 @@ public class ActionLogController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ActionLog> getActionLogById(@PathVariable Long id) {
-        Optional<ActionLog> actionLog = actionLogService.getActionLogById(id);
+        final Optional<ActionLog> actionLog = actionLogService.getActionLogById(id);
         return actionLog.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

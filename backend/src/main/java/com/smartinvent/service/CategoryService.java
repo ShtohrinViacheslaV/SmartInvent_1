@@ -18,7 +18,7 @@ public class CategoryService {
     }
 
     public Category updateCategory(Long id, Category category) {
-        Category existingCategory = categoryRepository.findById(id)
+        final Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
         existingCategory.setName(category.getName());
         existingCategory.setDescription(category.getDescription());
@@ -27,7 +27,7 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long id) {
-        Category category = categoryRepository.findById(id)
+        final Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
         categoryRepository.delete(category);
     }

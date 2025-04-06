@@ -27,7 +27,7 @@ public class TransactionService {
     }
 
     public Transaction updateTransaction(Long id, Transaction transaction) {
-        Transaction existingTransaction = transactionRepository.findById(id)
+        final Transaction existingTransaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found with id: " + id));
         existingTransaction.setType(transaction.getType());
         existingTransaction.setQuantity(transaction.getQuantity());
@@ -41,7 +41,7 @@ public class TransactionService {
     }
 
     public void deleteTransaction(Long id) {
-        Transaction transaction = transactionRepository.findById(id)
+        final Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found with id: " + id));
         transactionRepository.delete(transaction);
     }

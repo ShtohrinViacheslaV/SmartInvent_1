@@ -26,7 +26,7 @@ public class ProductService {
     public Product createProduct(Product product) {
         try {
             // Генеруємо QR-код до збереження
-            String qrCodeImage = qrCodeService.generateQrCodeImage(product.getProductWorkId());
+            final String qrCodeImage = qrCodeService.generateQrCodeImage(product.getProductWorkId());
             product.setQrCode(qrCodeImage);
 
             // Зберігаємо продукт один раз
@@ -51,7 +51,7 @@ public class ProductService {
 //
 
     public Product updateProduct(Long id, Product product) {
-        Product existingProduct = productRepository.findById(id)
+        final Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
         existingProduct.setName(product.getName());
         existingProduct.setDescription(product.getDescription());
@@ -63,7 +63,7 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id)
+        final Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
         productRepository.delete(product);
     }

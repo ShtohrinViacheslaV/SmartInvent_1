@@ -17,7 +17,7 @@ public class EmployeeDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Employee employee = employeeRepository.findByEmployeeWorkId(username)
+        final Employee employee = employeeRepository.findByEmployeeWorkId(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Користувача " + username + " не знайдено"));
 
         return User.builder()

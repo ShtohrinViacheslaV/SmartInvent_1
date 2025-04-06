@@ -18,7 +18,7 @@ public class StorageService {
     }
 
     public Storage updateStorage(Long id, Storage storage) {
-        Storage existingStorage = storageRepository.findById(id)
+        final Storage existingStorage = storageRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Storage not found with id: " + id));
         existingStorage.setName(storage.getName());
         existingStorage.setLocation(storage.getLocation());
@@ -27,7 +27,7 @@ public class StorageService {
     }
 
     public void deleteStorage(Long id) {
-        Storage storage = storageRepository.findById(id)
+        final Storage storage = storageRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Storage not found with id: " + id));
         storageRepository.delete(storage);
     }

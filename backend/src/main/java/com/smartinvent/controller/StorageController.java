@@ -4,7 +4,13 @@ import com.smartinvent.models.Storage;
 import com.smartinvent.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -18,21 +24,21 @@ public class StorageController {
     // Отримання всіх складів
     @GetMapping("/all")
     public ResponseEntity<List<Storage>> getAllStorages() {
-        List<Storage> storages = storageService.getAllStorages();
+        final List<Storage> storages = storageService.getAllStorages();
         return ResponseEntity.ok(storages);
     }
 
     // Додавання нового складу
     @PostMapping("/create")
     public ResponseEntity<Storage> createStorage(@RequestBody Storage storage) {
-        Storage createdStorage = storageService.createStorage(storage);
+        final Storage createdStorage = storageService.createStorage(storage);
         return ResponseEntity.ok(createdStorage);
     }
 
     // Оновлення складу
     @PostMapping("/update/{id}")
     public ResponseEntity<Storage> updateStorage(@PathVariable Long id, @RequestBody Storage storage) {
-        Storage updatedStorage = storageService.updateStorage(id, storage);
+        final Storage updatedStorage = storageService.updateStorage(id, storage);
         return ResponseEntity.ok(updatedStorage);
     }
 

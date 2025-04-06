@@ -1,6 +1,11 @@
 package com.smartinvent.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
 import java.util.Objects;
 
 @Entity
@@ -56,7 +61,7 @@ public class Category {
     public boolean equals(Object o) {
         if (this == o) {return true;}
         if (o == null || getClass() != o.getClass()) {return false;}
-        Category category = (Category) o;
+        final Category category = (Category) o;
         return Objects.equals(categoryId, category.categoryId);
     }
 

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,29 +31,29 @@ public class QRCodeService {
 
     public String generateQrCodeImage(String productWorkId) throws WriterException, IOException {
 
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(productWorkId, BarcodeFormat.QR_CODE, WIDTH, HEIGHT);
+        final QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        final BitMatrix bitMatrix = qrCodeWriter.encode(productWorkId, BarcodeFormat.QR_CODE, WIDTH, HEIGHT);
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
 
-        String encodedQr = Base64.getEncoder().encodeToString(outputStream.toByteArray());
+        final String encodedQr = Base64.getEncoder().encodeToString(outputStream.toByteArray());
 
         return encodedQr;    }
 
     public void saveQrCodeToFile(String productWorkId, String filePath) throws WriterException, IOException {
-        String content = String.valueOf(productWorkId);
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, WIDTH, HEIGHT);
+        final String content = String.valueOf(productWorkId);
+        final QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        final BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, WIDTH, HEIGHT);
 
-        Path path = FileSystems.getDefault().getPath(filePath);
+        final Path path = FileSystems.getDefault().getPath(filePath);
         MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
     }
 
     public byte[] generateQrCodeForProduct(Long productId) {
-        Optional<Product> productOpt = productRepository.findById(productId);
+        final Optional<Product> productOpt = productRepository.findById(productId);
         if (productOpt.isPresent()) {
-            String qrCodeText = productOpt.get().getQrCode(); // Отримуємо з БД
+            final String qrCodeText = productOpt.get().getQrCode(); // Отримуємо з БД
             return generateQrCodeImage(qrCodeText, 200, 200);
         }
         return null;
@@ -61,14 +61,14 @@ public class QRCodeService {
 
     private byte[] generateQrCodeImage(String text, int width, int height) {
         try {
-            BitMatrix bitMatrix = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, width, height);
-            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            final BitMatrix bitMatrix = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, width, height);
+            final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
                     image.setRGB(x, y, bitMatrix.get(x, y) ? Color.BLACK.getRGB() : Color.WHITE.getRGB());
                 }
             }
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(image, "png", baos);
             return baos.toByteArray();
         } catch (Exception e) {

@@ -1,6 +1,8 @@
 package com.smartinvent.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Id;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
 import lombok.Getter;
 import lombok.Setter;
 

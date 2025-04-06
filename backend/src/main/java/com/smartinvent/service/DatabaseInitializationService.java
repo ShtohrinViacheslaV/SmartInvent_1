@@ -10,12 +10,16 @@ import org.springframework.stereotype.Service;
 
 
 import java.io.IOException;
+
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.*;
+
 import java.util.List;
 
 
@@ -56,7 +60,7 @@ public class DatabaseInitializationService {
         System.out.println("DatabaseInitializationService getDataSource ");
 
 
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUrl(config.getUrl());
         dataSource.setUsername(config.getUsername());
@@ -79,7 +83,7 @@ public class DatabaseInitializationService {
             log.info("📌 Параметри підключення 2 - host: {}, port: {}, database: {}", config.getHost(), config.getPort(), config.getDatabase());
 
 //            DataSource dataSource = DynamicDataSourceConfig.getDataSource();
-            DataSource dataSource = dynamicDataSourceConfig.getDataSource();
+            final DataSource dataSource = dynamicDataSourceConfig.getDataSource();
             updateDataSource(dataSource); // Оновлюємо DataSource
 
             log.info("Using DataSource: {}", dataSource);
@@ -105,7 +109,7 @@ public class DatabaseInitializationService {
 
         if (!checkTables(config)) {
             log.info("⚠ Tables are missing, creating them now...");
-            Path path = Paths.get("backend/src/main/resources/sql/create_table.sql");
+            final Path path = Paths.get("backend/src/main/resources/sql/create_table.sql");
             System.out.println("Checking file: " + path.toAbsolutePath());
             System.out.println("File exists: " + Files.exists(path));
 
@@ -135,8 +139,8 @@ public class DatabaseInitializationService {
                     config.getPassword()
             );
 
-            DataSource tempDataSource = dynamicDataSourceConfig.getDataSource();
-            JdbcTemplate jdbcTemplate = new JdbcTemplate(tempDataSource);
+            final DataSource tempDataSource = dynamicDataSourceConfig.getDataSource();
+            final JdbcTemplate jdbcTemplate = new JdbcTemplate(tempDataSource);
 
             for (String table : TABLE_NAMES) {
                 if (!checkIfTableExists(table, jdbcTemplate)) {
@@ -158,10 +162,10 @@ public class DatabaseInitializationService {
         System.out.println("DatabaseInitializationService checkIfTableExists ");
 
         try (Connection conn = jdbcTemplate.getDataSource().getConnection()) {
-            String dbProductName = conn.getMetaData().getDatabaseProductName();
+            final String dbProductName = conn.getMetaData().getDatabaseProductName();
             log.info("🛠 dbProductName: {}", dbProductName);
 
-            String sql;
+            final String sql;
 
             if (dbProductName.equalsIgnoreCase("PostgreSQL")) {
                 sql = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?";
@@ -174,7 +178,7 @@ public class DatabaseInitializationService {
             }
 
             // Виконання запиту
-            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, tableName);
+            final Integer count = jdbcTemplate.queryForObject(sql, Integer.class, tableName);
             return count != null && count > 0;
 
         } catch (Exception e) {
@@ -191,7 +195,7 @@ public class DatabaseInitializationService {
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
             System.out.println("Connected to: " + conn.getMetaData().getURL());
-            String sql = new String(Files.readAllBytes(Paths.get("backend/src/main/resources/" + scriptPath)));
+            final String sql = new String(Files.readAllBytes(Paths.get("backend/src/main/resources/" + scriptPath)));
             stmt.execute(sql);
             log.info("✅ Tables created successfully!");
 
@@ -208,7 +212,7 @@ public class DatabaseInitializationService {
 
         try {
             // Виконати SQL-операції для видалення даних з таблиць
-            String query = "DELETE FROM ?";  // використовуємо параметр для назви таблиці
+            final String query = "DELETE FROM ?";  // використовуємо параметр для назви таблиці
 
             for (String table : TABLE_NAMES) {
                 try {

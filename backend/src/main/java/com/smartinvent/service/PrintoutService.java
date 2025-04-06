@@ -27,7 +27,7 @@ public class PrintoutService {
     }
 
     public void deletePrintout(Long id) {
-        Printout printout = printoutRepository.findById(id)
+        final Printout printout = printoutRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Printout not found with id: " + id));
         printoutRepository.delete(printout);
     }

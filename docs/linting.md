@@ -42,3 +42,23 @@ checkstyle {
     configFile = file("config/checkstyle/checkstyle.xml")
     isIgnoreFailures = false
 }
+```
+
+## ✅ Перевірка якості коду
+
+### Git hooks
+
+Перед комітом автоматично запускається скрипт `scripts/code-check.sh`, який перевіряє:
+- стиль коду (Checkstyle)
+- статичний аналіз (SpotBugs)
+- тести
+
+Якщо буде знайдено помилки — коміт буде скасовано.
+
+### Інтеграція з процесом збірки
+
+Команди `./gradlew check` та `./gradlew build` запускають лінтер і статичну перевірку автоматично:
+
+```bash
+./gradlew check         # Включає checkstyle + spotbugs
+./gradlew build         # check + збірка

@@ -3,6 +3,8 @@ plugins {
     id("org.springframework.boot") version "3.4.2"
     id("io.spring.dependency-management") version "1.1.7"
     id("checkstyle")
+    id("com.github.spotbugs") version "6.0.3"
+
 
 }
 
@@ -20,14 +22,40 @@ java {
 checkstyle {
     toolVersion = "10.17.0"
     configFile = file("tools/checkstyle/checkstyle.xml")
-    isIgnoreFailures = false
 }
-//configurations.all {
-//    resolutionStrategy {
-//        force("com.google.guava:guava:32.0.1-jre")
-//    }
-//}
-//
+
+
+tasks.named("check") {
+    dependsOn("spotbugsMain", "spotbugsTest")
+}
+
+tasks.named("build") {
+    dependsOn("checkstyleMain", "checkstyleTest")
+}
+
+
+tasks.withType<Checkstyle>().configureEach {
+    reports {
+        xml.required.set(false)
+        html.required.set(true)
+    }
+}
+
+spotbugs {
+    toolVersion.set("4.8.3")
+    showProgress.set(true)
+}
+
+
+tasks.spotbugsMain {
+    reports.create("html") {
+        required = true
+        outputLocation = file("$buildDir/reports/spotbugs.html")
+        setStylesheet("fancy-hist.xsl")
+    }
+}
+
+
 
 dependencies {
     implementation("org.apache.commons:commons-compress:1.27.1")

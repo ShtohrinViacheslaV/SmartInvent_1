@@ -45,6 +45,9 @@ dependencies {
 //    implementation("org.springframework.boot:spring-boot-starter-data-jdbc:3.4.2")
     implementation("org.springframework.boot:spring-boot-starter-web:3.4.2")
 
+    // Spring REST Docs
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
     implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")

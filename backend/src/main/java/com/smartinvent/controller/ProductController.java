@@ -21,6 +21,10 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    public ProductController(ProductService mockedProductService) {
+        this.productService = mockedProductService;
+    }
+
     /**
      * Метод для отримання всіх продуктів
      *

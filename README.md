@@ -12,7 +12,64 @@ The application allows users to add products, generate unique QR codes for each 
 - Save product details and ensure QR code uniqueness.
 - Track product transactions.
 
-## Installation
+
+## Usage
+
+1. Open the application.
+2. Use the interface to add new products by filling in the required fields.
+3. Generate a QR code for the product.
+4. Save the product details.
+5. Scan QR codes to retrieve product information.
+6. Track product transactions through the application.
+
+## Technologies Used
+
+- **Java**: Main programming language.
+- **Kotlin**: Used for some parts of the project.
+- **Gradle**: Build automation tool.
+- **SQL**: Database management.
+- **Spring Boot**: Framework for building the application.
+
+
+## 🧰 New Developer Guide
+
+### ⚖️ Required Tools
+
+Before you start, make sure you have the following tools installed:
+
+- [Java 17+ JDK](https://adoptium.net/)  
+- [Gradle]  
+- [Git](https://git-scm.com/)  
+- [PostgreSQL 14+](https://www.postgresql.org/)  
+- [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+
+
+### 🌱 Environment Setup
+
+1. Set environment variables or create a `.env` file (optional).
+2. Configure the database:
+
+#### 📦 Creating a PostgreSQL database
+
+1. Log in to the PostgreSQL CLI or use pgAdmin:
+```sql
+CREATE DATABASE smartinvent;
+CREATE USER smart_user WITH ENCRYPTED PASSWORD 'smart_pass';
+GRANT ALL PRIVILEGES ON DATABASE smartinvent TO smart_user;
+```
+
+2. Change `application.properties`:
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/smartinvent
+spring.datasource.username=smart_user
+spring.datasource.password=smart_pass
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+```
+
+
+### Installation
 
 To set up the project locally, follow these steps:
 
@@ -33,22 +90,8 @@ To set up the project locally, follow these steps:
     ./gradlew bootRun
     ```
 
-## Usage
+After running: [http://localhost:8080](http://localhost:8080)
 
-1. Open the application.
-2. Use the interface to add new products by filling in the required fields.
-3. Generate a QR code for the product.
-4. Save the product details.
-5. Scan QR codes to retrieve product information.
-6. Track product transactions through the application.
-
-## Technologies Used
-
-- **Java**: Main programming language.
-- **Kotlin**: Used for some parts of the project.
-- **Gradle**: Build automation tool.
-- **SQL**: Database management.
-- **Spring Boot**: Framework for building the application.
 
 ## 📌 Code Documentation Rules
 
@@ -104,8 +147,7 @@ To generate documentation, run the following command:
 javadoc -encoding UTF-8 -charset UTF-8 -d docs src/*.java
 ```
 
-#### 🔧 **Using IntelliJ IDEA**
-1. Go to **Tools** → **Generate JavaDoc**.
-2. Set `-encoding UTF-8 -charset UTF-8` in **additional options**.
-3. Click **OK**.
-
+🔧 Using IntelliJ IDEA
+1. Go to Tools → Generate JavaDoc.
+2. Set -encoding UTF-8 -charset UTF-8 in additional options.
+3. Click OK.

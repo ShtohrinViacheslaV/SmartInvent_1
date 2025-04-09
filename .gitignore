@@ -3,8 +3,13 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+*.log
 
 
+# Local configuration
+local.properties
+*.keystore
+config.json
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
@@ -16,7 +21,6 @@ build/
 *.ipr
 /*.apk
 /*.aab
-*.keystore
 *.jks
 *.so
 *.o
@@ -50,3 +54,4 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+Thumbs.db

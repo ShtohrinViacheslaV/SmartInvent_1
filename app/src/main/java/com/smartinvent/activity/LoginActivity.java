@@ -122,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    AuthResponse authResponse = response.body();
+                    final AuthResponse authResponse = response.body();
 
                     if (isAdminLogin && !"ADMIN".equals(authResponse.getRole())) {
                         Toast.makeText(LoginActivity.this, "Недостатньо прав для входу як адміністратор", Toast.LENGTH_SHORT).show();

@@ -31,7 +31,7 @@ public class DatabaseConfigRequest {
         System.out.println("DatabaseConfigRequest sendConfigToServer ");
 
         try {
-            JSONObject requestBody = new JSONObject();
+            final JSONObject requestBody = new JSONObject();
             requestBody.put("host", host);
             requestBody.put("port", port);
             requestBody.put("database", database);
@@ -51,7 +51,7 @@ public class DatabaseConfigRequest {
         System.out.println("DatabaseConfigRequest sendConfigToServer ");
 
         try {
-            JSONObject requestBody = new JSONObject();
+            final JSONObject requestBody = new JSONObject();
             requestBody.put("host", config.getHost());
             requestBody.put("port", config.getPort());
             requestBody.put("database", config.getDatabase());
@@ -70,7 +70,7 @@ public class DatabaseConfigRequest {
         System.out.println("DatabaseConfigRequest sendUrlToServer ");
 
         try {
-            JSONObject requestBody = new JSONObject();
+            final JSONObject requestBody = new JSONObject();
             requestBody.put("url", url);
 
             sendRequest(requestBody, callback);
@@ -83,14 +83,14 @@ public class DatabaseConfigRequest {
     private void sendRequest(JSONObject requestBody, DatabaseConfigCallback callback) {
         System.out.println("DatabaseConfigRequest sendRequest ");
 
-        StringRequest request = new StringRequest(Request.Method.POST, SERVER_URL,
+        final StringRequest request = new StringRequest(Request.Method.POST, SERVER_URL,
                 response -> {
                     Log.d(TAG, "Success: " + response);
                     Toast.makeText(context, "Успішно відправлено!", Toast.LENGTH_SHORT).show();
                     callback.onResult(true);
                 },
                 error -> {
-                    String errorMessage = getVolleyErrorDetails(error);
+                    final String errorMessage = getVolleyErrorDetails(error);
                     logAndShowError("Volley Error: " + errorMessage, error);
                     callback.onResult(false);
                 }) {

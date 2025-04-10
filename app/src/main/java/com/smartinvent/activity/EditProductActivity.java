@@ -128,7 +128,7 @@ public class EditProductActivity extends AppCompatActivity {
                         storageNames.add(storage.getName());
                     }
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(EditProductActivity.this,
+                    final ArrayAdapter<String> adapter = new ArrayAdapter<>(EditProductActivity.this,
                             android.R.layout.simple_dropdown_item_1line, storageNames);
                     editspnStorage.setAdapter(adapter);
 

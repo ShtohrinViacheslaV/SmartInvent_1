@@ -32,7 +32,7 @@ public class MoreFragment extends Fragment {
     }
 
     private void openFragment(Fragment fragment) {
-        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        final FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);  // Замінити на твій ID контейнера
         transaction.addToBackStack(null);
         transaction.commit();

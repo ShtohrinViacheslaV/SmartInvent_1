@@ -21,7 +21,12 @@ java {
 
 checkstyle {
     toolVersion = "10.17.0"
-    configFile = file("tools/checkstyle/checkstyle.xml")
+    configFile = rootProject.file("tools/checkstyle/checkstyle.xml")
+
+}
+
+tasks.named("check") {
+    dependsOn("checkstyleMain", "checkstyleTest")
 }
 
 

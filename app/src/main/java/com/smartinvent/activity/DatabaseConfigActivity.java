@@ -3,7 +3,11 @@ package com.smartinvent.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.*;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+import android.widget.Button;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.smartinvent.R;
@@ -75,7 +79,7 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     private void testConnection(boolean saveAfterSuccess) {
         System.out.println("DatabaseConfigActivity testConnection ");
 
-        DatabaseConfig config = getConfigFromFields();
+        final DatabaseConfig config = getConfigFromFields();
         if (radioManual.isChecked() &&
                 (config.getHost().isEmpty() || config.getPort().isEmpty() || config.getDatabase().isEmpty() ||
                         config.getUsername().isEmpty() || config.getPassword().isEmpty()) ||

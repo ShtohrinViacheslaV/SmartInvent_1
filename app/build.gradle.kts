@@ -1,5 +1,9 @@
 plugins {
     id("com.android.application")
+    id("checkstyle")
+    id("com.github.spotbugs") version "6.0.3"
+
+
 }
 
 android {
@@ -46,6 +50,46 @@ android {
         unitTests.isIncludeAndroidResources = true
     }
 }
+
+
+checkstyle {
+    toolVersion = "10.17.0"
+    configFile = rootProject.file("tools/checkstyle/checkstyle.xml")
+
+}
+
+tasks.named("check") {
+    dependsOn("checkstyleMain", "checkstyleTest")
+}
+
+
+tasks.named("check") {
+    dependsOn("spotbugsMain", "spotbugsTest")
+}
+
+tasks.named("build") {
+    dependsOn("checkstyleMain", "checkstyleTest")
+}
+
+tasks.withType<Checkstyle>().configureEach {
+    reports {
+        xml.required.set(false)
+        html.required.set(true)
+    }
+}
+
+tasks.register<Checkstyle>("checkstyleMain") {
+    source("src/main/java")
+    include("**/*.java")
+    classpath = files()
+}
+
+tasks.register<Checkstyle>("checkstyleTest") {
+    source("src/test/java")
+    include("**/*.java")
+    classpath = files()
+}
+
 
 dependencies {
     val roomVersion = "2.6.1"

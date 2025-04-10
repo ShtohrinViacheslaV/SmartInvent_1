@@ -8,6 +8,8 @@
         <module name="AvoidStarImport"/>
         <module name="UnusedImports"/>
         <module name="FinalLocalVariable"/>
+        <module name="JavadocStyle"/>
+        <module name="MethodName"/>
         <module name="NeedBraces"/>
         <module name="EmptyBlock"/>
     </module>

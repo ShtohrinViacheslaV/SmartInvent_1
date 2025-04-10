@@ -25,12 +25,83 @@
 
 ## 3. Інструкція з запуску лінтера
 
-### У терміналі (з кореня модуля backend):
+
+
+### Налаштування
+
+Checkstyle для модуля app підключено в app/build.gradle.kts, із використанням кастомного конфігу:
+``` 
+checkstyle {
+toolVersion = "10.17.0"
+configFile = rootProject.file("tools/checkstyle/checkstyle.xml")
+}
+
+tasks.named("check") {
+    dependsOn("checkstyleMain", "checkstyleTest")
+}
+
+tasks.named("build") {
+    dependsOn("checkstyleMain", "checkstyleTest")
+}
+
+tasks.withType<Checkstyle>().configureEach {
+    reports {
+        xml.required.set(false)
+        html.required.set(true)
+    }
+}
+
+tasks.register<Checkstyle>("checkstyleMain") {
+    source("src/main/java")
+    include("**/*.java")
+    classpath = files()
+}
+
+tasks.register<Checkstyle>("checkstyleTest") {
+    source("src/test/java")
+    include("**/*.java")
+    classpath = files()
+}
+
+```
+Checkstyle для модуля backend підключено в backend/build.gradle.kts, із використанням кастомного конфігу:
+``` 
+checkstyle {
+toolVersion = "10.17.0"
+configFile = rootProject.file("tools/checkstyle/checkstyle.xml")
+}
+
+tasks.named("check") {
+    dependsOn("checkstyleMain", "checkstyleTest")
+}
+
+tasks.named("build") {
+    dependsOn("checkstyleMain", "checkstyleTest")
+}
+
+tasks.withType<Checkstyle>().configureEach {
+    reports {
+        xml.required.set(false)
+        html.required.set(true)
+    }
+}
+
+```
+
+### Запуск перевірки модуля app:
 
 ``` 
-gradlew.bat checkstyleMain
+./gradlew :app:checkstyleMain   
 
-gradlew.bat checkstyleTest
+./gradlew :app:checkstyleTest   
+```
+
+### Запуск перевірки модуля backend:
+
+``` 
+./gradlew :backend:checkstyleMain
+
+./gradlew :backend:checkstyleTest
 ```
 
 ## Ігнорування
@@ -39,7 +110,7 @@ gradlew.bat checkstyleTest
 ```kotlin
 checkstyle {
     sourceSets = listOf(project.sourceSets["main"])
-    configFile = file("config/checkstyle/checkstyle.xml")
+    configFile = rootProject.file("tools/checkstyle/checkstyle.xml")
     isIgnoreFailures = false
 }
 ```

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.smartinvent.R;
 
 public abstract class BaseHomeActivity extends AppCompatActivity {

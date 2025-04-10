@@ -5,14 +5,10 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.smartinvent.R;
-import com.smartinvent.model.Category;
 import com.smartinvent.model.Product;
-import com.smartinvent.service.CategoryService;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
@@ -38,7 +34,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btn_back);
 
         // Отримання переданого товару
-        Product product = getIntent().getParcelableExtra("product");
+        final Product product = getIntent().getParcelableExtra("product");
         if (product != null) {
             txtName.setText(product.getName());
             txtDescription.setText(product.getDescription());
@@ -53,7 +49,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
         btnEditProduct.setOnClickListener(v -> {
-            Intent intent = new Intent(this, EditProductActivity.class);
+            final Intent intent = new Intent(this, EditProductActivity.class);
             intent.putExtra("product", product);
             startActivity(intent);
         });

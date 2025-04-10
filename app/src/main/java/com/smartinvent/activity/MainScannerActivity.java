@@ -21,7 +21,7 @@ public class MainScannerActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> qrScannerLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    String scannedCode = result.getData().getStringExtra("scannedCode");
+                    final String scannedCode = result.getData().getStringExtra("scannedCode");
                     Log.d("QR_SCAN", "Отримано код: " + scannedCode); // ✅ Логування
 
                     if (scannedCode != null && !scannedCode.isEmpty()) {
@@ -42,7 +42,7 @@ public class MainScannerActivity extends AppCompatActivity {
     }
 
     private void startQrScanner() {
-        Intent intent = new Intent(this, ScannerActivity.class);
+        final Intent intent = new Intent(this, ScannerActivity.class);
         qrScannerLauncher.launch(intent);
     }
 
@@ -79,7 +79,7 @@ public class MainScannerActivity extends AppCompatActivity {
 
 
     private void openProductDetails(Product product) {
-        Intent intent = new Intent(this, ProductDetailsActivity.class);
+        final Intent intent = new Intent(this, ProductDetailsActivity.class);
         intent.putExtra("product", product);
         startActivity(intent);
         finish();
@@ -90,7 +90,7 @@ public class MainScannerActivity extends AppCompatActivity {
                 .setTitle("Товар не знайдено")
                 .setMessage("Додати новий товар?")
                 .setPositiveButton("Так", (dialog, which) -> {
-                    Intent intent = new Intent(this, AddProductActivity.class);
+                    final Intent intent = new Intent(this, AddProductActivity.class);
                     intent.putExtra("productWorkId", productWorkId);
                     startActivity(intent);
                     finish();

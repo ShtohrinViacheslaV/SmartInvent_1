@@ -32,7 +32,7 @@ public class SignUpCompanyActivity2 extends AppCompatActivity {
     }
 
     public void saveAdminData(View v) {
-        Employee admin = new Employee(
+        final Employee admin = new Employee(
                 adminFirstName.getText().toString(),
                 adminLastName.getText().toString(),
                 adminEmail.getText().toString(),
@@ -44,7 +44,7 @@ public class SignUpCompanyActivity2 extends AppCompatActivity {
         admin.setEmployeeWorkId(adminWorkId.getText().toString());
         admin.setPasswordHash(adminPassword.getText().toString());
 
-        ApiService apiService = ApiClient.getService();
+        final ApiService apiService = ApiClient.getService();
         apiService.createEmployee(admin).enqueue(new Callback<Employee>() {
             @Override
             public void onResponse(Call<Employee> call, Response<Employee> response) {

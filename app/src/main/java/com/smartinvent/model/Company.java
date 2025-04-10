@@ -1,6 +1,5 @@
 package com.smartinvent.model;
 
-import java.time.LocalDateTime;
 
 
 public class Company {

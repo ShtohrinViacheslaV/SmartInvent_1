@@ -16,12 +16,12 @@ public class MoreFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_more, container, false);
+        final View view = inflater.inflate(R.layout.fragment_more, container, false);
 
-        Button btnCategories = view.findViewById(R.id.btnCategories);
-        Button btnStorages = view.findViewById(R.id.btnStorages);
-        Button btnPrintouts = view.findViewById(R.id.btnPrintouts);
-        Button btnTransactions = view.findViewById(R.id.btnTransactions);
+        final Button btnCategories = view.findViewById(R.id.btnCategories);
+        final Button btnStorages = view.findViewById(R.id.btnStorages);
+        final Button btnPrintouts = view.findViewById(R.id.btnPrintouts);
+        final Button btnTransactions = view.findViewById(R.id.btnTransactions);
 
         btnCategories.setOnClickListener(v -> openFragment(new CategoryFragment()));
         btnStorages.setOnClickListener(v -> openFragment(new StorageFragment()));

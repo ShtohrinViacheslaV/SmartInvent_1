@@ -8,7 +8,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.smartinvent.R;
-import com.smartinvent.config.DbConfigManager;
 import com.smartinvent.model.Company;
 import com.smartinvent.network.ApiClient;
 import com.smartinvent.network.ApiService;
@@ -35,7 +34,7 @@ public class SignUpCompanyActivity1 extends AppCompatActivity {
     }
 
     public void saveCompanyData(View v) {
-        Company company = new Company(
+        final Company company = new Company(
                 companyName.getText().toString(),
                 companyAddress.getText().toString(),
                 companyPhone.getText().toString(),
@@ -44,7 +43,7 @@ public class SignUpCompanyActivity1 extends AppCompatActivity {
         Log.d("SignUpCompanyActivity", "Company Data: " + company.toString());
 
 
-        ApiService apiService = ApiClient.getService();
+        final ApiService apiService = ApiClient.getService();
         apiService.createCompany(company).enqueue(new Callback<Company>() {
             @Override
             public void onResponse(Call<Company> call, Response<Company> response) {
@@ -55,7 +54,7 @@ public class SignUpCompanyActivity1 extends AppCompatActivity {
                     finish();
                 } else {
                     try {
-                        String errorBody = response.errorBody().string();
+                        final String errorBody = response.errorBody().string();
                         Log.e("SignUpCompanyActivity", "Помилка реєстрації компанії: " + errorBody);
                     } catch (IOException e) {
                         Log.e("SignUpCompanyActivity", "Помилка читання помилки сервера", e);

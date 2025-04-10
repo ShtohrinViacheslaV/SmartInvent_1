@@ -1,10 +1,12 @@
 package com.smartinvent.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
-import android.widget.*;
-import androidx.appcompat.app.AppCompatActivity;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+import android.widget.Button;
+import android.widget.ArrayAdapter;import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.smartinvent.R;
 import com.smartinvent.model.Category;
@@ -87,12 +89,12 @@ public class EditProductActivity extends AppCompatActivity {
                 categoryList.clear();
                 if (categories != null) {
                     categoryList.addAll(categories);
-                    List<String> categoryNames = new ArrayList<>();
+                    final List<String> categoryNames = new ArrayList<>();
                     for (Category category : categories) {
                         categoryNames.add(category.getName());
                     }
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(EditProductActivity.this,
+                    final ArrayAdapter<String> adapter = new ArrayAdapter<>(EditProductActivity.this,
                             android.R.layout.simple_dropdown_item_1line, categoryNames);
                     editspnCategory.setAdapter(adapter);
 
@@ -121,7 +123,7 @@ public class EditProductActivity extends AppCompatActivity {
                 storageList.clear();
                 if (storages != null) {
                     storageList.addAll(storages);
-                    List<String> storageNames = new ArrayList<>();
+                    final List<String> storageNames = new ArrayList<>();
                     for (Storage storage : storages) {
                         storageNames.add(storage.getName());
                     }
@@ -157,21 +159,21 @@ public class EditProductActivity extends AppCompatActivity {
     }
 
     private void saveProduct() {
-        String name = edtName.getText().toString().trim();
-        String description = edtDescription.getText().toString().trim();
-        String productWorkId = edtProductWorkId.getText().toString().trim();
-        String countStr = edtCount.getText().toString().trim();
+        final String name = edtName.getText().toString().trim();
+        final String description = edtDescription.getText().toString().trim();
+        final String productWorkId = edtProductWorkId.getText().toString().trim();
+        final String countStr = edtCount.getText().toString().trim();
 
         if (name.isEmpty() || countStr.isEmpty() || productWorkId.isEmpty()) {
             Toast.makeText(this, "Будь ласка, заповніть всі обов'язкові поля", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        int count = Integer.parseInt(countStr);
+        final int count = Integer.parseInt(countStr);
         Category selectedCategory = null;
         Storage selectedStorage = null;
 
-        String selectedCategoryName = editspnCategory.getText().toString().trim();
+        final String selectedCategoryName = editspnCategory.getText().toString().trim();
         if (!selectedCategoryName.isEmpty()) {
             for (Category category : categoryList) {
                 if (category.getName().equals(selectedCategoryName)) {
@@ -181,7 +183,7 @@ public class EditProductActivity extends AppCompatActivity {
             }
         }
 
-        String selectedStorageName = editspnStorage.getText().toString().trim();
+        final String selectedStorageName = editspnStorage.getText().toString().trim();
         if (!selectedStorageName.isEmpty()) {
             for (Storage storage : storageList) {
                 if (storage.getName().equals(selectedStorageName)) {
@@ -224,7 +226,7 @@ public class EditProductActivity extends AppCompatActivity {
     }
 
     private void addTransaction(Long productId, String action) {
-        Transaction transaction = new Transaction(productId, action, System.currentTimeMillis());
+        final Transaction transaction = new Transaction(productId, action, System.currentTimeMillis());
         transactionService.createTransaction(transaction, success -> {
             if (!success) {
                 Toast.makeText(this, "Помилка запису в історію руху товарів", Toast.LENGTH_SHORT).show();

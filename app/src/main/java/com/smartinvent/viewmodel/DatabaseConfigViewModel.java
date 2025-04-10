@@ -5,8 +5,6 @@ import androidx.lifecycle.AndroidViewModel;
 import com.smartinvent.config.DatabaseConfig;
 import com.smartinvent.network.DatabaseConfigRequest;
 
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class DatabaseConfigViewModel extends AndroidViewModel {

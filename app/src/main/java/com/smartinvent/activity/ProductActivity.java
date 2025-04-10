@@ -56,7 +56,7 @@ public class ProductActivity extends AppCompatActivity {
 
         // Обробка натискання на панель навігації
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            int itemId = item.getItemId();
+            final int itemId = item.getItemId();
 
             if (itemId == R.id.nav_products) {
                 return true; // Ми вже тут
@@ -94,7 +94,7 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private void startQrScanner() {
-        IntentIntegrator integrator = new IntentIntegrator(this);
+        final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setOrientationLocked(false);
         integrator.setPrompt("Наведіть камеру на QR-код товару");
         integrator.setBeepEnabled(true);
@@ -103,10 +103,10 @@ public class ProductActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        final IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() != null) {
-                String scannedCode = result.getContents();
+                final String scannedCode = result.getContents();
                 searchInput.setText(scannedCode);
                 searchProduct(scannedCode);
             } else {

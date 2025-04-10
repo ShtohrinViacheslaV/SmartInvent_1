@@ -16,7 +16,7 @@ public class BottomNavigationAdminFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation_admin);
+        final BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_navigation_admin);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;

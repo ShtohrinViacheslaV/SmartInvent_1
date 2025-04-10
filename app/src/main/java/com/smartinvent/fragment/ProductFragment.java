@@ -18,19 +18,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.smartinvent.R;
-import com.smartinvent.activity.*;
+import com.smartinvent.activity.ProductDetailsActivity;
+import com.smartinvent.activity.AddProductActivity;
+import com.smartinvent.activity.EditProductActivity;
 import com.smartinvent.adapter.ProductAdapter;
 import com.smartinvent.model.Product;
-import com.smartinvent.network.ApiClient;
-import com.smartinvent.service.ProductApi;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.smartinvent.service.ProductService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+
 
 public class ProductFragment extends Fragment {
 
@@ -52,7 +51,7 @@ public class ProductFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_product, container, false);
+        final View view = inflater.inflate(R.layout.fragment_product, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         searchInput = view.findViewById(R.id.search_input);
@@ -103,7 +102,7 @@ public class ProductFragment extends Fragment {
     }
 
     private void performSearch() {
-        String query = searchInput.getText().toString().trim();
+        final String query = searchInput.getText().toString().trim();
         if (!query.isEmpty()) {
             searchProducts(query);
         } else {
@@ -127,7 +126,7 @@ public class ProductFragment extends Fragment {
     }
 
     private void scanQrCode() {
-        IntentIntegrator integrator = IntentIntegrator.forSupportFragment(this);
+        final IntentIntegrator integrator = IntentIntegrator.forSupportFragment(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
         integrator.setPrompt("Скануйте QR-код товару");
         integrator.setCameraId(0);
@@ -143,7 +142,7 @@ public class ProductFragment extends Fragment {
             if (requestCode == REQUEST_ADD_PRODUCT || requestCode == REQUEST_EDIT_PRODUCT) {
                 loadProducts();
             } else if (requestCode == IntentIntegrator.REQUEST_CODE) {
-                IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
+                final IntentResult result = IntentIntegrator.parseActivityResult(resultCode, data);
                 if (result != null && result.getContents() != null) {
                     searchInput.setText(result.getContents());
                     searchProducts(result.getContents());
@@ -168,30 +167,30 @@ public class ProductFragment extends Fragment {
     }
 
     private void openAddProductActivity() {
-        Intent intent = new Intent(getActivity(), AddProductActivity.class);
+        final Intent intent = new Intent(getActivity(), AddProductActivity.class);
         startActivityForResult(intent, REQUEST_ADD_PRODUCT);
     }
 
     private void openEditProductActivity() {
-        Product selectedProduct = productAdapter.getSelectedProduct();
+        final Product selectedProduct = productAdapter.getSelectedProduct();
         if (selectedProduct == null) {
             Toast.makeText(getContext(), "Оберіть товар для редагування", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Intent intent = new Intent(getActivity(), EditProductActivity.class);
+        final Intent intent = new Intent(getActivity(), EditProductActivity.class);
         intent.putExtra("product", selectedProduct);
         startActivityForResult(intent, REQUEST_EDIT_PRODUCT);
     }
 
     private void openProductDetails() {
-        Product selectedProduct = productAdapter.getSelectedProduct();
+        final Product selectedProduct = productAdapter.getSelectedProduct();
         if (selectedProduct == null) {
             Toast.makeText(getContext(), "Оберіть товар для перегляду", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
+        final Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
         intent.putExtra("product", selectedProduct);
         startActivity(intent);
     }

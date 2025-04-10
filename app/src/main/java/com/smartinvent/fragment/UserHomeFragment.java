@@ -18,12 +18,12 @@ public class UserHomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user_home, container, false);
+        final View view = inflater.inflate(R.layout.fragment_user_home, container, false);
 
         // Обробка натискань на картки
-        MaterialCardView cardProducts = view.findViewById(R.id.cardProducts);
-        MaterialCardView cardInventory = view.findViewById(R.id.cardInventory);
-        MaterialCardView cardReports = view.findViewById(R.id.cardReports);
+        final MaterialCardView cardProducts = view.findViewById(R.id.cardProducts);
+        final MaterialCardView cardInventory = view.findViewById(R.id.cardInventory);
+        final MaterialCardView cardReports = view.findViewById(R.id.cardReports);
 
         cardProducts.setOnClickListener(v -> openProducts());
         cardInventory.setOnClickListener(v -> openInventory());

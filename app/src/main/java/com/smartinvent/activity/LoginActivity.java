@@ -41,14 +41,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateApiClient() {
         if (DbConfigManager.isConfigAvailable(this)) {
-            DatabaseConfig config = DbConfigManager.loadConfig(this);
+            final DatabaseConfig config = DbConfigManager.loadConfig(this);
             if (config == null) {
                 Toast.makeText(this, "Будь ласка, налаштуйте базу даних!", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(this, DatabaseConfigActivity.class));
                 finish();
                 return;
             }
-            String apiUrl = ApiConfig.getBaseUrl();
+            final String apiUrl = ApiConfig.getBaseUrl();
 
             if (apiUrl == null || (!apiUrl.startsWith("http://") && !apiUrl.startsWith("https://"))) {
                 Toast.makeText(this, "Невірний URL сервера API!", Toast.LENGTH_LONG).show();
@@ -66,16 +66,16 @@ public class LoginActivity extends AppCompatActivity {
     public void login(View v) {
         try {
 
-            String workIdStr = workIdInput.getText().toString().trim();
-            String password = passwordInput.getText().toString().trim();
-            boolean isAdminLogin = v.getId() == R.id.login_admin;
+            final String workIdStr = workIdInput.getText().toString().trim();
+            final String password = passwordInput.getText().toString().trim();
+            final boolean isAdminLogin = v.getId() == R.id.login_admin;
 
             if (workIdStr.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Будь ласка, введіть логін і пароль", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            int employeeWorkId;
+            final int employeeWorkId;
 
             try {
                 employeeWorkId = Integer.parseInt(workIdStr);
@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
                             .putString("lastName", authResponse.getLastName())
                             .apply();
 
-                    Class<?> targetActivity = isAdminLogin ? AdminHomeActivity.class : UserHomeActivity.class;
+                    final Class<?> targetActivity = isAdminLogin ? AdminHomeActivity.class : UserHomeActivity.class;
                     startActivity(new Intent(LoginActivity.this, targetActivity));
                     finish();
                 } else {

@@ -88,8 +88,8 @@ public class DatabaseConfigActivity extends AppCompatActivity {
             return;
         }
 
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<Void> call = apiService.testDbConnection(config);
+        final ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        final Call<Void> call = apiService.testDbConnection(config);
 
         call.enqueue(new Callback<Void>() {
             @Override
@@ -116,12 +116,12 @@ public class DatabaseConfigActivity extends AppCompatActivity {
         System.out.println("DatabaseConfigActivity saveConfig ");
         DbConfigManager.checkSavedConfig(this);/////////////////////////////////////////////////////////////////
 
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        final ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
         System.out.println("Перевіряємо таблиці з конфігом: " + config);
 
         // Перевіряємо, чи є таблиці
-        Call<Boolean> call = apiService.checkDatabaseTables(config);
+        final Call<Boolean> call = apiService.checkDatabaseTables(config);
 
 
         call.enqueue(new Callback<Boolean>() {
@@ -130,7 +130,7 @@ public class DatabaseConfigActivity extends AppCompatActivity {
                 System.out.println("Отримано відповідь від checkDatabaseTables: " + response.code());
 
                 if (response.isSuccessful() && response.body() != null) {
-                    boolean tablesExist = response.body();
+                    final boolean tablesExist = response.body();
                     System.out.println("Чи існують таблиці: " + tablesExist);
 
                     if (tablesExist) {
@@ -174,8 +174,8 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     private void clearDatabase(DatabaseConfig config) {
         System.out.println("DatabaseConfigActivity clearDatabase ");
 
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<Void> call = apiService.clearDatabase(config);
+        final ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        final Call<Void> call = apiService.clearDatabase(config);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -197,8 +197,8 @@ public class DatabaseConfigActivity extends AppCompatActivity {
     private void createDatabaseTables(DatabaseConfig config) {
         System.out.println("DatabaseConfigActivity createDatabaseTables ");
 
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<Void> call = apiService.initializeDatabase(config);
+        final ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        final Call<Void> call = apiService.initializeDatabase(config);
 
         call.enqueue(new Callback<Void>() {
             @Override
@@ -223,7 +223,7 @@ public class DatabaseConfigActivity extends AppCompatActivity {
         System.out.println("DatabaseConfigActivity loadSavedConfig ");
         DbConfigManager.checkSavedConfig(this);///////////////////////////////////////////////
 
-        DatabaseConfig savedConfig = DbConfigManager.loadConfig(this);
+        final DatabaseConfig savedConfig = DbConfigManager.loadConfig(this);
         if (savedConfig != null) {
             hostInput.setText(savedConfig.getHost());
             portInput.setText(savedConfig.getPort());

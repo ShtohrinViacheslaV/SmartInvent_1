@@ -129,7 +129,7 @@ public class MainScannerFragment extends Fragment {
     private final ActivityResultLauncher<Intent> qrScannerLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
-                    String scannedCode = result.getData().getStringExtra("scannedCode");
+                    final String scannedCode = result.getData().getStringExtra("scannedCode");
                     checkProductOnServer(scannedCode);
                 } else {
                     Toast.makeText(getContext(), "Сканування скасовано", Toast.LENGTH_SHORT).show();
@@ -138,14 +138,14 @@ public class MainScannerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main_scanner, container, false);
+        final View view = inflater.inflate(R.layout.fragment_main_scanner, container, false);
         productApi = ApiClient.getClient().create(ProductApi.class);
         startQrScanner();
         return view;
     }
 
     private void startQrScanner() {
-        Intent intent = new Intent(getActivity(), ScannerActivity.class);
+        final Intent intent = new Intent(getActivity(), ScannerActivity.class);
         qrScannerLauncher.launch(intent);
     }
 
@@ -172,7 +172,7 @@ public class MainScannerFragment extends Fragment {
     }
 
     private void openProductDetails(Product product) {
-        Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
+        final Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
         intent.putExtra("product", product);
         startActivity(intent);
     }
@@ -182,7 +182,7 @@ public class MainScannerFragment extends Fragment {
                 .setTitle("Товар не знайдено")
                 .setMessage("Додати новий товар?")
                 .setPositiveButton("Так", (dialog, which) -> {
-                    Intent intent = new Intent(getActivity(), AddProductActivity.class);
+                    final Intent intent = new Intent(getActivity(), AddProductActivity.class);
                     intent.putExtra("productWorkId", productWorkId);
                     startActivity(intent);
                 })

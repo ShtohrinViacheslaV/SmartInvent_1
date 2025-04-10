@@ -133,28 +133,36 @@
 //    }
 //}
 
-
-
 package com.smartinvent.activity;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.*;
+
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+import android.widget.Button;
+import android.widget.ArrayAdapter;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.smartinvent.R;
 import com.smartinvent.model.Category;
 import com.smartinvent.model.Product;
 import com.smartinvent.model.Storage;
 import com.smartinvent.model.Transaction;
-import com.smartinvent.service.*;
+import com.smartinvent.service.CategoryService;
+import com.smartinvent.service.ProductService;
+import com.smartinvent.service.StorageService;
+import com.smartinvent.service.TransactionService;
+import com.smartinvent.service.StorageApi;
+
+
 import com.smartinvent.utils.QrCodeUtils;
-import retrofit2.Callback;
+
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -226,12 +234,12 @@ public class AddProductActivity extends AppCompatActivity {
 
                 if (categories != null && !categories.isEmpty()) {
                     categoryList.addAll(categories);
-                    List<String> categoryNames = new ArrayList<>();
+                    final List<String> categoryNames = new ArrayList<>();
                     for (Category category : categories) {
                         categoryNames.add(category.getName());
                     }
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    final ArrayAdapter<String> adapter = new ArrayAdapter<>(
                             AddProductActivity.this,
                             android.R.layout.simple_dropdown_item_1line,
                             categoryNames
@@ -269,13 +277,13 @@ public class AddProductActivity extends AppCompatActivity {
                     Log.d("DEBUG", "storages != null && !storages.isEmpty()...");
 
                     storageList.addAll(storages);
-                    List<String> storageNames = new ArrayList<>();
+                    final List<String> storageNames = new ArrayList<>();
                     for (Storage storage : storages) {
                         storageNames.add(storage.getName());
                     }
                     Log.d("DEBUG", "ArrayAdapter...");
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    final ArrayAdapter<String> adapter = new ArrayAdapter<>(
                             AddProductActivity.this,
                             android.R.layout.simple_dropdown_item_1line,
                             storageNames
@@ -302,7 +310,7 @@ public class AddProductActivity extends AppCompatActivity {
 
 
     private void scanQrCode() {
-        IntentIntegrator integrator = new IntentIntegrator(this);
+        final IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
         integrator.setPrompt("Скануйте QR-код товару");
         integrator.setCameraId(0);
@@ -311,7 +319,7 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
     private void generateQrCode() {
-        String productWorkId = addProductWorkId.getText().toString().trim();
+        final String productWorkId = addProductWorkId.getText().toString().trim();
 
         if (productWorkId.isEmpty()) {
             Toast.makeText(this, "Спочатку введіть код товару!", Toast.LENGTH_SHORT).show();
@@ -319,26 +327,26 @@ public class AddProductActivity extends AppCompatActivity {
         }
 
         qrCodeBytes = productWorkId.getBytes(StandardCharsets.UTF_8);
-        Bitmap qrBitmap = QrCodeUtils.generateQrBitmap(productWorkId);
+        final Bitmap qrBitmap = QrCodeUtils.generateQrBitmap(productWorkId);
         imgQrCode.setImageBitmap(qrBitmap);
     }
 
     private void saveProduct() {
-        String name = addName.getText().toString().trim();
-        String description = addDescription.getText().toString().trim();
-        String productWorkId = addProductWorkId.getText().toString().trim();
-        String countStr = addCount.getText().toString().trim();
+        final String name = addName.getText().toString().trim();
+        final String description = addDescription.getText().toString().trim();
+        final String productWorkId = addProductWorkId.getText().toString().trim();
+        final String countStr = addCount.getText().toString().trim();
 
         if (name.isEmpty() || countStr.isEmpty() || productWorkId.isEmpty()) {
             Toast.makeText(this, "Будь ласка, заповніть всі обов'язкові поля", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        int count = Integer.parseInt(countStr);
+        final int count = Integer.parseInt(countStr);
         Category selectedCategory = null;
         Storage selectedStorage = null;
 
-        String selectedCategoryName = addspnCategory.getText().toString().trim();
+        final String selectedCategoryName = addspnCategory.getText().toString().trim();
         if (!selectedCategoryName.isEmpty() && categoryList != null) {
             for (Category category : categoryList) {
                 if (category.getName().equals(selectedCategoryName)) {
@@ -348,7 +356,7 @@ public class AddProductActivity extends AppCompatActivity {
             }
         }
 
-        String selectedStorageName = addspnStorage.getText().toString().trim();
+        final String selectedStorageName = addspnStorage.getText().toString().trim();
         if (!selectedStorageName.isEmpty() && storageList != null) {
             for (Storage storage : storageList) {
                 if (storage.getName().equals(selectedStorageName)) {
@@ -358,7 +366,7 @@ public class AddProductActivity extends AppCompatActivity {
             }
         }
 
-        Product newProduct = new Product();
+        final Product newProduct = new Product();
         newProduct.setName(name);
         newProduct.setDescription(description);
         newProduct.setProductWorkId(productWorkId);
@@ -398,7 +406,7 @@ public class AddProductActivity extends AppCompatActivity {
 
 
         private void addTransaction(Long productId, String action) {
-        Transaction transaction = new Transaction(productId, action, System.currentTimeMillis());
+        final Transaction transaction = new Transaction(productId, action, System.currentTimeMillis());
         transactionService.createTransaction(transaction, success -> {
             if (!success) {
                 Toast.makeText(this, "Помилка запису в історію руху товарів", Toast.LENGTH_SHORT).show();

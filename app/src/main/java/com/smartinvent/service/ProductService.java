@@ -8,7 +8,6 @@ import retrofit2.Response;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 
 public class ProductService {

@@ -2,12 +2,17 @@ package com.smartinvent.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.smartinvent.R;
-import com.smartinvent.fragment.*;
+import com.smartinvent.fragment.AdminHomeFragment;
+import com.smartinvent.fragment.EmployeeFragment;
+import com.smartinvent.fragment.InventoryFragment;
+import com.smartinvent.fragment.MainScannerFragment;
+import com.smartinvent.fragment.MoreFragment;
+import com.smartinvent.fragment.ProductFragment;
+import com.smartinvent.fragment.UserHomeFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,14 +23,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        final SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
         isAdmin = "ADMIN".equals(sharedPreferences.getString("role", "USER"));
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         // Завантажуємо головний фрагмент
         if (savedInstanceState == null) {
-            Fragment startFragment = isAdmin ? new AdminHomeFragment() : new UserHomeFragment();
+            final Fragment startFragment = isAdmin ? new AdminHomeFragment() : new UserHomeFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, startFragment)
                     .commit();

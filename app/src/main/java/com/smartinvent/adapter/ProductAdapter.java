@@ -39,13 +39,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Product product = productList.get(position);
+        final Product product = productList.get(position);
         holder.name.setText(product.getName());
         holder.productWorkId.setText(product.getProductWorkId());
         holder.category.setText(product.getCategory() != null ? product.getCategory().getName() : "Без категорії");
@@ -65,9 +65,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 // Якщо вже вибраний, знімаємо вибір
                 selectedPosition = RecyclerView.NO_POSITION;
                 notifyDataSetChanged();
-                if (listener != null) listener.onProductDeselected();
+                if (listener != null) {listener.onProductDeselected();}
             } else {
-                int previousPosition = selectedPosition;
+                final int previousPosition = selectedPosition;
                 selectedPosition = holder.getAdapterPosition();
                 notifyItemChanged(previousPosition);
                 notifyItemChanged(selectedPosition);

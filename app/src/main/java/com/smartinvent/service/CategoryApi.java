@@ -3,9 +3,14 @@ package com.smartinvent.service;
 import com.smartinvent.model.Category;
 import java.util.List;
 
-import com.smartinvent.model.Product;
 import retrofit2.Call;
-import retrofit2.http.*;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.DELETE;
+import retrofit2.http.Path;
+import retrofit2.http.Body;
+
 
 public interface CategoryApi {
     @GET("api/categories/all")

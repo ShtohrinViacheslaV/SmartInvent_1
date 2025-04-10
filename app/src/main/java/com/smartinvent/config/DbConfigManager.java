@@ -16,8 +16,8 @@ public class DbConfigManager {
     public static void saveConfig(Context context, DatabaseConfig config) {
         System.out.println("DbConfigManager saveConfig ");
 
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
+        final SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = prefs.edit();
         editor.putString(KEY_HOST, config.getHost());
         editor.putString(KEY_PORT, config.getPort());
         editor.putString(KEY_DATABASE, config.getDatabase());
@@ -31,13 +31,13 @@ public class DbConfigManager {
     public static DatabaseConfig loadConfig(Context context) {
         System.out.println("DbConfigManager loadConfig ");
 
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        String host = prefs.getString(KEY_HOST, "");
-        String port = prefs.getString(KEY_PORT, "");
-        String database = prefs.getString(KEY_DATABASE, "");
-        String user = prefs.getString(KEY_USER, "");
-        String password = prefs.getString(KEY_PASSWORD, "");
-        String url = prefs.getString(KEY_URL, "");
+        final SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        final String host = prefs.getString(KEY_HOST, "");
+        final String port = prefs.getString(KEY_PORT, "");
+        final String database = prefs.getString(KEY_DATABASE, "");
+        final String user = prefs.getString(KEY_USER, "");
+        final String password = prefs.getString(KEY_PASSWORD, "");
+        final String url = prefs.getString(KEY_URL, "");
 
         // Якщо хоча б одне поле порожнє, повертаємо null
         if (host.isEmpty() || port.isEmpty() || database.isEmpty() || user.isEmpty() || password.isEmpty() || url.isEmpty()) {
@@ -47,7 +47,7 @@ public class DbConfigManager {
     }
 
     public static void checkSavedConfig(Context context) {
-        DatabaseConfig config = DbConfigManager.loadConfig(context);
+        final DatabaseConfig config = DbConfigManager.loadConfig(context);
         if (config != null) {
             System.out.println("Host: " + config.getHost());
             System.out.println("Port: " + config.getPort());
@@ -66,7 +66,7 @@ public class DbConfigManager {
     public static boolean isConfigAvailable(Context context) {
         System.out.println("DbConfigManager isConfigAvailable ");
 
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        final SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.contains(KEY_HOST) && prefs.contains(KEY_PORT) && prefs.contains(KEY_DATABASE) &&
                 prefs.contains(KEY_USER) && prefs.contains(KEY_PASSWORD) &&
                 prefs.contains(KEY_URL);
@@ -75,7 +75,7 @@ public class DbConfigManager {
     public static void clearConfig(Context context) {
         System.out.println("DbConfigManager clearConfig ");
 
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        final SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         prefs.edit().clear().apply();
     }
 }

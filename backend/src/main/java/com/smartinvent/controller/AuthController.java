@@ -6,6 +6,7 @@ import com.smartinvent.dto.ErrorResponse;
 import com.smartinvent.models.Employee;
 import com.smartinvent.repositories.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,6 +32,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+        String sessionId = UUID.randomUUID().toString();
+        String userId = request.getEmployeeWorkId() != null ? request.getEmployeeWorkId() : "unknown";
+
+        // Додаємо контекст до MDC
+        MDC.put("sessionId", sessionId);
+        MDC.put("userId", userId);
+
         log.info("Login attempt with Work ID: {}", request.getEmployeeWorkId());
 
         try {
@@ -51,22 +59,18 @@ public class AuthController {
                 } else {
                     log.warn("Incorrect password for Work ID: {}", request.getEmployeeWorkId());
                     return handleLoginFailure("Incorrect password", request.getEmployeeWorkId());
-
                 }
             } else {
                 log.warn("No employee found with Work ID: {}", request.getEmployeeWorkId());
                 return handleLoginFailure("Employee not found", request.getEmployeeWorkId());
-
             }
-
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                    .body(Collections.singletonMap("error", "Invalid work ID or password"));
 
         } catch (Exception e) {
             log.error("Unexpected error during login", e);
             return handleLoginFailure("Server error during login", null);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(Collections.singletonMap("error", "Server error during login"));
+        } finally {
+            // Завжди очищаємо MDC
+            MDC.clear();
         }
     }
 

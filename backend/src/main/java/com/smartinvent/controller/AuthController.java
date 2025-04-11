@@ -2,6 +2,7 @@ package com.smartinvent.controller;
 
 import com.smartinvent.dto.AuthRequest;
 import com.smartinvent.dto.AuthResponse;
+import com.smartinvent.dto.ErrorResponse;
 import com.smartinvent.models.Employee;
 import com.smartinvent.repositories.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -47,18 +50,35 @@ public class AuthController {
                     ));
                 } else {
                     log.warn("Incorrect password for Work ID: {}", request.getEmployeeWorkId());
+                    return handleLoginFailure("Incorrect password", request.getEmployeeWorkId());
+
                 }
             } else {
                 log.warn("No employee found with Work ID: {}", request.getEmployeeWorkId());
+                return handleLoginFailure("Employee not found", request.getEmployeeWorkId());
+
             }
 
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Collections.singletonMap("error", "Invalid work ID or password"));
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                    .body(Collections.singletonMap("error", "Invalid work ID or password"));
 
         } catch (Exception e) {
             log.error("Unexpected error during login", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error", "Server error during login"));
+            return handleLoginFailure("Server error during login", null);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(Collections.singletonMap("error", "Server error during login"));
         }
+    }
+
+    private ResponseEntity<ErrorResponse> handleLoginFailure(String errorMessage, String workId) {
+        String errorId = UUID.randomUUID().toString();
+        ErrorResponse errorResponse = new ErrorResponse(
+                errorId,
+                errorMessage,
+                LocalDateTime.now(),
+                workId != null ? "Login attempt with Work ID: " + workId : "Login attempt",
+                Collections.emptyMap()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 }

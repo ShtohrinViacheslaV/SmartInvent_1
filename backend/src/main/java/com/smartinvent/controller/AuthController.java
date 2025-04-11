@@ -7,10 +7,14 @@ import com.smartinvent.models.Employee;
 import com.smartinvent.repositories.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -21,6 +25,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    @Autowired
+    private MessageSource messageSource;
 
     private final EmployeeRepository employeeRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -69,16 +76,17 @@ public class AuthController {
             log.error("Unexpected error during login", e);
             return handleLoginFailure("Server error during login", null);
         } finally {
-            // Завжди очищаємо MDC
             MDC.clear();
         }
     }
 
-    private ResponseEntity<ErrorResponse> handleLoginFailure(String errorMessage, String workId) {
+    private ResponseEntity<ErrorResponse> handleLoginFailure(String messageKey, String workId) {
         String errorId = UUID.randomUUID().toString();
+        String localizedMessage = messageSource.getMessage(messageKey, null, LocaleContextHolder.getLocale());
+
         ErrorResponse errorResponse = new ErrorResponse(
                 errorId,
-                errorMessage,
+                localizedMessage,
                 LocalDateTime.now(),
                 workId != null ? "Login attempt with Work ID: " + workId : "Login attempt",
                 Collections.emptyMap()

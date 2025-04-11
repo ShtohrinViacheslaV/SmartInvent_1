@@ -23,6 +23,8 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = "LoginActivity";
+
     private EditText workIdInput, passwordInput;
     private ApiService apiService;
     private SharedPreferences sharedPreferences;
@@ -32,6 +34,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Log.d(TAG, "onCreate: Initializing login screen");
+
         workIdInput = findViewById(R.id.username);
         passwordInput = findViewById(R.id.password);
 
@@ -40,10 +44,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateApiClient() {
+
+        Log.d(TAG, "updateApiClient: Checking database config");
+
+
         if (DbConfigManager.isConfigAvailable(this)) {
             DatabaseConfig config = DbConfigManager.loadConfig(this);
             if (config == null) {
-                Toast.makeText(this, "Будь ласка, налаштуйте базу даних!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Please configure the database!", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(this, DatabaseConfigActivity.class));
                 finish();
                 return;
@@ -51,14 +59,16 @@ public class LoginActivity extends AppCompatActivity {
             String apiUrl = ApiConfig.getBaseUrl();
 
             if (apiUrl == null || (!apiUrl.startsWith("http://") && !apiUrl.startsWith("https://"))) {
-                Toast.makeText(this, "Невірний URL сервера API!", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "updateApiClient: Invalid API URL: " + apiUrl);
+                Toast.makeText(this, "Invalid API server URL!", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            System.out.println("API URL: " + apiUrl);
+            Log.d(TAG, "updateApiClient: Using API URL: " + apiUrl);
             ApiConfig.setBaseUrl(apiUrl);
             apiService = ApiClient.getService();
         } else {
+            Log.w(TAG, "updateApiClient: No database config available");
             apiService = null;
         }
     }
@@ -70,8 +80,11 @@ public class LoginActivity extends AppCompatActivity {
             String password = passwordInput.getText().toString().trim();
             boolean isAdminLogin = v.getId() == R.id.login_admin;
 
+            Log.d(TAG, "login: Attempting login, isAdmin = " + isAdminLogin);
+
             if (workIdStr.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Будь ласка, введіть логін і пароль", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please enter login and password", Toast.LENGTH_SHORT).show();
+                Log.w(TAG, "login: Empty login or password");
                 return;
             }
 
@@ -80,40 +93,51 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 employeeWorkId = Integer.parseInt(workIdStr);
             } catch (NumberFormatException e) {
-                Toast.makeText(this, "Невірний формат Work ID", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "login: Invalid Work ID format", e);
+                Toast.makeText(this, "Invalid Work ID format", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!DbConfigManager.isConfigAvailable(this)) {
+                Log.w(TAG, "login: Database config is missing");
                 handleNoDatabase(isAdminLogin);
                 return;
             }
 
             if (apiService == null) {
-                Toast.makeText(this, "Немає підключення до API", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "login: API service is null");
+                Toast.makeText(this, "No connection to API", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            Log.d(TAG, "login: Sending authentication request");
             authenticateUser(employeeWorkId, password, isAdminLogin);
         }
         catch (Exception e) {
-            Log.e("LoginActivity", "Помилка у login()", e);
-            Toast.makeText(this, "Помилка авторизації", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "login: Exception during login", e);
+            Toast.makeText(this, "Authentication error", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void handleNoDatabase(boolean isAdminLogin) {
+        Log.d(TAG, "handleNoDatabase: isAdmin = " + isAdminLogin);
+
         if (isAdminLogin) {
             new AlertDialog.Builder(this)
-                    .setTitle("Немає підключення до БД")
-                    .setMessage("Ви можете або налаштувати підключення, або увійти без нього.")
-                    .setPositiveButton("Налаштувати", (dialog, which) ->
-                            startActivity(new Intent(this, DatabaseConfigActivity.class)))
-                    .setNegativeButton("Ігнорувати", (dialog, which) ->
-                            openAdminPanelWithoutDatabase())
+                    .setTitle("No database connection")
+                    .setMessage("You can either configure the connection or log in without it.")
+                    .setPositiveButton("Configure", (dialog, which) -> {
+                        Log.d(TAG, "handleNoDatabase: Redirecting to config");
+                        startActivity(new Intent(this, DatabaseConfigActivity.class));
+                    })
+                    .setNegativeButton("Ignore", (dialog, which) -> {
+                        Log.d(TAG, "handleNoDatabase: Opening admin panel without DB");
+                        openAdminPanelWithoutDatabase();
+                    })
                     .show();
         } else {
-            Toast.makeText(this, "Немає підключення до БД. Зверніться до адміністратора.", Toast.LENGTH_LONG).show();
+            Log.w(TAG, "handleNoDatabase: Non-admin attempted login without DB config");
+            Toast.makeText(this, "No DB connection. Contact the administrator.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -123,9 +147,11 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     AuthResponse authResponse = response.body();
+                    Log.d(TAG, "authenticateUser: Login successful. Role: " + authResponse.getRole());
 
                     if (isAdminLogin && !"ADMIN".equals(authResponse.getRole())) {
-                        Toast.makeText(LoginActivity.this, "Недостатньо прав для входу як адміністратор", Toast.LENGTH_SHORT).show();
+                        Log.w(TAG, "authenticateUser: Insufficient privileges for admin login");
+                        Toast.makeText(LoginActivity.this, "Insufficient rights for admin login", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -137,464 +163,36 @@ public class LoginActivity extends AppCompatActivity {
                             .apply();
 
                     Class<?> targetActivity = isAdminLogin ? AdminHomeActivity.class : UserHomeActivity.class;
+                    Log.d(TAG, "authenticateUser: Redirecting to " + targetActivity.getSimpleName());
                     startActivity(new Intent(LoginActivity.this, targetActivity));
                     finish();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Невірний логін або пароль", Toast.LENGTH_SHORT).show();
+                    Log.w(TAG, "authenticateUser: Invalid login credentials");
+                    Toast.makeText(LoginActivity.this, "Invalid login or password", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<AuthResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Помилка з'єднання", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "authenticateUser: API call failed", t);
+                Toast.makeText(LoginActivity.this, "Connection error", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void openAdminPanelWithoutDatabase() {
+        Log.d(TAG, "openAdminPanelWithoutDatabase: Redirecting to AdminHomeActivity");
         startActivity(new Intent(LoginActivity.this, AdminHomeActivity.class));
         finish();
     }
 
     public void signUpDatabase(View v) {
+        Log.d(TAG, "signUpDatabase: Opening DatabaseConfigActivity");
         startActivity(new Intent(this, DatabaseConfigActivity.class));
     }
 
         public void forgotPassword(View v) {
-        startActivity(new Intent(this, ForgotPasswordActivity.class));
+            Log.d(TAG, "forgotPassword: Opening ForgotPasswordActivity");
+            startActivity(new Intent(this, ForgotPasswordActivity.class));
     }
 }
-
-
-
-//package com.smartinvent.activity;
-//
-//import android.content.Intent;
-//import android.content.SharedPreferences;
-//import android.os.Bundle;
-//import android.view.View;
-//import android.widget.EditText;
-//import android.widget.Toast;
-//import androidx.appcompat.app.AppCompatActivity;
-//import com.smartinvent.R;
-//import com.smartinvent.config.ApiConfig;
-//import com.smartinvent.config.DatabaseConfig;
-//import com.smartinvent.config.DbConfigManager;
-//import com.smartinvent.model.AuthRequest;
-//import com.smartinvent.model.AuthResponse;
-//import com.smartinvent.network.ApiService;
-//import com.smartinvent.network.ApiClient;
-//import retrofit2.Call;
-//import retrofit2.Callback;
-//import retrofit2.Response;
-//
-//public class LoginActivity extends AppCompatActivity {
-//
-//    private EditText emailInput, passwordInput;
-//    private ApiService apiService;
-//    private SharedPreferences sharedPreferences;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_login);
-//
-//        emailInput = findViewById(R.id.username);
-//        passwordInput = findViewById(R.id.password);
-//
-//        sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-//        updateApiClient(); // Оновлюємо API клієнт при старті
-//    }
-//
-//    private void updateApiClient() {
-//        DatabaseConfig dbConfig = DbConfigManager.loadConfig(this);
-//        if (dbConfig != null) {
-//            ApiConfig.setBaseUrl(dbConfig.getUrl());
-//            apiService = ApiClient.getService();
-//        }
-//    }
-//
-//    public void login(View v) {
-//        String email = emailInput.getText().toString().trim();
-//        String password = passwordInput.getText().toString().trim();
-//        boolean isAdminLogin = v.getId() == R.id.login_admin;
-//
-//        // Перевірка на заповненість полів
-//        if (email.isEmpty() || password.isEmpty()) {
-//            Toast.makeText(this, "Будь ласка, введіть логін і пароль", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        // Перевірка налаштувань підключення до БД перед входом
-//        if (!DbConfigManager.isConfigAvailable(this)) {
-//            Toast.makeText(this, "Немає налаштувань підключення до БД. Налаштуйте його спочатку!", Toast.LENGTH_LONG).show();
-//            startActivity(new Intent(this, DatabaseConfigActivity.class));
-//            return;
-//        }
-//
-//        AuthRequest request = new AuthRequest(email, password);
-//
-//        apiService.login(request).enqueue(new Callback<AuthResponse>() {
-//            @Override
-//            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//                    AuthResponse authResponse = response.body();
-//
-//                    // Перевірка доступу: якщо це вхід для адміністратора, а роль ≠ "ADMIN"
-//                    if (isAdminLogin && !"ADMIN".equals(authResponse.getRole())) {
-//                        Toast.makeText(LoginActivity.this, "Недостатньо прав для входу як адміністратор", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//
-//                    // Збереження даних користувача
-//                    sharedPreferences.edit()
-//                            .putLong("employeeId", authResponse.getEmployeeId())
-//                            .putString("role", authResponse.getRole())
-//                            .putString("firstName", authResponse.getFirstName())
-//                            .putString("lastName", authResponse.getLastName())
-//                            .apply();
-//
-//                    // Перехід на відповідну сторінку
-//                    Class<?> targetActivity = isAdminLogin ? AdminHomeActivity.class : UserHomeActivity.class;
-//                    startActivity(new Intent(LoginActivity.this, targetActivity));
-//                    finish();
-//                } else {
-//                    Toast.makeText(LoginActivity.this, "Невірний логін або пароль", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<AuthResponse> call, Throwable t) {
-//                Toast.makeText(LoginActivity.this, "Помилка з'єднання", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-//
-//    public void signUpDatabase(View v) {
-//        startActivity(new Intent(this, DatabaseConfigActivity.class));
-//    }
-//
-//    public void forgotPassword(View v) {
-//        startActivity(new Intent(this, ForgotPasswordActivity.class));
-//    }
-//}
-
-
-
-//package com.smartinvent.activity;
-//
-//
-//
-//import android.content.Intent;
-//import android.content.SharedPreferences;
-//import android.content.res.Configuration;
-//import android.content.res.Resources;
-//import android.os.Bundle;
-//import android.view.View;
-//import android.widget.Button;
-//import android.widget.EditText;
-//import android.widget.ImageButton;
-//
-//import android.widget.Toast;
-//import androidx.activity.EdgeToEdge;
-//import androidx.appcompat.app.AppCompatActivity;
-//import androidx.core.graphics.Insets;
-//import androidx.core.view.ViewCompat;
-//import androidx.core.view.WindowInsetsCompat;
-//import com.smartinvent.R;
-//import com.smartinvent.config.ApiConfig;
-//import com.smartinvent.config.DatabaseConfig;
-//import com.smartinvent.config.DbConfigManager;
-//import com.smartinvent.model.AuthRequest;
-//import com.smartinvent.model.AuthResponse;
-//import com.smartinvent.network.ApiService;
-//import com.smartinvent.network.ApiClient;
-//import retrofit2.Call;
-//import retrofit2.Callback;
-//import retrofit2.Response;
-//
-//import java.util.Locale;
-//
-//public class LoginActivity extends AppCompatActivity {
-//
-//    private EditText emailInput, passwordInput;
-//    private ApiService apiService;
-//    private SharedPreferences sharedPreferences;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_login);
-//
-//        emailInput = findViewById(R.id.username);
-//        passwordInput = findViewById(R.id.password);
-//
-//        sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-//
-//        // Перевірка підключення до БД
-//        if (!DbConfigManager.isConfigAvailable(this)) {
-//            Toast.makeText(this, "Немає налаштувань підключення до БД. Налаштуйте його спочатку!", Toast.LENGTH_LONG).show();
-//            startActivity(new Intent(this, DatabaseConfigActivity.class));
-//            finish();
-//            return;
-//        }
-//
-//        // Оновлюємо API клієнт
-//        updateApiClient();
-//    }
-//
-//    private void updateApiClient() {
-//        DatabaseConfig dbConfig = DbConfigManager.loadConfig(this);
-//        if (dbConfig != null) {
-//            ApiConfig.setBaseUrl(dbConfig.getUrl());
-//            apiService = ApiClient.getService();
-//        }
-//    }
-//
-//
-//    public void login(View v) {
-//        String email = emailInput.getText().toString().trim();
-//        String password = passwordInput.getText().toString().trim();
-//
-//        apiService.login(new AuthRequest(email, password)).enqueue(new Callback<AuthResponse>() {
-//            @Override
-//            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//                    AuthResponse authResponse = response.body();
-//
-//                    sharedPreferences.edit()
-//                            .putLong("employeeId", authResponse.getEmployeeId())
-//                            .putString("role", authResponse.getRole())
-//                            .apply();
-//
-//                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-//                    finish();
-//                } else {
-//                    Toast.makeText(LoginActivity.this, "Невірний логін або пароль", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<AuthResponse> call, Throwable t) {
-//                Toast.makeText(LoginActivity.this, "Помилка з'єднання", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-//
-//    public void signUpDatabase(View v){
-//        Intent intent = new Intent(this, DatabaseConfigActivity.class);
-//        startActivity(intent);
-//    }
-//
-//    public void signUpCompanyPage1(View v){
-//        Intent intent = new Intent(this, SignUpCompanyActivity1.class);
-//        startActivity(intent);
-//    }
-//
-//    public void forgotPassword(View v){
-//        Intent intent = new Intent(this, ForgotPasswordActivity.class);
-//        startActivity(intent);
-//    }
-//}
-//
-//
-//
-//
-////    @Override
-////    protected void onCreate(Bundle savedInstanceState) {
-////        super.onCreate(savedInstanceState);
-////        setContentView(R.layout.activity_login);
-////
-////        emailInput = findViewById(R.id.username);
-////        passwordInput = findViewById(R.id.password);
-////
-////        apiService = ApiClient.getClient().create(ApiService.class);
-////        sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-////    }
-//
-//
-////    public void login(View v) {
-////        String email = emailInput.getText().toString().trim();
-////        String password = passwordInput.getText().toString().trim();
-////
-////        apiService.login(new AuthRequest(email, password)).enqueue(new Callback<AuthResponse>() {
-////            @Override
-////            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
-////                if (response.isSuccessful() && response.body() != null) {
-////                    AuthResponse authResponse = response.body();
-////
-////                    SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-////                    sharedPreferences.edit()
-////                            .putLong("employeeId", authResponse.getEmployeeId())
-////                            .putString("role", authResponse.getRole())
-////                            .apply();
-////
-////                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-////                    startActivity(intent);
-////                    finish();
-////                } else {
-////                    Toast.makeText(LoginActivity.this, "Невірний логін або пароль", Toast.LENGTH_SHORT).show();
-////                }
-////            }
-////
-////            @Override
-////            public void onFailure(Call<AuthResponse> call, Throwable t) {
-////                Toast.makeText(LoginActivity.this, "Помилка з'єднання", Toast.LENGTH_SHORT).show();
-////            }
-////        });
-////    }
-//
-////    public void login(View v) {
-////        String email = emailInput.getText().toString().trim();
-////        String password = passwordInput.getText().toString().trim();
-////        boolean isAdminLogin = v.getId() == R.id.login_admin;
-////
-////        AuthRequest request = new AuthRequest(email, password);
-////
-////        apiService.login(request).enqueue(new Callback<AuthResponse>() {
-////            @Override
-////            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
-////                if (response.isSuccessful() && response.body() != null) {
-////                    AuthResponse authResponse = response.body();
-////
-////                    if (isAdminLogin && !authResponse.getRole().equals("ADMIN")) {
-////                        Toast.makeText(LoginActivity.this, "Недостатньо прав", Toast.LENGTH_SHORT).show();
-////                        return;
-////                    }
-////
-////                    // Зберігаємо дані користувача
-////                    sharedPreferences.edit()
-////                            .putLong("employeeId", authResponse.getEmployeeId())
-////                            .putString("role", authResponse.getRole())
-////                            .putString("firstName", authResponse.getFirstName())
-////                            .putString("lastName", authResponse.getLastName())
-////                            .apply();
-////
-////                    // Переходимо на відповідну сторінку
-////                    Intent intent = new Intent(LoginActivity.this,
-////                            isAdminLogin ? AdminHomeActivity.class : UserHomeActivity.class);
-////                    startActivity(intent);
-////                    finish();
-////                } else {
-////                    Toast.makeText(LoginActivity.this, "Невірний логін або пароль", Toast.LENGTH_SHORT).show();
-////                }
-////            }
-////
-////            @Override
-////            public void onFailure(Call<AuthResponse> call, Throwable t) {
-////                Toast.makeText(LoginActivity.this, "Помилка з'єднання", Toast.LENGTH_SHORT).show();
-////            }
-////        });
-////    }
-//
-//
-//
-////        ImageButton btnEnglish = findViewById(R.id.btn_english);
-////        ImageButton btnUkrainian = findViewById(R.id.btn_ukrainian);
-////
-////        btnEnglish.setOnClickListener(v -> setLocale("en"));
-////        btnUkrainian.setOnClickListener(v -> setLocale("uk"));
-////
-////        loadLocale();
-//    //}
-//
-//
-////    public void loginAsUser(View v){
-////        Intent intent = new Intent(this, UserHomeActivity.class);
-////        startActivity(intent);
-////    }
-////
-////    public void loginAsAdmin(View v){
-////        Intent intent = new Intent(this, AdminHomeActivity.class);
-////        startActivity(intent);
-////    }
-//
-//
-//
-//
-//
-////
-////import android.content.Intent;
-////import android.os.Bundle;
-////import android.view.View;
-////import androidx.activity.EdgeToEdge;
-////import androidx.appcompat.app.AppCompatActivity;
-////import androidx.core.graphics.Insets;
-////import androidx.core.view.ViewCompat;
-////import androidx.core.view.WindowInsetsCompat;
-////import com.smartinvent.R;
-////
-////public class LoginActivity extends AppCompatActivity {
-////
-////    @Override
-////    protected void onCreate(Bundle savedInstanceState) {
-////        super.onCreate(savedInstanceState);
-////        EdgeToEdge.enable(this);
-////
-////        setContentView(R.layout.activity_login);
-////
-////        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-////            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-////            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-////            return insets;
-////        });
-////    }
-////
-//////        ImageButton btnEnglish = findViewById(R.id.btn_english);
-//////        ImageButton btnUkrainian = findViewById(R.id.btn_ukrainian);
-//////
-//////        btnEnglish.setOnClickListener(v -> setLocale("en"));
-//////        btnUkrainian.setOnClickListener(v -> setLocale("uk"));
-//////
-//////        loadLocale();
-//////    }
-//////
-//////    private void setLocale(String lang) {
-//////        Locale locale = new Locale(lang);
-//////        Locale.setDefault(locale);
-//////        Resources res = getResources();
-//////        Configuration config = new Configuration(res.getConfiguration());
-//////        config.setLocale(locale);
-//////        res.updateConfiguration(config, res.getDisplayMetrics());
-//////
-//////        // Save the selected language in SharedPreferences
-//////        SharedPreferences.Editor editor = getSharedPreferences("Settings", MODE_PRIVATE).edit();
-//////        editor.putString("My_Lang", lang);
-//////        editor.apply();
-//////
-//////        // Reload the activity to apply the new language
-//////        recreate();
-//////    }
-//////
-//////    private void loadLocale() {
-//////        SharedPreferences prefs = getSharedPreferences("Settings", MODE_PRIVATE);
-//////        String language = prefs.getString("My_Lang", "");
-//////        setLocale(language);
-//////    }
-//////
-////
-////
-////    public void loginAsUser(View v){
-////        Intent intent = new Intent(this, UserHomeActivity.class);
-////        startActivity(intent);
-////    }
-////
-////    public void loginAsAdmin(View v){
-////        Intent intent = new Intent(this, AdminHomeActivity.class);
-////        startActivity(intent);
-////    }
-////
-////    public void signUpCompanyPage1(View v){
-////        Intent intent = new Intent(this, SignUpCompanyActivity1.class);
-////        startActivity(intent);
-////    }
-////
-////    public void forgotPassword(View v){
-////        Intent intent = new Intent(this, ForgotPasswordActivity.class);
-////        startActivity(intent);
-////    }
-////
-////
-////
-////
-////}

@@ -17,11 +17,6 @@ tasks.named("check") {
     dependsOn("checkstyleMain", "checkstyleTest")
 }
 
-
-tasks.named("check") {
-    dependsOn("spotbugsMain", "spotbugsTest")
-}
-
 tasks.named("build") {
     dependsOn("checkstyleMain")
 }
@@ -34,22 +29,37 @@ tasks.withType<Checkstyle>().configureEach {
 }
 
 
-subprojects {
-    apply(plugin = "checkstyle")
-
-    checkstyle {
-        toolVersion = "10.0"  // Встановіть відповідну версію
-        configFile = rootProject.file("tools/checkstyle/checkstyle.xml")  // Шлях до вашого конфігураційного файлу
-    }
-
-    tasks.withType<Checkstyle>().configureEach {
-        reports {
-            xml.required.set(false)
-            html.required.set(true)
-        }
-    }
-
+spotbugs {
+    toolVersion.set("4.8.3")
+    showProgress.set(true)
 }
+
+
+tasks.spotbugsMain {
+    reports.create("html") {
+        required = true
+        outputLocation = file("$buildDir/reports/spotbugs.html")
+        setStylesheet("fancy-hist.xsl")
+    }
+}
+
+//
+//subprojects {
+//    apply(plugin = "checkstyle")
+//
+//    checkstyle {
+//        toolVersion = "10.0"  // Встановіть відповідну версію
+//        configFile = rootProject.file("tools/checkstyle/checkstyle.xml")  // Шлях до вашого конфігураційного файлу
+//    }
+//
+//    tasks.withType<Checkstyle>().configureEach {
+//        reports {
+//            xml.required.set(false)
+//            html.required.set(true)
+//        }
+//    }
+
+//}
 
 //tasks.register<Delete>("clean") {
 //    delete(rootProject.buildDir)

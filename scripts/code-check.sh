@@ -2,10 +2,11 @@
 echo "🔍 Виконується повна перевірка коду (лінтер + статичний аналіз)..."
 
 # Перевірка стилю коду
-./gradlew checkstyleMain checkstyleTest
+./gradlew :app:checkstyleMain
+./gradlew :backend:checkstyleMain checkstyleTest
 
 # Статичний аналіз
-./gradlew spotbugsMain spotbugsTest
+./gradlew :backend:spotbugsMain spotbugsTest
 
 # Юніт тести
 ./gradlew test

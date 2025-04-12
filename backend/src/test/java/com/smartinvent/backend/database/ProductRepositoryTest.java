@@ -24,11 +24,11 @@ public class ProductRepositoryTest {
 
     @Test
     public void testSaveAndFindProduct() {
-        Product product = new Product();
+        final Product product = new Product();
         product.setName("Тестовий товар");
         productRepository.save(product);
 
-        Optional<Product> found = productRepository.findById(product.getProductId());
+        final Optional<Product> found = productRepository.findById(product.getProductId());
         assertTrue(found.isPresent(), "❌ Товар не знайдено!");
         assertEquals("Тестовий товар", found.get().getName());
         System.out.println("✅ Товар успішно збережений і знайдений!");

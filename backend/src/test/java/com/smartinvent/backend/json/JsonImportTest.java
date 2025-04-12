@@ -26,11 +26,11 @@ public class JsonImportTest {
     @Test
     public void testImportJsonFile() throws Exception {
         // Припустимо, у нас є JSON-файл product.json
-        File file = new File("src/test/resources/product.json");
-        Product product = objectMapper.readValue(file, Product.class);
+        final File file = new File("src/test/resources/product.json");
+        final Product product = objectMapper.readValue(file, Product.class);
 
         productRepository.save(product);
-        Optional<Product> found = productRepository.findById(product.getProductId());
+        final Optional<Product> found = productRepository.findById(product.getProductId());
 
         assertTrue(found.isPresent(), "❌ Не вдалося імпортувати продукт!");
         System.out.println("✅ JSON-файл імпортований у базу!");

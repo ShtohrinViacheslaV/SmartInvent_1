@@ -19,8 +19,8 @@ public class SchemaValidationTest {
 
     @Test
     public void testTableExists() {
-        String tableName = "product"; // Перевіряємо таблицю Product
-        Integer count = jdbcTemplate.queryForObject(
+        final String tableName = "product"; // Перевіряємо таблицю Product
+        final Integer count = jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?",
                 new Object[]{tableName},
                 Integer.class

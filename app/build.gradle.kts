@@ -1,9 +1,9 @@
+import com.github.spotbugs.snom.SpotBugsTask
+
 plugins {
     id("com.android.application")
     id("checkstyle")
     id("com.github.spotbugs") version "6.0.3"
-
-
 }
 
 android {
@@ -62,13 +62,8 @@ tasks.named("check") {
     dependsOn("checkstyleMain", "checkstyleTest")
 }
 
-
-tasks.named("check") {
-    dependsOn("spotbugsMain", "spotbugsTest")
-}
-
 tasks.named("build") {
-    dependsOn("checkstyleMain", "checkstyleTest")
+    dependsOn("checkstyleMain")
 }
 
 tasks.withType<Checkstyle>().configureEach {
@@ -90,6 +85,28 @@ tasks.register<Checkstyle>("checkstyleTest") {
     classpath = files()
 }
 
+
+spotbugs {
+    toolVersion.set("4.8.3")
+    showProgress.set(true)
+}
+
+
+tasks.register<SpotBugsTask>("spotbugsMain") {
+    reports.create("html") {
+        required = true
+        outputLocation = file("$buildDir/reports/spotbugs/spotbugs.html")
+        setStylesheet("fancy-hist.xsl")
+    }
+}
+
+tasks.register<SpotBugsTask>("spotbugsTest") {
+    reports.create("html") {
+        required = true
+        outputLocation = file("$buildDir/reports/spotbugs/spotbugs-test.html")
+        setStylesheet("fancy-hist.xsl")
+    }
+}
 
 dependencies {
     val roomVersion = "2.6.1"

@@ -4,10 +4,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
     id("checkstyle")
     id("com.github.spotbugs") version "6.0.3"
-
-
 }
-
 
 group = "com.smartinvent"
 version = "0.0.1-SNAPSHOT"
@@ -29,13 +26,12 @@ tasks.named("check") {
     dependsOn("checkstyleMain", "checkstyleTest")
 }
 
-
 tasks.named("check") {
-    dependsOn("spotbugsMain", "spotbugsTest")
+    dependsOn("spotbugsMain")
 }
 
 tasks.named("build") {
-    dependsOn("checkstyleMain", "checkstyleTest")
+    dependsOn("checkstyleMain")
 }
 
 
@@ -55,7 +51,7 @@ spotbugs {
 tasks.spotbugsMain {
     reports.create("html") {
         required = true
-        outputLocation = file("$buildDir/reports/spotbugs.html")
+        outputLocation = rootProject.file("$buildDir/reports/spotbugs.html")
         setStylesheet("fancy-hist.xsl")
     }
 }

@@ -4,7 +4,14 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
+import com.android.volley.BuildConfig;
+import com.smartinvent.config.FileLoggingTree;
+import io.sentry.android.core.SentryAndroid;
+import timber.log.Timber;
+import timber.log.Timber.DebugTree;
 
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -17,8 +24,20 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        loadLogConfig();  // Load the logging configuration
-        logMessage("Application started with log level: " + logLevel);  // Example log message
+        loadLogConfig();
+        logMessage("Application started with log level: " + logLevel);
+
+//        FirebaseApp.initializeApp(this);
+
+//        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
+
+        SentryAndroid.init(this, options -> {
+            options.setDsn("https://8c57587821931877c442dbfccbc29cc1@o4509137541267456.ingest.de.sentry.io/4509137543168080");
+            options.setTracesSampleRate(1.0);
+            options.setDebug(true);
+        });
+
+
     }
 
     private void loadLogConfig() {
@@ -39,7 +58,6 @@ public class MyApplication extends Application {
         logMessage("Application terminated");
     }
 
-    // This method will log messages based on the current log level
     public void logMessage(String message) {
         switch (logLevel) {
             case "DEBUG":
@@ -57,3 +75,4 @@ public class MyApplication extends Application {
         }
     }
 }
+

@@ -1,5 +1,7 @@
 plugins {
     id("com.android.application")
+//    id("com.google.gms.google-services")
+    id("io.sentry.android.gradle") version "5.3.0"
 }
 
 android {
@@ -50,6 +52,11 @@ android {
 dependencies {
     val roomVersion = "2.6.1"
 
+    implementation("io.sentry:sentry-android:7.5.0")
+//    implementation("com.google.firebase:firebase-crashlytics:19.4.2")
+//    implementation("com.google.firebase:firebase-analytics:22.4.0")
+    implementation("com.jakewharton.timber:timber:5.0.1")
+
     // Room (БД)
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion") // Для Java
@@ -72,4 +79,14 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+}
+
+
+sentry {
+    org.set("smartinvent")
+    projectName.set("android")
+
+    // this will upload your source code to Sentry to show it as part of the stack traces
+    // disable if you don't want to expose your sources
+    includeSourceContext.set(true)
 }

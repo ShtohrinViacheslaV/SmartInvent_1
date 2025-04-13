@@ -15,15 +15,6 @@ java {
     }
 }
 
-//java {
-//    toolchain {
-//        languageVersion = JavaLanguageVersion.of(17)
-//    }
-//}
-
-//repositories {
-//    mavenCentral()
-//}
 
 
 dependencies {
@@ -35,7 +26,6 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.47.0.0")
     implementation("org.hibernate.orm:hibernate-core:6.6.9.Final")
     implementation("org.hibernate.orm:hibernate-community-dialects:6.6.9.Final")
-
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("org.springframework.boot:spring-boot-starter:3.4.2")
@@ -44,12 +34,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security:3.4.2")
 //    implementation("org.springframework.boot:spring-boot-starter-data-jdbc:3.4.2")
     implementation("org.springframework.boot:spring-boot-starter-web:3.4.2")
-
+    implementation("io.sentry:sentry-spring-boot-starter:7.3.0")
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
     implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
-
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")

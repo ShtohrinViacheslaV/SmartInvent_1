@@ -20,6 +20,9 @@ import com.smartinvent.network.ApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import timber.log.Timber;
+import io.sentry.Sentry;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -32,15 +35,25 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Sentry.captureException(new Exception("Test exception from SmartInvent"));
+
+        findViewById(android.R.id.content).getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+      try {
+        throw new Exception("This app uses Sentry! :)");
+      } catch (Exception e) {
+        Sentry.captureException(e);
+      }
+    });
+
         setContentView(R.layout.activity_login);
 
-        Log.d(TAG, "onCreate: Initializing login screen");
+        Timber.d("Initializing login screen");
 
         workIdInput = findViewById(R.id.username);
         passwordInput = findViewById(R.id.password);
 
         sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        updateApiClient(); // Оновлюємо API клієнт при старті
+        updateApiClient();
     }
 
     private void updateApiClient() {
@@ -59,16 +72,16 @@ public class LoginActivity extends AppCompatActivity {
             String apiUrl = ApiConfig.getBaseUrl();
 
             if (apiUrl == null || (!apiUrl.startsWith("http://") && !apiUrl.startsWith("https://"))) {
-                Log.e(TAG, "updateApiClient: Invalid API URL: " + apiUrl);
+                Timber.e("Invalid API URL: %s", apiUrl);
                 Toast.makeText(this, "Invalid API server URL!", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            Log.d(TAG, "updateApiClient: Using API URL: " + apiUrl);
+            Timber.d("Using API URL: %s", apiUrl);
             ApiConfig.setBaseUrl(apiUrl);
             apiService = ApiClient.getService();
         } else {
-            Log.w(TAG, "updateApiClient: No database config available");
+            Timber.w("No database config available");
             apiService = null;
         }
     }
@@ -80,11 +93,11 @@ public class LoginActivity extends AppCompatActivity {
             String password = passwordInput.getText().toString().trim();
             boolean isAdminLogin = v.getId() == R.id.login_admin;
 
-            Log.d(TAG, "login: Attempting login, isAdmin = " + isAdminLogin);
+            Timber.d("Attempting login, isAdmin = %s", isAdminLogin);
 
             if (workIdStr.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please enter login and password", Toast.LENGTH_SHORT).show();
-                Log.w(TAG, "login: Empty login or password");
+                Timber.w("Empty login or password");
                 return;
             }
 

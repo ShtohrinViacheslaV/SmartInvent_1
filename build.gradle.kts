@@ -4,6 +4,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7" apply false
     id("com.google.gms.google-services") version "4.4.2" apply false // 👈 Firebase plugin
     id("io.sentry.android.gradle") version "5.3.0" apply false // 👈 Sentry plugin для Android
+    id("io.sentry.jvm.gradle") version "5.3.0" apply false // 👈 Sentry plugin для JVM
 }
 
 tasks.register<Delete>("clean") {

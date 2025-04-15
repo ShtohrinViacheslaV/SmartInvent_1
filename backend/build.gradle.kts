@@ -1,6 +1,7 @@
 plugins {
     java
     id("org.springframework.boot") version "3.4.2"
+    id("io.sentry.jvm.gradle") version "5.3.0"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -19,7 +20,7 @@ java {
 
 dependencies {
     implementation("org.apache.commons:commons-compress:1.27.1")
-
+    implementation("org.springframework.boot:spring-boot-starter-actuator:3.4.3")
     implementation("org.projectlombok:lombok:1.18.30")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
@@ -35,7 +36,6 @@ dependencies {
 //    implementation("org.springframework.boot:spring-boot-starter-data-jdbc:3.4.2")
     implementation("org.springframework.boot:spring-boot-starter-web:3.4.2")
     implementation("io.sentry:sentry-spring-boot-starter:7.3.0")
-
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
     implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
@@ -62,3 +62,14 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+
+sentry {
+    // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+    // This enables source context, allowing you to see your source
+    // code as part of your stack traces in Sentry.
+    includeSourceContext = true
+
+    org = "smartinvent"
+    projectName = "smartinvent-backend"
+    authToken = System.getenv("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\n")
+}

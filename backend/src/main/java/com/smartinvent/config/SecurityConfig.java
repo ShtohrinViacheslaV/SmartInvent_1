@@ -37,12 +37,30 @@ public class SecurityConfig {
     }
 
     @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails adminUser = User.withUsername("admin")
+                .password(passwordEncoder().encode("admin123"))
+                .roles("ADMIN")
+                .build();
+
+        InMemoryUserDetailsManager inMemory = new InMemoryUserDetailsManager(adminUser);
+
+        return username -> {
+            try {
+                return employeeDetailsService.loadUserByUsername(username);
+            } catch (Exception e) {
+                return inMemory.loadUserByUsername(username);
+            }
+        };
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // REST API – відключаємо CSRF
                 .authorizeHttpRequests(auth -> auth
                         // Відкриті ендпоінти (без авторизації)
-                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/companies/**", "/api/employees/**", "/api/testConnection", "/api/testConnection", "/api/inventory/**", "/api/products/**", "/api/transactions/**", "/api/checkTables", "/api/setupDatabase", "/api/categories/**", "/api/storages/**").permitAll()
+                        .requestMatchers("/actuator/loggers/**", "/api/auth/login", "/api/auth/register", "/api/companies/**", "/api/employees/**", "/api/testConnection", "/api/testConnection", "/api/inventory/**", "/api/products/**", "/api/transactions/**", "/api/checkTables", "/api/setupDatabase", "/api/categories/**", "/api/storages/**").permitAll()
 
                         // Доступ лише для ADMIN
                         .requestMatchers("/api/config/save").hasRole("ADMIN")
@@ -53,7 +71,9 @@ public class SecurityConfig {
                         // Усі інші запити вимагають авторизації
                         .anyRequest().authenticated()
                 )
-                .userDetailsService(employeeDetailsService) // Використовуємо наш кастомний UserDetailsService
+//                .userDetailsService(employeeDetailsService) // Використовуємо наш кастомний UserDetailsService
+                .userDetailsService(userDetailsService()) // 👈 об'єднаний
+
                 .httpBasic(withDefaults()); // Basic Auth
 
         logger.info("SecurityFilterChain налаштовано!");

@@ -3,6 +3,7 @@ package com.smartinvent.config;
 import com.smartinvent.dto.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +20,23 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    private final MessageSource messageSource;
+    private final SentryErrorHandler sentryErrorHandler;
+
+
+    public GlobalExceptionHandler(MessageSource messageSource, SentryErrorHandler sentryErrorHandler) {
+        this.messageSource = messageSource;
+        this.sentryErrorHandler = sentryErrorHandler;
+
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request, Locale locale) {
         String errorId = UUID.randomUUID().toString();
+
+        sentryErrorHandler.logError(ex);
+
+        String message = messageSource.getMessage("error.login.server", null, locale);
 
         logger.error("❌ Error ID: {} | Message: {} | Path: {}", errorId, ex.getMessage(), request.getDescription(false), ex);
 
@@ -30,7 +45,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse response = new ErrorResponse(
                 errorId,
-                "An unexpected error occurred",
+                message,
                 LocalDateTime.now(),
                 request.getDescription(false),
                 Collections.emptyMap()
@@ -41,8 +56,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex, WebRequest request, Locale locale) {
         String errorId = UUID.randomUUID().toString();
+        String message = messageSource.getMessage("error.employee.not.found", null, locale);
+
+        sentryErrorHandler.logError(ex);
 
         logger.warn("⚠️ IllegalArgument | ID: {} | Message: {}", errorId, ex.getMessage());
 
@@ -51,7 +69,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse response = new ErrorResponse(
                 errorId,
-                ex.getMessage(),
+                message,
                 LocalDateTime.now(),
                 request.getDescription(false),
                 Collections.emptyMap()

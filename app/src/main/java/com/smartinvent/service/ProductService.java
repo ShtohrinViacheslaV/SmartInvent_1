@@ -8,14 +8,27 @@ import retrofit2.Response;
 
 import java.util.function.Consumer;
 
+/**
+ * Сервіс для взаємодії з API продуктів.
+ * Використовується для створення, оновлення та перевірки унікальності QR-кодів товарів.
+ */
 public class ProductService {
 
     private final ProductApi productApi;
 
+    /**
+     * Ініціалізує клієнт для взаємодії з ProductApi.
+     */
     public ProductService() {
         productApi = ApiClient.getClient().create(ProductApi.class);
     }
 
+    /**
+     * Створює новий товар.
+     *
+     * @param product товар для створення
+     * @param callback колбек для обробки результату
+     */
     public void createProduct(Product product, ProductCallback callback) {
         productApi.createProduct(product).enqueue(new Callback<Void>() {
             @Override
@@ -30,6 +43,12 @@ public class ProductService {
         });
     }
 
+    /**
+     * Перевіряє, чи є QR-код унікальним.
+     *
+     * @param qrCode QR-код для перевірки
+     * @param callback колбек для обробки результату
+     */
     public void isQrCodeUnique(String qrCode, QrCodeCallback callback) {
         productApi.isQrCodeUnique(qrCode).enqueue(new Callback<Boolean>() {
             @Override
@@ -44,6 +63,12 @@ public class ProductService {
         });
     }
 
+    /**
+     * Оновлює інформацію про товар.
+     *
+     * @param product товар для оновлення
+     * @param callback функція для обробки результату
+     */
     public void updateProduct(Product product, Consumer<Boolean> callback) {
         productApi.updateProduct(product).enqueue(new Callback<Void>() {
             @Override
@@ -58,10 +83,16 @@ public class ProductService {
         });
     }
 
+    /**
+     * Колбек для створення товару.
+     */
     public interface ProductCallback {
         void onSuccess(boolean success);
     }
 
+    /**
+     * Колбек для перевірки унікальності QR-коду.
+     */
     public interface QrCodeCallback {
         void onResult(boolean isUnique);
     }

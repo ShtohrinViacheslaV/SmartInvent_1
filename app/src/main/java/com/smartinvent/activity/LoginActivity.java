@@ -20,12 +20,19 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Activity для авторизації користувача (адміністратора або працівника).
+ * Дозволяє ввести логін, пароль, увійти або перейти до налаштування бази даних.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private EditText emailInput, passwordInput;
     private ApiService apiService;
     private SharedPreferences sharedPreferences;
 
+    /**
+     * Ініціалізація елементів UI та налаштувань при створенні.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +45,9 @@ public class LoginActivity extends AppCompatActivity {
 //        updateApiClient(); // Оновлюємо API клієнт при старті
     }
 
+    /**
+     * Оновлює API клієнт згідно з поточною конфігурацією бази даних.
+     */
     private void updateApiClient() {
         if (DbConfigManager.isConfigAvailable(this)) {
             DatabaseConfig config = DbConfigManager.loadConfig(this);
@@ -56,6 +66,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Обробка натискання кнопки входу (як користувача, так і адміністратора).
+     */
     public void login(View v) {
         String email = emailInput.getText().toString().trim();
         String password = passwordInput.getText().toString().trim();
@@ -74,6 +87,9 @@ public class LoginActivity extends AppCompatActivity {
         authenticateUser(email, password, isAdminLogin);
     }
 
+    /**
+     * Обробка ситуації, коли немає з'єднання з базою даних.
+     */
     private void handleNoDatabase(boolean isAdminLogin) {
         if (isAdminLogin) {
             new AlertDialog.Builder(this)
@@ -89,6 +105,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Виконує авторизацію користувача через API.
+     */
     private void authenticateUser(String email, String password, boolean isAdminLogin) {
         apiService.login(new AuthRequest(email, password)).enqueue(new Callback<AuthResponse>() {
             @Override
@@ -123,15 +142,24 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Відкриває головне меню адміністратора без підключення до бази.
+     */
     private void openAdminPanelWithoutDatabase() {
         startActivity(new Intent(LoginActivity.this, AdminHomeActivity.class));
         finish();
     }
 
+    /**
+     * Перехід до сторінки налаштування бази даних.
+     */
     public void signUpDatabase(View v) {
         startActivity(new Intent(this, DatabaseConfigActivity.class));
     }
 
+    /**
+     * Перехід до сторінки відновлення паролю.
+     */
         public void forgotPassword(View v) {
         startActivity(new Intent(this, ForgotPasswordActivity.class));
     }

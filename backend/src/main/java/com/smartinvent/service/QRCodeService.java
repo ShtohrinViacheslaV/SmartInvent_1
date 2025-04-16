@@ -29,6 +29,7 @@ public class QRCodeService {
     @Autowired
     private ProductRepository productRepository;
 
+
     public String generateQrCodeImage(String productWorkId) throws WriterException, IOException {
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -40,6 +41,24 @@ public class QRCodeService {
         String encodedQr = Base64.getEncoder().encodeToString(outputStream.toByteArray());
 
         return encodedQr;    }
+
+
+    //Оптимізований код
+//    public String generateQrCodeImage(String productWorkId) throws WriterException, IOException {
+//        // Створюємо QRCodeWriter один раз, можна зробити його полем класу для пере використання
+//        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+//
+//        // Генеруємо QR-код
+//        BitMatrix bitMatrix = qrCodeWriter.encode(productWorkId, BarcodeFormat.QR_CODE, WIDTH, HEIGHT);
+//
+//        // Виводимо в ByteArrayOutputStream і кодуємо в Base64
+//        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+//            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
+//            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
+//        }
+//    }
+
+
 
     public void saveQrCodeToFile(String productWorkId, String filePath) throws WriterException, IOException {
         String content = String.valueOf(productWorkId);

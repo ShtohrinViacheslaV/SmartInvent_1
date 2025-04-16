@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="Checker">
+    <module name="JavadocMethod">
+        <property name="allowEmpty" value="false"/>
+    </module>
+    <module name="JavadocType"/>
+    <module name="JavadocVariable"/>
+</module>

@@ -2,6 +2,8 @@ plugins {
     java
     id("org.springframework.boot") version "3.4.2"
     id("io.spring.dependency-management") version "1.1.7"
+    id ("checkstyle")
+
 }
 
 
@@ -25,6 +27,15 @@ java {
 //    mavenCentral()
 //}
 
+
+checkstyle {
+    toolVersion = "10.0"
+    configFile = file("config/checkstyle/checkstyle.xml")
+}
+
+tasks.check {
+    dependsOn(tasks.checkstyleMain)
+}
 
 dependencies {
     implementation("org.apache.commons:commons-compress:1.27.1")

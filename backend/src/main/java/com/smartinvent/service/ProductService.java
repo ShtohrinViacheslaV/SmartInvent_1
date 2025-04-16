@@ -11,14 +11,15 @@ import java.util.List;
 
 /**
  * ProductService клас для роботи з Product об'єктами.
+ * Описує операції, такі як створення, оновлення, видалення і отримання продуктів з бази даних.
  */
 @Service
 public class ProductService {
 
     /**
-     * ProductRepository об'єкт для роботи з Product об'єктами.
+     * QRCodeService об'єкт для роботи з QR-кодами продуктів.
      *
-     * @see com.smartinvent.repositories.ProductRepository
+     * @see com.smartinvent.service.QRCodeService
      */
     private final QRCodeService qrCodeService;
 

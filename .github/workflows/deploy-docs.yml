@@ -19,6 +19,9 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Build project and generate Javadoc
         run: ./gradlew javadoc
 

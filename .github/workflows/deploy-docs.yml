@@ -3,7 +3,7 @@ name: Deploy Javadoc to GitHub Pages
 on:
   push:
     branches:
-      - CodeDocumentation
+      - documentation-auto-gen
 
 jobs:
   build:

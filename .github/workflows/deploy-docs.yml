@@ -16,7 +16,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '11'  # або інша версія, яку ти використовуєш
+          java-version: '11'
 
       - name: Build project and generate Javadoc
         run: ./gradlew javadoc
@@ -25,4 +25,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: documentation-auto-gen
           publish_dir: ./build/doc
+          target_dir: docs

@@ -31,4 +31,3 @@ jobs:
           github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./doc
-          target_dir: docs

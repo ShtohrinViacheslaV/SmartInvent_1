@@ -26,5 +26,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: documentation-auto-gen
-          publish_dir: ./build/doc
+          publish_dir: ./doc
           target_dir: docs

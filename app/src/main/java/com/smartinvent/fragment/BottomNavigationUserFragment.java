@@ -28,7 +28,7 @@ public class BottomNavigationUserFragment extends Fragment {
             } else if (item.getItemId() == R.id.nav_scanner) {
                 selectedFragment = new MainScannerFragment();
             } else if (item.getItemId() == R.id.nav_inventory) {
-                selectedFragment = new InventoryFragment();
+                selectedFragment = new InventorySessionsFragment();
             } else if (item.getItemId() == R.id.nav_more) {
                 selectedFragment = new MoreFragment();
             }

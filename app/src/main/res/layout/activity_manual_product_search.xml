@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="16dp">
+
+    <!-- Поле для введення даних -->
+    <EditText
+            android:id="@+id/editTextProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Введіть назву товару"
+            android:inputType="text" />
+
+    <!-- Кнопки для вибору критерію пошуку -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+        <Button
+                android:id="@+id/btnSearchByName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="По Назві"
+                android:onClick="onSearchByNameClick" />
+
+        <Button
+                android:id="@+id/btnSearchByProductId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="По ID товару"
+                android:onClick="onSearchByProductIdClick" />
+
+        <Button
+                android:id="@+id/btnSearchByCategory"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="По Категорії"
+                android:onClick="onSearchByCategoryClick" />
+    </LinearLayout>
+
+    <!-- Кнопки для вибору критерію сортування -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+        <Button
+                android:id="@+id/btnSortByCategory"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Сортувати за Категорією"
+                android:onClick="onSortByCategoryClick" />
+
+        <Button
+                android:id="@+id/btnSortByStorage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Сортувати за Складом"
+                android:onClick="onSortByStorageClick" />
+    </LinearLayout>
+
+    <!-- Кнопка для запуску пошуку -->
+    <Button
+            android:id="@+id/btnSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Пошук"
+            android:onClick="performSearch" />
+
+    <!-- RecyclerView для відображення знайдених товарів -->
+    <RecyclerView
+            android:id="@+id/recyclerViewResults"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+</LinearLayout>

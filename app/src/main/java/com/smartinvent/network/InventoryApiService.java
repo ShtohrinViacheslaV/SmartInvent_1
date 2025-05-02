@@ -1,6 +1,9 @@
 package com.smartinvent.network;
 
+import com.smartinvent.model.InventoryResult;
 import com.smartinvent.model.InventoryScan;
+
+import com.smartinvent.model.InventorySession;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -15,4 +18,5 @@ public interface InventoryApiService {
 
     @GET("/api/inventory/scan/{productId}")
     Call<List<InventoryScan>> getScansByProduct(@Path("productId") long productId);
+
 }

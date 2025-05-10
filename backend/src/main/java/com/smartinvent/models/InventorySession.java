@@ -24,7 +24,7 @@ public class InventorySession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long inventorySessionId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
@@ -36,18 +36,26 @@ public class InventorySession {
 
     @ManyToOne
     @JoinColumn(name = "inventory_session_status_id", nullable = false)
-    private InventorySessionStatus inventorySessionStatus;
+    private InventorySessionStatus status;
 
     private LocalDateTime startTime;
 
     private LocalDateTime endTime;
 
-    public Long getInventorySessionId() {
-        return inventorySessionId;
+    public Long getId() {
+        return id;
     }
 
-    public void setInventorySessionId(Long inventorySessionId) {
-        this.inventorySessionId = inventorySessionId;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public InventorySessionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(InventorySessionStatus status) {
+        this.status = status;
     }
 
     public Employee getEmployee() {
@@ -72,14 +80,6 @@ public class InventorySession {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public InventorySessionStatus getInventorySessionStatus() {
-        return inventorySessionStatus;
-    }
-
-    public void setInventorySessionStatus(InventorySessionStatus inventorySessionStatus) {
-        this.inventorySessionStatus = inventorySessionStatus;
     }
 
     public LocalDateTime getStartTime() {

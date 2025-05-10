@@ -31,11 +31,14 @@ public class InventoryResultService {
     // Отримання результатів інвентаризації для конкретної сесії
     public List<InventorySessionProductDTO> getResultsForSession(Long sessionId) {
         // Отримуємо сесію
-        InventorySession session = new InventorySession();
-        session.setInventorySessionId(sessionId); // Потрібно шукати сесію за id
+        InventorySession session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new RuntimeException("Session not found"));
+
+//        InventorySession session = new InventorySession();
+//        session.setId(sessionId);
 
         // Отримуємо всі результати інвентаризації для цієї сесії
-        List<InventoryResult> results = resultRepository.findByInventorySession(session);
+        List<InventoryResult> results = resultRepository.findBySession(session);
 
         // Перетворюємо результати в DTO
         List<InventorySessionProductDTO> dtoList = results.stream().map(result -> {
@@ -57,11 +60,11 @@ public class InventoryResultService {
 
     // Додавання результату інвентаризації для товару в сесії
     public InventoryResult addInventoryResult(InventoryResult inventoryResult) {
-        Long sessionId = inventoryResult.getInventorySession().getInventorySessionId();
+        Long sessionId = inventoryResult.getSession().getId();
         Long productId = inventoryResult.getProduct().getProductId();
 
         // Перевірка чи вже є результат
-        Optional<InventoryResult> existing = resultRepository.findBySessionIdAndProductId(sessionId, productId);
+        Optional<InventoryResult> existing = resultRepository.findBySessionIdAndProductProductId(sessionId, productId);
         if (existing.isPresent()) {
             throw new RuntimeException("Inventory result already exists for this product in the session.");
         }
@@ -83,7 +86,9 @@ public class InventoryResultService {
         InventoryResult existingResult = resultRepository.findById(resultId)
                 .orElseThrow(() -> new RuntimeException("Inventory result not found"));
 
-        existingResult.setStatus(inventoryResult.getStatus());
+        InventoryProductStatus status = statusRepository.findByName(inventoryResult.getStatus().getName())
+                .orElseThrow(() -> new RuntimeException("Status not found"));
+        existingResult.setStatus(status);
         existingResult.setDescription(inventoryResult.getDescription());
         existingResult.setScannedBy(inventoryResult.getScannedBy());
         existingResult.setScanTime(LocalDateTime.now());
@@ -94,11 +99,14 @@ public class InventoryResultService {
 
     // Отримання товарів для сесії з перевіркою блокування
     public List<InventorySessionProductDTO> getProductsForSession(Long sessionId) {
-        InventorySession session = new InventorySession();
-        session.setInventorySessionId(sessionId);
+//        InventorySession session = new InventorySession();
+//        session.setId(sessionId);
+        InventorySession session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new RuntimeException("Session not found"));
+
 
         // Отримуємо всі результати інвентаризації для цієї сесії
-        List<InventoryResult> results = resultRepository.findByInventorySession(session);
+        List<InventoryResult> results = resultRepository.findBySession(session);
 
         // Перетворюємо результати в DTO
         return results.stream().map(result -> {
@@ -118,17 +126,25 @@ public class InventoryResultService {
 
     // Оновлення статусу товарів, які не перевірені
     public void markUncheckedProductsAsNotFound(Long sessionId) {
-        InventorySession session = new InventorySession();
-        session.setInventorySessionId(sessionId);
+//        InventorySession session = new InventorySession();
+//        session.setId(sessionId);
+
+        InventorySession session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new RuntimeException("Session not found"));
+
 
         // Отримуємо всі результати інвентаризації для цієї сесії
-        List<InventoryResult> results = resultRepository.findByInventorySession(session);
+        List<InventoryResult> results = resultRepository.findBySession(session);
 
         InventoryProductStatus notFoundStatus = statusRepository.findByName("NOT_FOUND")
                 .orElseThrow(() -> new RuntimeException("Not found status not found"));
 
+
+        InventoryProductStatus uncheckedStatus = statusRepository.findByName("UNCHECKED")
+                .orElseThrow(() -> new RuntimeException("UNCHECKED status not found"));
+
         for (InventoryResult result : results) {
-            if ("unchecked".equals(result.getStatus().getName())) {
+            if (result.getStatus().equals(uncheckedStatus)) {
                 result.setStatus(notFoundStatus);
                 resultRepository.save(result);
             }
@@ -155,6 +171,10 @@ public class InventoryResultService {
         Product product = new Product();
         product.setName(request.getName());
         product.setDescription(request.getDescription());
+        if (productRepository.existsByProductWorkId(request.getProductWorkId())) {
+            throw new RuntimeException("Продукт із таким ID уже існує");
+        }
+
         product.setProductWorkId(request.getProductWorkId());
         product.setCategory(category);
         product.setStorage(storage);
@@ -162,7 +182,7 @@ public class InventoryResultService {
 
         // 4. Додаємо запис до InventoryResult зі статусом ADDED
         InventoryResult result = new InventoryResult();
-        result.setInventorySession(session);
+        result.setSession(session);
         result.setProduct(product);
         result.setStatus(addedStatus);
         resultRepository.save(result);

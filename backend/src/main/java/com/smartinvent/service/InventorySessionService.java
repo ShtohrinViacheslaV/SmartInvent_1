@@ -38,7 +38,7 @@ public class InventorySessionService {
 
         // Створимо нову сесію інвентаризації
         inventorySession.setEmployee(employee);
-        inventorySession.setInventorySessionStatus(status);
+        inventorySession.setStatus(status);
         inventorySession.setStartTime(LocalDateTime.now());
 
         return sessionRepository.save(inventorySession);
@@ -57,7 +57,7 @@ public class InventorySessionService {
 
     // Отримання всіх активних сесій
     public List<InventorySession> getActiveSessions() {
-        return sessionRepository.findByInventorySessionStatusName("ACTIVE");
+        return sessionRepository.findByStatus_Name("ACTIVE");
     }
 
 
@@ -69,7 +69,7 @@ public class InventorySessionService {
         InventorySessionStatus completedStatus = statusRepository.findByName("COMPLETED")
                 .orElseThrow(() -> new RuntimeException("Session status COMPLETED not found"));
 
-        session.setInventorySessionStatus(completedStatus);
+        session.setStatus(completedStatus);
         session.setEndTime(LocalDateTime.now());
 
         return sessionRepository.save(session);

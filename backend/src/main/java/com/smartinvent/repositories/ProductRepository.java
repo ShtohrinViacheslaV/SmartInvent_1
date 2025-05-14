@@ -11,9 +11,7 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByNameContainingIgnoreCase(String name);
-    boolean existsByQrCode(String qrCode);
     Optional<Product> findByProductWorkId(String productWorkId);
-//    List<Product> findByIsActiveTrue();
     boolean existsByProductWorkId(String productWorkId);
 
 }

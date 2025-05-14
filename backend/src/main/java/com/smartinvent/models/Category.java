@@ -16,8 +16,6 @@ public class Category {
 
     private String description;
 
-    private String productType;  // Додаткове поле для типу товару
-
 
     public Long getCategoryId() {
         return categoryId;
@@ -43,13 +41,6 @@ public class Category {
         this.description = description;
     }
 
-    public String getProductType() {
-        return productType;
-    }
-
-    public void setProductType(String productType) {
-        this.productType = productType;
-    }
 
 
     @Override

@@ -1,5 +1,8 @@
 package com.smartinvent.dto;
 
+import com.smartinvent.models.InventoryProductStatusEnum;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class InventorySessionProductDTO {
@@ -7,24 +10,40 @@ public class InventorySessionProductDTO {
     private String name;
     private String description;
     private String productWorkId;
+    private Integer count;
     private String categoryName;
     private String storageName;
-    private String status; // confirmed, modified, not_found, added, unchecked
+    private InventoryProductStatusEnum status;
     private boolean locked; // заблокований товар (хтось сканує його зараз)
+
+    private BigDecimal price;
+    private String manufacturer;
+    private LocalDate expirationDate;
+    private BigDecimal weight;
+    private String dimensions;
+
 
     public InventorySessionProductDTO() {
     }
 
-    public InventorySessionProductDTO(Long productId, String name, String description, String productWorkId,
-                                      String categoryName, String storageName, String status, boolean locked) {
+    public InventorySessionProductDTO(Long productId, String name, String description,
+                                      String productWorkId, Integer count, String categoryName, String storageName,
+                                      InventoryProductStatusEnum status, boolean locked, BigDecimal price, String manufacturer,
+                                      LocalDate expirationDate, BigDecimal weight, String dimensions) {
         this.productId = productId;
         this.name = name;
         this.description = description;
         this.productWorkId = productWorkId;
+        this.count = count;
         this.categoryName = categoryName;
         this.storageName = storageName;
         this.status = status;
         this.locked = locked;
+        this.price = price;
+        this.manufacturer = manufacturer;
+        this.expirationDate = expirationDate;
+        this.weight = weight;
+        this.dimensions = dimensions;
     }
 
     public Long getProductId() {
@@ -59,6 +78,14 @@ public class InventorySessionProductDTO {
         this.productWorkId = productWorkId;
     }
 
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
     public String getCategoryName() {
         return categoryName;
     }
@@ -75,13 +102,14 @@ public class InventorySessionProductDTO {
         this.storageName = storageName;
     }
 
-    public String getStatus() {
+    public InventoryProductStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(InventoryProductStatusEnum status) {
         this.status = status;
     }
+
 
     public boolean isLocked() {
         return locked;
@@ -89,5 +117,46 @@ public class InventorySessionProductDTO {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public BigDecimal getWeight() {
+        return weight;
+    }
+
+    public void setWeight(BigDecimal weight) {
+        this.weight = weight;
+    }
+
+    public String getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(String dimensions) {
+        this.dimensions = dimensions;
     }
 }

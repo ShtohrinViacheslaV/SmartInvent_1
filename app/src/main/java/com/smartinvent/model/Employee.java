@@ -4,29 +4,30 @@ package com.smartinvent.model;
 public class Employee {
 
     private Long employeeId;
+    private Company company;
     private String firstName;
     private String lastName;
     private String email;
+    private String phone;
     private String employeeWorkId;
     private String passwordHash;
-    private String role;
+    private Role role;
 
 
-    // Конструктор без параметрів
     public Employee() {}
 
-    // Конструктор для тестів
-    public Employee(String firstName, String lastName, String email, String employeeWorkId, String passwordHash, String role) {
+
+    public Employee(Long employeeId, Company company, String firstName, String lastName, String email, String phone, String employeeWorkId, String passwordHash, Role role) {
+        this.employeeId = employeeId;
+        this.company = company;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.phone = phone;
         this.employeeWorkId = employeeWorkId;
         this.passwordHash = passwordHash;
         this.role = role;
     }
-
-
-
 
     public Long getEmployeeId() {
         return employeeId;
@@ -34,6 +35,14 @@ public class Employee {
 
     public void setEmployeeId(Long employeeId) {
         this.employeeId = employeeId;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public String getFirstName() {
@@ -60,6 +69,14 @@ public class Employee {
         this.email = email;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getEmployeeWorkId() {
         return employeeWorkId;
     }
@@ -76,11 +93,11 @@ public class Employee {
         this.passwordHash = passwordHash;
     }
 
-//    public String getRole() {
-//        return role;
-//    }
-//
-//    public void setRole(String role) {
-//        this.role = role;
-//    }
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }

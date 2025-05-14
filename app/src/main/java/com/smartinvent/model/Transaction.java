@@ -1,29 +1,26 @@
 package com.smartinvent.model;
 
-import java.time.LocalDateTime;
-
 
 public class Transaction {
-
     private Long transactionId;
-    private String type;
-    private LocalDateTime date;
-    private int quantity;
-    private Employee employee;
-    private Storage storage;
+    private TransactionTypeEnum type;
     private Product product;
+    private Employee employee;
+    private int quantity;
+    private String transactionDate;
 
-    public Transaction(Long productId, String action, long l) {
+
+    public Transaction() {
     }
 
-    public Transaction(Long transactionId, String type, LocalDateTime date, int quantity, Employee employee, Storage storage, Product product) {
+    public Transaction(Long transactionId, TransactionTypeEnum type, Product product,
+                       Employee employee, int quantity, String transactionDate) {
         this.transactionId = transactionId;
         this.type = type;
-        this.date = date;
-        this.quantity = quantity;
-        this.employee = employee;
-        this.storage = storage;
         this.product = product;
+        this.employee = employee;
+        this.quantity = quantity;
+        this.transactionDate = transactionDate;
     }
 
     public Long getTransactionId() {
@@ -34,28 +31,20 @@ public class Transaction {
         this.transactionId = transactionId;
     }
 
-    public String getType() {
+    public TransactionTypeEnum getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TransactionTypeEnum type) {
         this.type = type;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public Employee getEmployee() {
@@ -66,20 +55,20 @@ public class Transaction {
         this.employee = employee;
     }
 
-    public Storage getStorage() {
-        return storage;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setStorage(Storage storage) {
-        this.storage = storage;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public Product getProduct() {
-        return product;
+    public String getTransactionDate() {
+        return transactionDate;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setTransactionDate(String transactionDate) {
+        this.transactionDate = transactionDate;
     }
 }
 

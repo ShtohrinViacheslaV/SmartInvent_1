@@ -5,28 +5,41 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "transaction")
 public class Transaction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transactionId;
 
-    private String type;
-    private LocalDateTime date;
-    private int quantity;
+    @Enumerated(EnumType.STRING)
+    private TransactionTypeEnum type;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
-
-    @ManyToOne
-    @JoinColumn(name = "storage_id", nullable = false)
-    private Storage storage;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
+
+    private int quantity;
+
+    @Column(name = "transaction_date")
+    private LocalDateTime date;
+
+    public Transaction() {
+    }
+
+    public Transaction(Long transactionId, TransactionTypeEnum type, Product product, Employee employee, int quantity, LocalDateTime date) {
+        this.transactionId = transactionId;
+        this.type = type;
+        this.product = product;
+        this.employee = employee;
+        this.quantity = quantity;
+        this.date = date;
+    }
 
     public Long getTransactionId() {
         return transactionId;
@@ -36,28 +49,20 @@ public class Transaction {
         this.transactionId = transactionId;
     }
 
-    public String getType() {
+    public TransactionTypeEnum getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TransactionTypeEnum type) {
         this.type = type;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public Employee getEmployee() {
@@ -68,20 +73,19 @@ public class Transaction {
         this.employee = employee;
     }
 
-    public Storage getStorage() {
-        return storage;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setStorage(Storage storage) {
-        this.storage = storage;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public Product getProduct() {
-        return product;
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 }
-

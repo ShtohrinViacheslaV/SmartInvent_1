@@ -30,7 +30,7 @@ public class StorageController {
     }
 
     // Оновлення складу
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Storage> updateStorage(@PathVariable Long id, @RequestBody Storage storage) {
         Storage updatedStorage = storageService.updateStorage(id, storage);
         return ResponseEntity.ok(updatedStorage);

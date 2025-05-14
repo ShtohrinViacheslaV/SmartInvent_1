@@ -6,19 +6,23 @@ import android.os.Parcelable;
 public class Category implements Parcelable {
     private Long categoryId;
     private String name;
+    private String description;
+
 
     public Category() {
     }
 
     // Конструктор без ID
-    public Category(String name) {
+    public Category(String name, String description) {
         this.name = name;
+        this.description = description;
     }
 
     // Конструктор з ID
-    public Category(Long categoryId, String name) {
+    public Category(Long categoryId, String name, String description) {
         this.categoryId = categoryId;
         this.name = name;
+        this.description = description;
     }
 
     protected Category(Parcel in) {
@@ -28,6 +32,7 @@ public class Category implements Parcelable {
             categoryId = in.readLong();
         }
         name = in.readString();
+        description = in.readString();
     }
 
     public static final Creator<Category> CREATOR = new Creator<Category>() {
@@ -51,6 +56,7 @@ public class Category implements Parcelable {
             dest.writeLong(categoryId);
         }
         dest.writeString(name);
+        dest.writeString(description);
     }
 
     @Override
@@ -63,6 +69,14 @@ public class Category implements Parcelable {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     @Override
     public String toString() {

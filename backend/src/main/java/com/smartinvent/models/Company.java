@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -14,11 +13,17 @@ import java.util.List;
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long companyId;
+    private Long id;
 
+    @Column(nullable = false, unique = true)
     private String name;
+
     private String address;
+
+    @Column(nullable = false, unique = true)
     private String phone;
+
+    @Column(nullable = false, unique = true)
     private String email;
 
     @CreationTimestamp
@@ -35,12 +40,12 @@ public class Company {
         this.email = email;
     }
 
-    public Long getCompanyId() {
-        return companyId;
+    public Long getId() {
+        return id;
     }
 
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -86,7 +91,7 @@ public class Company {
     @Override
     public String toString() {
         return "Company{" +
-                "companyId=" + companyId +
+                "companyId=" + id +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", phone='" + phone + '\'' +

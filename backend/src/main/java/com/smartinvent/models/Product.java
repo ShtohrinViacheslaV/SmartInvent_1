@@ -1,108 +1,165 @@
 package com.smartinvent.models;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
+@Entity
+@Table(name = "product")
+public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
+    private Long productId;
 
-   @Entity
-   @Table(name = "product")
-   public class Product {
-       @Id
-       @GeneratedValue(strategy = GenerationType.IDENTITY)
-       private Long productId;
+    @Column(nullable = false, length = 100)
+    private String name;
 
-       private String name;
-       private String description;
-       private String productWorkId;
-       private Integer count;
-//       @Lob // Використовується для збереження великих об'єктів
-//       private byte[] qrCode;
-       private String qrCode;
+    private String description;
 
-       @ManyToOne
-       @JoinColumn(name = "category_id")
-       private Category category;
+    @Column(name = "product_work_id", nullable = false, unique = true, length = 100)
+    private String productWorkId;
 
-       @ManyToOne
-       @JoinColumn(name = "storage_id")
-       private Storage storage;
+    private Integer count;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
-       public Product() {
-       }
+    @ManyToOne
+    @JoinColumn(name = "storage_id", nullable = false)
+    private Storage storage;
 
-       public Product(Long productId, String name, String description, String productWorkId, Integer count, String qrCode, Category category, Storage storage) {
-           this.productId = productId;
-           this.name = name;
-           this.description = description;
-           this.productWorkId = productWorkId;
-           this.count = count;
-           this.qrCode = qrCode;
-           this.category = category;
-           this.storage = storage;
-       }
+    @Column(precision = 10, scale = 2)
+    private BigDecimal price;
 
-       public Long getProductId() {
-           return productId;
-       }
+    @Column(length = 255)
+    private String manufacturer;
 
-       public void setProductId(Long productId) {
-           this.productId = productId;
-       }
+    @Column(name = "expiration_date")
+    private LocalDate expirationDate;
 
-       public String getName() {
-           return name;
-       }
+    @Column(precision = 10, scale = 2)
+    private BigDecimal weight;
 
-       public void setName(String name) {
-           this.name = name;
-       }
+    @Column(length = 50)
+    private String dimensions;
 
-       public String getDescription() {
-           return description;
-       }
+    public Product() {
+    }
 
-       public void setDescription(String description) {
-           this.description = description;
-       }
+    // Конструктор без ID (наприклад, для створення)
+    public Product(String name, String description, String productWorkId, Integer count, Category category, Storage storage,
+                   BigDecimal price, String manufacturer, LocalDate expirationDate,
+                   BigDecimal weight, String dimensions) {
+        this.name = name;
+        this.description = description;
+        this.productWorkId = productWorkId;
+        this.count = count;
+        this.category = category;
+        this.storage = storage;
+        this.price = price;
+        this.manufacturer = manufacturer;
+        this.expirationDate = expirationDate;
+        this.weight = weight;
+        this.dimensions = dimensions;
+    }
 
-       public String getProductWorkId() {
-           return productWorkId;
-       }
+    // --- Геттери та Сеттери ---
+    public Long getProductId() {
+        return productId;
+    }
 
-       public void setProductWorkId(String productWorkId) {
-           this.productWorkId = productWorkId;
-       }
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
 
-       public Integer getCount() {
-           return count;
-       }
+    public String getName() {
+        return name;
+    }
 
-       public void setCount(Integer count) {
-           this.count = count;
-       }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-       public String getQrCode() {
-           return qrCode;
-       }
+    public String getDescription() {
+        return description;
+    }
 
-       public void setQrCode(String qrCode) {
-           this.qrCode = qrCode;
-       }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-       public Category getCategory() {
-           return category;
-       }
+    public String getProductWorkId() {
+        return productWorkId;
+    }
 
-       public void setCategory(Category category) {
-           this.category = category;
-       }
+    public void setProductWorkId(String productWorkId) {
+        this.productWorkId = productWorkId;
+    }
 
-       public Storage getStorage() {
-           return storage;
-       }
+    public Integer getCount() {
+        return count;
+    }
 
-       public void setStorage(Storage storage) {
-           this.storage = storage;
-       }
-   }
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Storage getStorage() {
+        return storage;
+    }
+
+    public void setStorage(Storage storage) {
+        this.storage = storage;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public BigDecimal getWeight() {
+        return weight;
+    }
+
+    public void setWeight(BigDecimal weight) {
+        this.weight = weight;
+    }
+
+    public String getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(String dimensions) {
+        this.dimensions = dimensions;
+    }
+}

@@ -22,7 +22,6 @@ public class CategoryService {
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
         existingCategory.setName(category.getName());
         existingCategory.setDescription(category.getDescription());
-        existingCategory.setProductType(category.getProductType());
         return categoryRepository.save(existingCategory);
     }
 

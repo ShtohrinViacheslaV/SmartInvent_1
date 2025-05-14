@@ -14,53 +14,39 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final QRCodeService qrCodeService;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, QRCodeService qrCodeService) {
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.qrCodeService = qrCodeService;
     }
 
 
     public Product createProduct(Product product) {
-        try {
-            // Генеруємо QR-код до збереження
-            String qrCodeImage = qrCodeService.generateQrCodeImage(product.getProductWorkId());
-            product.setQrCode(qrCodeImage);
-
-            // Зберігаємо продукт один раз
-            return productRepository.save(product);
-        } catch (WriterException | IOException e) {
-            throw new RuntimeException("Error generating QR code for product: " + product.getName(), e);
+        if (productRepository.existsByProductWorkId(product.getProductWorkId())) {
+            throw new RuntimeException("ProductWorkId already exists: " + product.getProductWorkId());
         }
+        return productRepository.save(product);
     }
 
-//    public Product createProduct(Product product) {
-//        try {
-//            Product savedProduct = productRepository.save(product); // Спочатку зберігаємо продукт
-//
-//            String qrCodeImage = qrCodeService.generateQrCodeImage(savedProduct.getProductWorkId());
-//            savedProduct.setQrCode(qrCodeImage);
-//
-//            return productRepository.save(savedProduct); // Зберігаємо ще раз з QR-кодом
-//        } catch (WriterException | IOException e) {
-//            throw new RuntimeException("Error generating QR code for product: " + product.getName(), e);
-//        }
-//    }
-//
 
     public Product updateProduct(Long id, Product product) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+
         existingProduct.setName(product.getName());
         existingProduct.setDescription(product.getDescription());
         existingProduct.setProductWorkId(product.getProductWorkId());
-        existingProduct.setCount(product.getCount());
-        existingProduct.setQrCode(product.getQrCode());
         existingProduct.setCategory(product.getCategory());
+        existingProduct.setStorage(product.getStorage());
+        existingProduct.setPrice(product.getPrice());
+        existingProduct.setManufacturer(product.getManufacturer());
+        existingProduct.setExpirationDate(product.getExpirationDate());
+        existingProduct.setWeight(product.getWeight());
+        existingProduct.setDimensions(product.getDimensions());
+
         return productRepository.save(existingProduct);
     }
+
 
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
@@ -77,13 +63,8 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
     }
 
-
     public List<Product> searchProducts(String query) {
         return productRepository.findByNameContainingIgnoreCase(query);
-    }
-
-    public boolean isQrCodeUnique(String qrCode) {
-        return !productRepository.existsByQrCode(qrCode);
     }
 
 

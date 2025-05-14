@@ -1,6 +1,7 @@
 package com.smartinvent.repositories;
 
 
+import com.smartinvent.models.InventoryProductStatusEnum;
 import com.smartinvent.models.InventoryResult;
 import com.smartinvent.models.InventorySession;
 import com.smartinvent.models.Product;
@@ -19,7 +20,7 @@ public interface InventoryResultRepository extends JpaRepository<InventoryResult
     Optional<InventoryResult> findBySessionIdAndProductProductId(Long sessionId, Long productId);
 
     // Отримання результатів за сесією і статусом
-    List<InventoryResult> findBySessionIdAndStatusNameIgnoreCase(Long sessionId, String statusName);
+    List<InventoryResult> findBySessionIdAndStatus(Long sessionId, InventoryProductStatusEnum status);
 
     // Отримання результату для конкретного товару в сесії
     Optional<InventoryResult> findBySessionAndProduct(InventorySession session, Product product);

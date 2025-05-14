@@ -8,7 +8,6 @@ import com.smartinvent.repositories.*;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -21,9 +20,7 @@ import java.util.stream.Collectors;
 public class InventoryResultService {
 
     private final InventoryResultRepository resultRepository;
-    private final InventoryProductStatusRepository statusRepository;
     private final ProductRepository productRepository;
-    private final ProductService productService;
     private final CategoryRepository categoryRepository;
     private final StorageRepository storageRepository;
     private final InventorySessionRepository sessionRepository;
@@ -33,9 +30,6 @@ public class InventoryResultService {
         // Отримуємо сесію
         InventorySession session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new RuntimeException("Session not found"));
-
-//        InventorySession session = new InventorySession();
-//        session.setId(sessionId);
 
         // Отримуємо всі результати інвентаризації для цієї сесії
         List<InventoryResult> results = resultRepository.findBySession(session);
@@ -49,7 +43,7 @@ public class InventoryResultService {
             dto.setProductWorkId(result.getProduct().getProductWorkId());
             dto.setCategoryName(result.getProduct().getCategory().getName());
             dto.setStorageName(result.getProduct().getStorage().getName());
-            dto.setStatus(result.getStatus().getName());
+            dto.setStatus(result.getStatus());
             dto.setLocked(false); // Заблоковано чи ні, буде визначатися на фронтенді
 
             return dto;
@@ -69,9 +63,8 @@ public class InventoryResultService {
             throw new RuntimeException("Inventory result already exists for this product in the session.");
         }
 
-        // Знайдемо статус товару
-        InventoryProductStatus status = statusRepository.findByName(inventoryResult.getStatus().getName())
-                .orElseThrow(() -> new RuntimeException("Product status not found"));
+        InventoryProductStatusEnum status = inventoryResult.getStatus();
+
 
         inventoryResult.setStatus(status);
         inventoryResult.setScanTime(LocalDateTime.now());
@@ -86,8 +79,7 @@ public class InventoryResultService {
         InventoryResult existingResult = resultRepository.findById(resultId)
                 .orElseThrow(() -> new RuntimeException("Inventory result not found"));
 
-        InventoryProductStatus status = statusRepository.findByName(inventoryResult.getStatus().getName())
-                .orElseThrow(() -> new RuntimeException("Status not found"));
+        InventoryProductStatusEnum status = inventoryResult.getStatus();
         existingResult.setStatus(status);
         existingResult.setDescription(inventoryResult.getDescription());
         existingResult.setScannedBy(inventoryResult.getScannedBy());
@@ -99,8 +91,6 @@ public class InventoryResultService {
 
     // Отримання товарів для сесії з перевіркою блокування
     public List<InventorySessionProductDTO> getProductsForSession(Long sessionId) {
-//        InventorySession session = new InventorySession();
-//        session.setId(sessionId);
         InventorySession session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new RuntimeException("Session not found"));
 
@@ -117,7 +107,7 @@ public class InventoryResultService {
             dto.setProductWorkId(result.getProduct().getProductWorkId());
             dto.setCategoryName(result.getProduct().getCategory().getName());
             dto.setStorageName(result.getProduct().getStorage().getName());
-            dto.setStatus(result.getStatus().getName());
+            dto.setStatus(result.getStatus());
             dto.setLocked(false); // Заблоковано чи ні, буде визначатися на фронтенді (можна передавати цю інформацію з сесії)
 
             return dto;
@@ -126,22 +116,14 @@ public class InventoryResultService {
 
     // Оновлення статусу товарів, які не перевірені
     public void markUncheckedProductsAsNotFound(Long sessionId) {
-//        InventorySession session = new InventorySession();
-//        session.setId(sessionId);
-
         InventorySession session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new RuntimeException("Session not found"));
-
 
         // Отримуємо всі результати інвентаризації для цієї сесії
         List<InventoryResult> results = resultRepository.findBySession(session);
 
-        InventoryProductStatus notFoundStatus = statusRepository.findByName("NOT_FOUND")
-                .orElseThrow(() -> new RuntimeException("Not found status not found"));
-
-
-        InventoryProductStatus uncheckedStatus = statusRepository.findByName("UNCHECKED")
-                .orElseThrow(() -> new RuntimeException("UNCHECKED status not found"));
+        InventoryProductStatusEnum notFoundStatus = InventoryProductStatusEnum.NOT_FOUND;
+        InventoryProductStatusEnum uncheckedStatus = InventoryProductStatusEnum.UNCHECKED;
 
         for (InventoryResult result : results) {
             if (result.getStatus().equals(uncheckedStatus)) {
@@ -150,6 +132,7 @@ public class InventoryResultService {
             }
         }
     }
+
 
 
     public InventorySessionProductDTO createProductDuringInventory(CreateProductDuringInventoryRequest request) {
@@ -164,8 +147,8 @@ public class InventoryResultService {
                 .orElseThrow(() -> new RuntimeException("Сесію інвентаризації не знайдено"));
 
         // 2. Отримуємо статус ADDED
-        InventoryProductStatus addedStatus = statusRepository.findByName("ADDED")
-                .orElseThrow(() -> new RuntimeException("Статус ADDED не знайдено"));
+        InventoryProductStatusEnum addedStatus = InventoryProductStatusEnum.ADDED;
+
 
         // 3. Створюємо товар
         Product product = new Product();
@@ -195,7 +178,7 @@ public class InventoryResultService {
         dto.setProductWorkId(product.getProductWorkId());
         dto.setCategoryName(category.getName());
         dto.setStorageName(storage.getName());
-        dto.setStatus("ADDED"); // у DTO статус зручно лишити як String
+        dto.setStatus(addedStatus);
         dto.setLocked(false);
 
         return dto;

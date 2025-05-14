@@ -33,7 +33,6 @@ public class TransactionService {
         existingTransaction.setQuantity(transaction.getQuantity());
         existingTransaction.setDate(transaction.getDate());
         existingTransaction.setEmployee(transaction.getEmployee());
-        existingTransaction.setStorage(transaction.getStorage());
         existingTransaction.setProduct(transaction.getProduct());
 
 

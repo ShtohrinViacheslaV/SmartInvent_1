@@ -51,11 +51,4 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    @GetMapping("/checkQrCode")
-    public ResponseEntity<Boolean> isQrCodeUnique(@RequestParam String qrCode) {
-        boolean isUnique = productService.isQrCodeUnique(qrCode);
-        return ResponseEntity.ok(isUnique);
-    }
-
-
 }

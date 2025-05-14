@@ -1,12 +1,7 @@
 package com.smartinvent.models;
 
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,19 +19,21 @@ public class InventorySession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "inventory_session_id")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
+    @Column(name = "session_name")
     private String name;
 
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "inventory_session_status_id", nullable = false)
-    private InventorySessionStatus status;
+    @Enumerated(EnumType.STRING)
+    private InventorySessionStatusEnum status;
+
 
     private LocalDateTime startTime;
 
@@ -50,11 +47,11 @@ public class InventorySession {
         this.id = id;
     }
 
-    public InventorySessionStatus getStatus() {
+    public InventorySessionStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(InventorySessionStatus status) {
+    public void setStatus(InventorySessionStatusEnum status) {
         this.status = status;
     }
 

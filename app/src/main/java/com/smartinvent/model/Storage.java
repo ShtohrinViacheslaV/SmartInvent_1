@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 public class Storage implements Parcelable {
     private Long storageId;
+    private Company company;
     private String name;
     private String location;
     private String details;
@@ -12,8 +13,12 @@ public class Storage implements Parcelable {
     public Storage() {
     }
 
-    public Storage(Long storageId) {
+    public Storage(Long storageId, Company company, String name, String location, String details) {
         this.storageId = storageId;
+        this.company = company;
+        this.name = name;
+        this.location = location;
+        this.details = details;
     }
 
     protected Storage(Parcel in) {
@@ -22,6 +27,7 @@ public class Storage implements Parcelable {
         } else {
             storageId = in.readLong();
         }
+        company = in.readParcelable(Company.class.getClassLoader());
         name = in.readString();
         location = in.readString();
         details = in.readString();
@@ -47,6 +53,7 @@ public class Storage implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeLong(storageId);
         }
+        dest.writeParcelable(company, flags);
         dest.writeString(name);
         dest.writeString(location);
         dest.writeString(details);
@@ -63,6 +70,14 @@ public class Storage implements Parcelable {
 
     public void setStorageId(Long storageId) {
         this.storageId = storageId;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public String getName() {
@@ -91,6 +106,6 @@ public class Storage implements Parcelable {
 
     @Override
     public String toString() {
-        return name; // Для відображення в Spinner
+        return name;
     }
 }

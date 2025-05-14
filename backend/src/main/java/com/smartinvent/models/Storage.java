@@ -9,6 +9,10 @@ public class Storage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long storageId;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
+
     private String name;
     private String location;
     private String details;
@@ -21,6 +25,14 @@ public class Storage {
 
     public void setStorageId(Long storageId) {
         this.storageId = storageId;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public String getName() {

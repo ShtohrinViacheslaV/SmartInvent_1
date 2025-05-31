@@ -1,10 +1,7 @@
 package com.smartinvent.service;
 
-import com.smartinvent.model.CreateProductDuringInventoryRequest;
-import com.smartinvent.model.InventorySessionProduct;
+import com.smartinvent.model.*;
 import com.smartinvent.network.ApiClient;
-import com.smartinvent.model.InventorySession;
-import com.smartinvent.model.InventoryResult;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,7 +33,7 @@ public class InventoryService {
 
             @Override
             public void onFailure(Call<List<InventorySession>> call, Throwable t) {
-                callback.onFailure("Network error");
+                callback.onFailure("Network error: " + t.getMessage());
             }
         });
     }
@@ -54,7 +51,7 @@ public class InventoryService {
 
             @Override
             public void onFailure(Call<List<InventorySession>> call, Throwable t) {
-                callback.onFailure("Network error");
+                callback.onFailure("Network error: " + t.getMessage());
             }
         });
     }
@@ -127,7 +124,7 @@ public class InventoryService {
 
             @Override
             public void onFailure(Call<List<InventorySessionProduct>> call, Throwable t) {
-                callback.onFailure("Network error");
+                callback.onFailure("Network error: " + t.getMessage());
             }
         });
     }
@@ -145,7 +142,7 @@ public class InventoryService {
 
             @Override
             public void onFailure(Call<List<InventorySessionProduct>> call, Throwable t) {
-                callback.onFailure("Network error");
+                callback.onFailure("Network error: " + t.getMessage());
             }
         });
     }
@@ -205,10 +202,54 @@ public class InventoryService {
 
             @Override
             public void onFailure(Call<InventorySessionProduct> call, Throwable t) {
-                callback.onFailure("Network error");
+                callback.onFailure("Network error: " + t.getMessage());
             }
         });
     }
+
+    public void getInventoryResultsBySession(Long sessionId, InventoryProductResultCallback callback) {
+        inventoryApi.getResultsBySession(sessionId).enqueue(new Callback<List<InventoryProductResultDto>>() {
+            @Override
+            public void onResponse(Call<List<InventoryProductResultDto>> call, Response<List<InventoryProductResultDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFailure("Error loading inventory results");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<InventoryProductResultDto>> call, Throwable t) {
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getProductByWorkId(Long sessionId, String productWorkId, InventoryProductResultSingleCallback callback) {
+        inventoryApi.getProductByWorkId(sessionId, productWorkId)
+                .enqueue(new Callback<InventoryProductResultDto>() {
+                    @Override
+                    public void onResponse(Call<InventoryProductResultDto> call, Response<InventoryProductResultDto> response) {
+                        if (response.isSuccessful()) {
+                            callback.onSuccess(response.body());
+                        } else {
+                            callback.onFailure("Product not found");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<InventoryProductResultDto> call, Throwable t) {
+                        callback.onFailure("Network error: " + t.getMessage());
+                    }
+                });
+    }
+
+
+
+
+
+
+
 
     // === STATUS CHECKING UTILS ===
 
@@ -254,4 +295,16 @@ public class InventoryService {
         void onSuccess(boolean success);
         void onFailure(String errorMessage);
     }
+
+    public interface InventoryProductResultCallback {
+        void onSuccess(List<InventoryProductResultDto> results);
+        void onFailure(String errorMessage);
+    }
+
+    public interface InventoryProductResultSingleCallback {
+        void onSuccess(InventoryProductResultDto productResultDto);
+        void onFailure(String errorMessage);
+    }
+
+
 }

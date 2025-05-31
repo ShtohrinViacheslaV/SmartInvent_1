@@ -2,10 +2,12 @@ package com.smartinvent.service;
 
 
 import com.smartinvent.dto.CreateProductDuringInventoryRequest;
+import com.smartinvent.dto.InventoryProductResultDto;
 import com.smartinvent.dto.InventorySessionProductDTO;
 import com.smartinvent.models.*;
 import com.smartinvent.repositories.*;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,95 @@ public class InventoryResultService {
 
     private final InventoryResultRepository resultRepository;
     private final ProductRepository productRepository;
+
+    public void initializeResultsForSession(InventorySession session) {
+        List<Product> products = productRepository.findAll();
+
+        // Створюємо результати
+        List<InventoryResult> results = products.stream().map(product ->
+                InventoryResult.builder()
+                        .product(product)
+                        .session(session)
+                        .status(InventoryProductStatusEnum.UNCHECKED)
+                        .scannedBy(null)           // ще не скановано
+                        .scanTime(null)            // ще не скановано
+                        .description(null)
+                        .build()
+        ).toList();
+
+        // Зберігаємо в базу
+        resultRepository.saveAll(results);
+
+        System.out.println("Created " + results.size() + " inventory results for session " + session.getInventorySessionId());
+    }
+
+
+
+    public List<InventoryProductResultDto> getResultsBySession(Long sessionId) {
+        List<InventoryResult> results = resultRepository.findBySessionInventorySessionId(sessionId);
+
+        return results.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    public InventoryProductResultDto getProductBySessionAndWorkId(Long sessionId, String productWorkId) {
+        InventoryResult result = resultRepository
+                .findBySessionInventorySessionIdAndProduct_ProductWorkId(sessionId, productWorkId)
+                .orElseThrow(() -> new EntityNotFoundException("Товар з таким QR-кодом не знайдено в цій сесії"));
+
+        return mapToDto(result);
+    }
+
+
+
+    private InventoryProductResultDto mapToDto(InventoryResult result) {
+        Product product = result.getProduct();
+
+        InventoryProductResultDto dto = new InventoryProductResultDto();
+        dto.setInventoryResultId(result.getId());
+        dto.setInventorySessionId(result.getSession().getInventorySessionId());
+        dto.setProductId(product.getProductId());
+        dto.setProductName(product.getName());
+        dto.setProductDescription(product.getDescription());
+        dto.setProductWorkId(product.getProductWorkId());
+        dto.setProductCount(product.getCount());
+        dto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : null);
+        dto.setStorageName(product.getStorage() != null ? product.getStorage().getName() : null);
+        dto.setPrice(product.getPrice());
+        dto.setCount(product.getCount());
+        dto.setManufacturer(product.getManufacturer());
+        dto.setExpirationDate(product.getExpirationDate() != null ? product.getExpirationDate().toString() : null);
+        dto.setWeight(product.getWeight());
+        dto.setDimensions(product.getDimensions());
+        dto.setStatus(result.getStatus());
+        dto.setScannedBy(result.getScannedBy() != null ? result.getScannedBy().getEmployeeId() : null);
+        dto.setDescription(result.getDescription());
+
+        return dto;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private final CategoryRepository categoryRepository;
     private final StorageRepository storageRepository;
     private final InventorySessionRepository sessionRepository;
@@ -54,11 +145,11 @@ public class InventoryResultService {
 
     // Додавання результату інвентаризації для товару в сесії
     public InventoryResult addInventoryResult(InventoryResult inventoryResult) {
-        Long sessionId = inventoryResult.getSession().getId();
+        Long sessionId = inventoryResult.getSession().getInventorySessionId();
         Long productId = inventoryResult.getProduct().getProductId();
 
         // Перевірка чи вже є результат
-        Optional<InventoryResult> existing = resultRepository.findBySessionIdAndProductProductId(sessionId, productId);
+        Optional<InventoryResult> existing = resultRepository.findBySessionInventorySessionIdAndProductProductId(sessionId, productId);
         if (existing.isPresent()) {
             throw new RuntimeException("Inventory result already exists for this product in the session.");
         }
@@ -122,8 +213,8 @@ public class InventoryResultService {
         // Отримуємо всі результати інвентаризації для цієї сесії
         List<InventoryResult> results = resultRepository.findBySession(session);
 
-        InventoryProductStatusEnum notFoundStatus = InventoryProductStatusEnum.NOT_FOUND;
-        InventoryProductStatusEnum uncheckedStatus = InventoryProductStatusEnum.UNCHECKED;
+        InventoryProductStatusEnum notFoundStatus = InventoryProductStatusEnum.NOT_FOUND; //не знайдені в бд, але є в реальності
+        InventoryProductStatusEnum uncheckedStatus = InventoryProductStatusEnum.UNCHECKED; //не знайдені в реальності, але є в бд
 
         for (InventoryResult result : results) {
             if (result.getStatus().equals(uncheckedStatus)) {

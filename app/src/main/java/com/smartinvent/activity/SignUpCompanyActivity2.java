@@ -1,6 +1,7 @@
 package com.smartinvent.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,7 +9,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.smartinvent.R;
+import com.smartinvent.model.Company;
 import com.smartinvent.model.Employee;
+import com.smartinvent.model.RoleEnum;
 import com.smartinvent.network.ApiClient;
 import com.smartinvent.network.ApiService;
 import retrofit2.Call;
@@ -17,7 +20,9 @@ import retrofit2.Response;
 
 public class SignUpCompanyActivity2 extends AppCompatActivity {
 
-    private EditText adminWorkId, adminFirstName, adminLastName, adminEmail, adminPassword;
+    private EditText adminWorkId, adminFirstName, adminLastName, adminEmail, adminPassword, adminPhone;
+    private Company company;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,34 +34,68 @@ public class SignUpCompanyActivity2 extends AppCompatActivity {
         adminLastName = findViewById(R.id.input_admin_last_name);
         adminEmail = findViewById(R.id.input_admin_email);
         adminPassword = findViewById(R.id.input_admin_password);
+        adminPhone = findViewById(R.id.input_admin_phone);
+
+        company = getIntent().getParcelableExtra("company");
+
+        if (company == null || company.getCompanyId() == null) {
+            Log.e("SignUpCompanyActivity2", "Компанія або її ID є null. Неможливо створити адміністратора.");
+            Toast.makeText(this, "Помилка при отриманні даних компанії", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
     }
 
     public void saveAdminData(View v) {
-        Employee admin = new Employee(
-                adminFirstName.getText().toString(),
-                adminLastName.getText().toString(),
-                adminEmail.getText().toString(),
-                adminWorkId.getText().toString(),
-                adminPassword.getText().toString(),
-                "ADMIN"
-        );
 
+        String employeeWorkId = adminWorkId.getText().toString().trim();
+        String firstName = adminFirstName.getText().toString().trim();
+        String lastName = adminLastName.getText().toString().trim();
+        String email = adminEmail.getText().toString().trim();
+        String password = adminPassword.getText().toString().trim();
+        String phone = adminPhone.getText().toString().trim();
+
+        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty() || employeeWorkId.isEmpty()) {
+            Toast.makeText(this, "Будь ласка, заповніть всі обов'язкові поля", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Employee admin = new Employee();
+        admin.setFirstName(adminFirstName.getText().toString());
+        admin.setLastName(adminLastName.getText().toString());
+        admin.setEmail(adminEmail.getText().toString());
+        admin.setPhone(adminPhone.getText().toString());
         admin.setEmployeeWorkId(adminWorkId.getText().toString());
         admin.setPasswordHash(adminPassword.getText().toString());
+        admin.setRole(RoleEnum.ADMIN);
+        admin.setCompany(company);
 
         ApiService apiService = ApiClient.getService();
         apiService.createEmployee(admin).enqueue(new Callback<Employee>() {
             @Override
             public void onResponse(Call<Employee> call, Response<Employee> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(SignUpCompanyActivity2.this, "Адміністратор зареєстрований!", Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful() && response.body() != null) {
+                    Employee createdAdmin = response.body();
+
+                    // ✅ Зберегти дані для автоматичного входу
+                    SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+                    sharedPreferences.edit()
+                            .putLong("employeeId", createdAdmin.getEmployeeId())
+                            .putString("role", createdAdmin.getRole().name())
+                            .putString("firstName", createdAdmin.getFirstName())
+                            .putString("lastName", createdAdmin.getLastName())
+                            .apply();
+
+                    Toast.makeText(SignUpCompanyActivity2.this, "Адміністратор створений!", Toast.LENGTH_SHORT).show();
+
+                    // ✅ Перейти на головний екран адміністратора
                     startActivity(new Intent(SignUpCompanyActivity2.this, AdminHomeActivity.class));
                     finish();
+
                 } else {
-                    Toast.makeText(SignUpCompanyActivity2.this, "Помилка реєстрації адміністратора", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpCompanyActivity2.this, "Помилка створення адміністратора: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<Employee> call, Throwable t) {
                 Toast.makeText(SignUpCompanyActivity2.this, "Не вдалося підключитися до сервера", Toast.LENGTH_SHORT).show();
@@ -64,7 +103,6 @@ public class SignUpCompanyActivity2 extends AppCompatActivity {
             }
         });
     }
-
 
     public void backToSignUpCompanyActivity1(View v) {
         startActivity(new Intent(this, SignUpCompanyActivity1.class));
@@ -74,9 +112,7 @@ public class SignUpCompanyActivity2 extends AppCompatActivity {
     public void databaseActivity(View v) {
         saveAdminData(v);
     }
-
 }
-
 
 //package com.smartinvent.activity;
 //

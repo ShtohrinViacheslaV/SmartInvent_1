@@ -4,12 +4,12 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home"
+            android:icon="@drawable/ic_home_1"
             android:title="Головна"/>
 
     <item
             android:id="@+id/nav_products"
-            android:icon="@drawable/ic_product"
+            android:icon="@drawable/ic_product_1"
             android:title="Товари"/>
 
     <item
@@ -20,12 +20,12 @@
 
     <item
             android:id="@+id/nav_inventory"
-            android:icon="@drawable/ic_inventory"
+            android:icon="@drawable/ic_inventory_1"
             android:title="Інвентаризація"/>
 
     <item
             android:id="@+id/nav_more"
-            android:icon="@drawable/ic_more"
+            android:icon="@drawable/ic_more_1"
             android:title="Додатково"/>
 
 </menu>

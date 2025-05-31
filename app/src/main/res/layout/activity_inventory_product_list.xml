@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+        <!-- Buttons -->
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:gravity="center">
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnScanProduct"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Сканувати"
+                    app:icon="@drawable/ic_camera"
+                    app:iconGravity="textStart"/>
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnManualSearch"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:layout_height="wrap_content"
+                    android:text="Пошук"
+                    app:icon="@drawable/ic_search"
+                    app:iconGravity="textStart"/>
+        </LinearLayout>
+
+        <!-- Filters -->
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginTop="8dp">
+
+            <!-- Статус -->
+            <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:hint="Статус"
+                    app:boxStrokeColor="@color/primary"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/spinnerStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textSize="16sp"
+                        android:padding="12dp"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Склад -->
+            <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:hint="Склад"
+                    app:boxStrokeColor="@color/primary"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/spinnerStorage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textSize="16sp"
+                        android:padding="12dp"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Категорія -->
+            <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Категорія"
+                    app:boxStrokeColor="@color/primary"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/spinnerCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textSize="16sp"
+                        android:padding="12dp"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+
+        <!-- List -->
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewProducts"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,16 +1,17 @@
 package com.smartinvent.model;
 
 
+import java.time.LocalDateTime;
 
 public class InventorySession {
 
     private Long inventorySessionId;
-    private Long employee;
+    private Employee employee;
     private String name;
     private String description;
-    private String statusName;
-    private String startTime;
-    private String endTime;
+    private InventorySessionStatusEnum status;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
 
 
@@ -23,11 +24,11 @@ public class InventorySession {
         this.inventorySessionId = inventorySessionId;
     }
 
-    public Long getEmployee() {
+    public Employee getEmployee() {
         return employee;
     }
 
-    public void setEmployee(Long employee) {
+    public void setEmployee(Employee employee) {
         this.employee = employee;
     }
 
@@ -48,27 +49,27 @@ public class InventorySession {
         this.description = description;
     }
 
-    public String getStatusName() {
-        return statusName;
+    public InventorySessionStatusEnum getStatus() {
+        return status;
     }
 
-    public void setStatusName(String statusName) {
-        this.statusName = statusName;
+    public void setStatus(InventorySessionStatusEnum status) {
+        this.status = status;
     }
 
-    public String getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public String getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 }

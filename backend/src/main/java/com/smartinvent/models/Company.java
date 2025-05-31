@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long companyId;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -40,12 +40,12 @@ public class Company {
         this.email = email;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCompanyId(Long id) {
+        this.companyId = id;
     }
 
     public String getName() {
@@ -91,7 +91,7 @@ public class Company {
     @Override
     public String toString() {
         return "Company{" +
-                "companyId=" + id +
+                "companyId=" + companyId +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", phone='" + phone + '\'' +

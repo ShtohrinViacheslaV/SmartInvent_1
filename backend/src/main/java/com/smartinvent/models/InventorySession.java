@@ -15,12 +15,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "inventorysession")
 public class InventorySession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "inventory_session_id")
-    private Long id;
+    private Long inventorySessionId;
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
@@ -39,12 +40,12 @@ public class InventorySession {
 
     private LocalDateTime endTime;
 
-    public Long getId() {
-        return id;
+    public Long getInventorySessionId() {
+        return inventorySessionId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setInventorySessionId(Long id) {
+        this.inventorySessionId = id;
     }
 
     public InventorySessionStatusEnum getStatus() {

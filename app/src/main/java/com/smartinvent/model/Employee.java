@@ -1,7 +1,9 @@
 package com.smartinvent.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Employee {
+public class Employee implements Parcelable {
 
     private Long employeeId;
     private Company company;
@@ -11,24 +13,70 @@ public class Employee {
     private String phone;
     private String employeeWorkId;
     private String passwordHash;
-    private Role role;
+    private RoleEnum role;
 
-
-    public Employee() {}
-
-
-    public Employee(Long employeeId, Company company, String firstName, String lastName, String email, String phone, String employeeWorkId, String passwordHash, Role role) {
-        this.employeeId = employeeId;
-        this.company = company;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phone = phone;
-        this.employeeWorkId = employeeWorkId;
-        this.passwordHash = passwordHash;
-        this.role = role;
+    public Employee() {
     }
 
+    public Employee(String employeeWorkId, String firstName, String lastName) {
+        this.employeeWorkId = employeeWorkId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+
+    protected Employee(Parcel in) {
+        if (in.readByte() == 0) {
+            employeeId = null;
+        } else {
+            employeeId = in.readLong();
+        }
+        company = in.readParcelable(Company.class.getClassLoader());
+        firstName = in.readString();
+        lastName = in.readString();
+        email = in.readString();
+        phone = in.readString();
+        employeeWorkId = in.readString();
+        passwordHash = in.readString();
+        role = RoleEnum.valueOf(in.readString());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (employeeId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(employeeId);
+        }
+        dest.writeParcelable(company, flags);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(email);
+        dest.writeString(phone);
+        dest.writeString(employeeWorkId);
+        dest.writeString(passwordHash);
+        dest.writeString(role.name());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Employee> CREATOR = new Creator<Employee>() {
+        @Override
+        public Employee createFromParcel(Parcel in) {
+            return new Employee(in);
+        }
+
+        @Override
+        public Employee[] newArray(int size) {
+            return new Employee[size];
+        }
+    };
+
+    // Getters and Setters
     public Long getEmployeeId() {
         return employeeId;
     }
@@ -93,11 +141,11 @@ public class Employee {
         this.passwordHash = passwordHash;
     }
 
-    public Role getRole() {
+    public RoleEnum getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleEnum role) {
         this.role = role;
     }
 }

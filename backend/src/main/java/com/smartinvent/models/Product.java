@@ -21,8 +21,6 @@ public class Product {
     @Column(name = "product_work_id", nullable = false, unique = true, length = 100)
     private String productWorkId;
 
-    private Integer count;
-
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
@@ -45,6 +43,10 @@ public class Product {
 
     @Column(length = 50)
     private String dimensions;
+
+    private Integer count;
+
+
 
     public Product() {
     }

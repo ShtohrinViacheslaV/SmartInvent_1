@@ -11,13 +11,15 @@ public class AuthResponse {
     private String role;
     private String firstName;
     private String lastName;
+    private Long companyId;
 
 
-    public AuthResponse(Long employeeId, String role, String firstName, String lastName) {
+    public AuthResponse(Long employeeId, String role, String firstName, String lastName, Long companyId) {
         this.employeeId = employeeId;
         this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.companyId = companyId;
     }
 
     public Long getEmployeeId() {
@@ -50,5 +52,13 @@ public class AuthResponse {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 }

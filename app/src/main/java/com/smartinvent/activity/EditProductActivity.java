@@ -1,83 +1,146 @@
 package com.smartinvent.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Base64;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.*;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.smartinvent.R;
-import com.smartinvent.model.Category;
-import com.smartinvent.model.Product;
-import com.smartinvent.model.Storage;
-import com.smartinvent.model.Transaction;
+import com.smartinvent.model.*;
 import com.smartinvent.service.CategoryService;
 import com.smartinvent.service.ProductService;
 import com.smartinvent.service.StorageService;
 import com.smartinvent.service.TransactionService;
-import com.smartinvent.utils.QrCodeUtils;
 
-import java.nio.charset.StandardCharsets;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class EditProductActivity extends AppCompatActivity {
 
-    private EditText edtName, edtDescription, edtCount, edtProductWorkId;
-    private MaterialAutoCompleteTextView editspnCategory, editspnStorage;
-    private Button btnSave, btnCancel, btnViewQrCode;
-    private ImageView imgQrCode;
+    private EditText editName, editDescription, editProductWorkId, editPrice, editCount, editManufacturer, editExpirationDate, editWeight, editDimensions;
+    private MaterialAutoCompleteTextView edtspnCategory, edtspnStorage;
+    private Button edtbtnSave, edtbtnCancel, btnScanQr, btnViewQr;
 
-    private Product product;
     private ProductService productService;
     private CategoryService categoryService;
     private StorageService storageService;
     private TransactionService transactionService;
 
-    private List<Category> categoryList = new ArrayList<>();
-    private List<Storage> storageList = new ArrayList<>();
-    private byte[] qrCodeBytes;
+    private static final String ADD_NEW_CATEGORY = "➕ Додати нову категорію";
+    private static final String ADD_NEW_STORAGE = "➕ Додати новий склад";
+
+    private List<Category> categoryList;
+    private List<Storage> storageList;
+    private ArrayAdapter<String> categoryAdapter;
+    private ArrayAdapter<String> storageAdapter;
+
+    private static final int QR_SCAN_REQUEST_CODE = 1001;
+
+
+    private Product currentProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_product);
 
-        edtName = findViewById(R.id.edt_name);
-        edtDescription = findViewById(R.id.edt_description);
-        edtProductWorkId = findViewById(R.id.edt_product_work_id);
-        edtCount = findViewById(R.id.edt_count);
-        editspnCategory = findViewById(R.id.edt_spn_category);
-        editspnStorage = findViewById(R.id.edt_spn_storage);
-        btnSave = findViewById(R.id.btn_edt_save);
-        btnCancel = findViewById(R.id.btn_edt_cancel);
-        btnViewQrCode = findViewById(R.id.btn_view_qr_code);
+        editName = findViewById(R.id.edt_name);
+        editDescription = findViewById(R.id.edt_description);
+        editProductWorkId = findViewById(R.id.edt_product_work_id);
+        editPrice = findViewById(R.id.edt_price);
+        editManufacturer = findViewById(R.id.edt_manufacturer);
+        editExpirationDate = findViewById(R.id.edt_expiration_date);
+        editWeight = findViewById(R.id.edt_weight);
+        editDimensions = findViewById(R.id.edt_dimensions);
+        editCount = findViewById(R.id.edt_count);
+        edtspnCategory = findViewById(R.id.edt_spn_category);
+        edtspnStorage = findViewById(R.id.edt_spn_storage);
+
+        btnScanQr = findViewById(R.id.btn_scan_qr);
+        btnViewQr  = findViewById(R.id.btn_view_qr);
+        edtbtnSave = findViewById(R.id.btn_edt_save);
+        edtbtnCancel = findViewById(R.id.btn_edt_cancel);
+
+        btnViewQr.setEnabled(false);
+
+
+        editProductWorkId.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                btnViewQr.setEnabled(!s.toString().trim().isEmpty());
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
 
         productService = new ProductService();
         categoryService = new CategoryService();
         storageService = new StorageService();
         transactionService = new TransactionService();
 
-        product = getIntent().getParcelableExtra("product");
 
-        if (product != null) {
-            fillProductDetails();
-        }
+        categoryList = new ArrayList<>();
+        storageList = new ArrayList<>();
+
 
         loadCategories();
         loadStorages();
+        setupSpinnerListeners();
 
-        btnViewQrCode.setOnClickListener(v -> showQrCode());
-        btnSave.setOnClickListener(v -> saveProduct());
-        btnCancel.setOnClickListener(v -> finish());
+
+        btnScanQr.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ScannerActivity.class);
+            startActivityForResult(intent, QR_SCAN_REQUEST_CODE);
+        });
+
+        btnViewQr.setOnClickListener(v -> {
+            String productCode = editProductWorkId.getText().toString().trim();
+            if (!productCode.isEmpty()) {
+                Intent intent = new Intent(this, ViewQrActivity.class);
+                intent.putExtra("PRODUCT_CODE", productCode);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Спочатку введіть або відскануйте код", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        edtbtnSave.setOnClickListener(v -> updateProduct());
+        edtbtnCancel.setOnClickListener(v -> finish());
+
+
+        currentProduct = getIntent().getParcelableExtra("product");
+        if (currentProduct != null) {
+            populateFields(currentProduct);
+        } else{
+                Toast.makeText(this, "❌ Дані продукту не передані", Toast.LENGTH_SHORT).show();
+                finish();
+        }
     }
 
-    private void fillProductDetails() {
-        edtName.setText(product.getName());
-        edtDescription.setText(product.getDescription());
-        edtProductWorkId.setText(product.getProductWorkId());
-        edtCount.setText(String.valueOf(product.getCount()));
-        qrCodeBytes = Base64.decode(product.getQrCode(), Base64.DEFAULT);
+    private void populateFields(Product product) {
+        editName.setText(product.getName());
+        editDescription.setText(product.getDescription());
+        editProductWorkId.setText(product.getProductWorkId());
+        editPrice.setText(product.getPrice() != null ? product.getPrice().toString() : "");
+        editManufacturer.setText(product.getManufacturer());
+        editExpirationDate.setText(product.getExpirationDate());
+        editWeight.setText(product.getWeight() != null ? product.getWeight().toString() : "");
+        editDimensions.setText(product.getDimensions());
+        editCount.setText(product.getCount() != null ? String.valueOf(product.getCount()) : "");
     }
 
     private void loadCategories() {
@@ -85,31 +148,22 @@ public class EditProductActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List<Category> categories) {
                 categoryList.clear();
-                if (categories != null) {
-                    categoryList.addAll(categories);
-                    List<String> categoryNames = new ArrayList<>();
-                    for (Category category : categories) {
-                        categoryNames.add(category.getName());
-                    }
+                categoryList.addAll(categories);
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(EditProductActivity.this,
-                            android.R.layout.simple_dropdown_item_1line, categoryNames);
-                    editspnCategory.setAdapter(adapter);
-
-                    if (product != null) {
-                        for (Category category : categoryList) {
-                            if (category.getCategoryId().equals(product.getCategoryId())) {
-                                editspnCategory.setText(category.getName(), false);
-                                break;
-                            }
-                        }
-                    }
+                List<String> categoryNames = new ArrayList<>();
+                for (Category c : categories) {
+                    categoryNames.add(c.getName());
                 }
+                categoryNames.add(ADD_NEW_CATEGORY);
+
+                categoryAdapter = new ArrayAdapter<>(EditProductActivity.this, android.R.layout.simple_spinner_item, categoryNames);
+                categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                edtspnCategory.setAdapter(categoryAdapter);
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                Toast.makeText(EditProductActivity.this, "Помилка завантаження категорій", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditProductActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -119,116 +173,254 @@ public class EditProductActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List<Storage> storages) {
                 storageList.clear();
-                if (storages != null) {
-                    storageList.addAll(storages);
-                    List<String> storageNames = new ArrayList<>();
-                    for (Storage storage : storages) {
-                        storageNames.add(storage.getName());
-                    }
+                storageList.addAll(storages);
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(EditProductActivity.this,
-                            android.R.layout.simple_dropdown_item_1line, storageNames);
-                    editspnStorage.setAdapter(adapter);
-
-                    if (product != null) {
-                        for (Storage storage : storageList) {
-                            if (storage.getStorageId().equals(product.getStorageId())) {
-                                editspnStorage.setText(storage.getName(), false);
-                                break;
-                            }
-                        }
-                    }
+                List<String> storageNames = new ArrayList<>();
+                for (Storage s : storages) {
+                    storageNames.add(s.getName());
                 }
+                storageNames.add(ADD_NEW_STORAGE);
+
+                storageAdapter = new ArrayAdapter<>(EditProductActivity.this, android.R.layout.simple_spinner_item, storageNames);
+                storageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                edtspnStorage.setAdapter(storageAdapter);
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                Toast.makeText(EditProductActivity.this, "Помилка завантаження складів", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditProductActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void showQrCode() {
-        if (product != null) {
-            imgQrCode.setImageBitmap(QrCodeUtils.generateQrBitmap(product.getProductWorkId()));
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null && result.getContents() != null) {
+            editProductWorkId.setText(result.getContents());
         } else {
-            Toast.makeText(this, "QR-код недоступний", Toast.LENGTH_SHORT).show();
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void saveProduct() {
-        String name = edtName.getText().toString().trim();
-        String description = edtDescription.getText().toString().trim();
-        String productWorkId = edtProductWorkId.getText().toString().trim();
-        String countStr = edtCount.getText().toString().trim();
+    private void updateProduct() {
+        String name = editName.getText().toString().trim();
+        String description = editDescription.getText().toString().trim();
+        String priceStr = editPrice.getText().toString().trim();
+        String manufacturer = editManufacturer.getText().toString().trim();
+        String expirationDate = editExpirationDate.getText().toString().trim();
+        String weightStr = editWeight.getText().toString().trim();
+        String dimensions = editDimensions.getText().toString().trim();
+        String countStr = editCount.getText().toString().trim();
+        String productWorkId = editProductWorkId.getText().toString().trim();
 
+        // Перевірка обов'язкових полів
         if (name.isEmpty() || countStr.isEmpty() || productWorkId.isEmpty()) {
-            Toast.makeText(this, "Будь ласка, заповніть всі обов'язкові поля", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Будь ласка, заповніть обов'язкові поля", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        int count = Integer.parseInt(countStr);
+
+        BigDecimal price = null;
+        if (!priceStr.isEmpty()) {
+            try {
+                price = new BigDecimal(priceStr);
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Невірний формат ціни", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        BigDecimal weight = null;
+        if (!weightStr.isEmpty()) {
+            try {
+                weight = new BigDecimal(weightStr);
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Невірний формат ваги", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        Integer count = null;
+        if (!countStr.isEmpty()) {
+            try {
+                count = Integer.parseInt(countStr);
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Невірний формат кількості", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
         Category selectedCategory = null;
         Storage selectedStorage = null;
 
-        String selectedCategoryName = editspnCategory.getText().toString().trim();
-        if (!selectedCategoryName.isEmpty()) {
-            for (Category category : categoryList) {
-                if (category.getName().equals(selectedCategoryName)) {
-                    selectedCategory = category;
-                    break;
-                }
+        for (Category c : categoryList) {
+            if (c.getName().equals(edtspnCategory.getText().toString().trim())) {
+                selectedCategory = c;
+                break;
             }
         }
 
-        String selectedStorageName = editspnStorage.getText().toString().trim();
-        if (!selectedStorageName.isEmpty()) {
-            for (Storage storage : storageList) {
-                if (storage.getName().equals(selectedStorageName)) {
-                    selectedStorage = storage;
-                    break;
-                }
+        for (Storage s : storageList) {
+            if (s.getName().equals(edtspnStorage.getText().toString().trim())) {
+                selectedStorage = s;
+                break;
             }
         }
 
-        product.setName(name);
-        product.setDescription(description);
-        product.setProductWorkId(productWorkId);
-        product.setCount(count);
+        // Оновлення поточного продукту
+        currentProduct.setName(name);
+        currentProduct.setDescription(description);
+        currentProduct.setProductWorkId(productWorkId);
+        currentProduct.setPrice(price);
+        currentProduct.setCount(count);
+        currentProduct.setManufacturer(manufacturer);
+        currentProduct.setExpirationDate(expirationDate);
+        currentProduct.setWeight(weight);
+        currentProduct.setDimensions(dimensions);
 
-        if (selectedCategory != null) {
-            product.setCategoryId(selectedCategory.getCategoryId());
-        }
 
-        if (selectedStorage != null) {
-            product.setStorageId(selectedStorage.getStorageId());
-        }
+        if (selectedCategory != null) currentProduct.setCategoryId(selectedCategory.getCategoryId());
+        if (selectedStorage != null) currentProduct.setStorageId(selectedStorage.getStorageId());
 
-        if (qrCodeBytes == null) {
-            qrCodeBytes = productWorkId.getBytes(StandardCharsets.UTF_8);
-        }
-        product.setQrCode(Base64.encodeToString(qrCodeBytes, Base64.DEFAULT));
-
-        productService.updateProduct(product, new ProductService.ProductCallback() {
-            @Override
-            public void onSuccess(boolean success, Product updatedProduct) {
-                if (success) {
-                    addTransaction(product.getProductId(), "Редагування");
-                    Toast.makeText(EditProductActivity.this, "Товар оновлено!", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Toast.makeText(EditProductActivity.this, "Помилка оновлення!", Toast.LENGTH_SHORT).show();
-                }
+        productService.updateProduct(currentProduct, (success, updatedProduct) -> {
+            if (success  && currentProduct != null) {
+                addTransaction(currentProduct, TransactionTypeEnum.UPDATE, currentProduct.getCount());
+                Toast.makeText(this, "Товар оновлено!", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Помилка при оновленні", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void addTransaction(Long productId, String action) {
-        Transaction transaction = new Transaction(productId, action, System.currentTimeMillis());
+
+    private void addTransaction(Product product, TransactionTypeEnum action, int quantity) {
+        Transaction transaction = new Transaction();
+        transaction.setProduct(product);
+        transaction.setType(action);
+        transaction.setEmployee(getCurrentEmployee());
+        transaction.setQuantity(quantity);
+        transaction.setTransactionDate(LocalDateTime.now());
+
         transactionService.createTransaction(transaction, success -> {
             if (!success) {
                 Toast.makeText(this, "Помилка запису в історію руху товарів", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Транзакція збережена", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    private Employee getCurrentEmployee() {
+        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        long employeeId = prefs.getLong("employee_id", -1);
+        if (employeeId == -1) return null;
+
+        Employee employee = new Employee();
+        employee.setEmployeeId(employeeId);
+        return employee;
+    }
+
+    private void setupSpinnerListeners() {
+        edtspnStorage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = parent.getItemAtPosition(position).toString();
+                if (ADD_NEW_CATEGORY.equals(selected)) {
+                    showCreateCategoryDialog();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        edtspnStorage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = parent.getItemAtPosition(position).toString();
+                if (ADD_NEW_STORAGE.equals(selected)) {
+                    showCreateStorageDialog();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+
+    private void showCreateCategoryDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Нова категорія");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("Додати", (dialog, which) -> {
+            String name = input.getText().toString().trim();
+            if (!name.isEmpty()) {
+                Category category = new Category();
+                category.setName(name);
+                categoryService.createCategory(category, new CategoryService.SingleCategoryCallback() {
+                    @Override
+                    public void onSuccess(Category createdCategory) {
+                        loadCategories(); // оновити список
+                        Toast.makeText(EditProductActivity.this, "Категорію створено", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        Toast.makeText(EditProductActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        builder.setNegativeButton("Скасувати", (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+
+
+    private void showCreateStorageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Новий склад");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("Додати", (dialog, which) -> {
+            String name = input.getText().toString().trim();
+            if (!name.isEmpty()) {
+                Storage storage = new Storage();
+                storage.setName(name);
+                storageService.createStorage(storage, new StorageService.SingleStorageCallback() {
+                    @Override
+                    public void onSuccess(Storage createdStorage) {
+                        loadStorages(); // оновити список
+                        Toast.makeText(EditProductActivity.this, "Склад створено", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        Toast.makeText(EditProductActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        builder.setNegativeButton("Скасувати", (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+
 }
+
+
+
+
+
+
+

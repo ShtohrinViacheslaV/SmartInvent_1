@@ -33,8 +33,72 @@ public class StorageService {
         });
     }
 
+    public void createStorage(Storage storage, SingleStorageCallback callback) {
+        storageApi.createStorage(storage).enqueue(new Callback<Storage>() {
+            @Override
+            public void onResponse(Call<Storage> call, Response<Storage> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFailure("Не вдалося створити склад");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Storage> call, Throwable t) {
+                callback.onFailure("Помилка: " + t.getMessage());
+            }
+        });
+    }
+
+    public void updateStorage(Storage storage, SingleStorageCallback callback) {
+        storageApi.updateStorage(storage.getStorageId(), storage).enqueue(new Callback<Storage>() {
+            @Override
+            public void onResponse(Call<Storage> call, Response<Storage> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(null);
+                } else {
+                    callback.onFailure("Не вдалося оновити склад");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Storage> call, Throwable t) {
+                callback.onFailure("Помилка: " + t.getMessage());
+            }
+        });
+    }
+
+    public void deleteStorage(Long id, SimpleCallback callback) {
+        storageApi.deleteStorage(id).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess();
+                } else {
+                    callback.onFailure("Не вдалося видалити склад");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                callback.onFailure("Помилка: " + t.getMessage());
+            }
+        });
+    }
+
     public interface StorageCallback {
         void onSuccess(List<Storage> storages);
+        void onFailure(String errorMessage);
+    }
+
+    public interface SingleStorageCallback {
+        void onSuccess(Storage storage);  // Повертає Storage при create або null при update
+        void onFailure(String errorMessage);
+    }
+
+    public interface SimpleCallback {
+        void onSuccess();
         void onFailure(String errorMessage);
     }
 }

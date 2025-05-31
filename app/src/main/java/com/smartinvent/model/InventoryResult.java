@@ -7,7 +7,7 @@ public class InventoryResult {
     private Long inventorySessionId;
     private Long product;
     private Long scannedBy;
-    private String statusName;
+    private InventoryProductStatusEnum statusName;
     private String description;
 
     public Long getInventoryResultId() {
@@ -42,11 +42,11 @@ public class InventoryResult {
         this.scannedBy = scannedBy;
     }
 
-    public String getStatusName() {
+    public InventoryProductStatusEnum getStatusName() {
         return statusName;
     }
 
-    public void setStatusName(String statusName) {
+    public void setStatusName(InventoryProductStatusEnum statusName) {
         this.statusName = statusName;
     }
 

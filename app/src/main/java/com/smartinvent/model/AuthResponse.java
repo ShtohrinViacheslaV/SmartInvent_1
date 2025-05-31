@@ -4,19 +4,21 @@ package com.smartinvent.model;
 
 public class AuthResponse {
     private Long employeeId;
-    private String role;
+    private RoleEnum role;
     private String firstName;
     private String lastName;
+    private Long companyId;
 
 
     public AuthResponse() {
     }
 
-    public AuthResponse(String lastName, String firstName, String role, Long employeeId) {
+    public AuthResponse(String lastName, String firstName, RoleEnum role, Long employeeId, Long companyId) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.role = role;
         this.employeeId = employeeId;
+        this.companyId = companyId;
     }
 
     public String getLastName() {
@@ -35,11 +37,11 @@ public class AuthResponse {
         this.firstName = firstName;
     }
 
-    public String getRole() {
+    public RoleEnum getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(RoleEnum role) {
         this.role = role;
     }
 
@@ -49,5 +51,13 @@ public class AuthResponse {
 
     public void setEmployeeId(Long employeeId) {
         this.employeeId = employeeId;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 }

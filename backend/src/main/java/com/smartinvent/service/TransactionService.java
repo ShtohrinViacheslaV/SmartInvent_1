@@ -44,4 +44,9 @@ public class TransactionService {
                 .orElseThrow(() -> new RuntimeException("Transaction not found with id: " + id));
         transactionRepository.delete(transaction);
     }
+
+    public List<Transaction> getTransactionsByEmployeeId(Long employeeId) {
+        return transactionRepository.findByEmployee_EmployeeId(employeeId);
+    }
+
 }

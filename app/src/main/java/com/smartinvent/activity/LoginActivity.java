@@ -15,6 +15,7 @@ import com.smartinvent.config.DatabaseConfig;
 import com.smartinvent.config.DbConfigManager;
 import com.smartinvent.model.AuthRequest;
 import com.smartinvent.model.AuthResponse;
+import com.smartinvent.model.RoleEnum;
 import com.smartinvent.network.ApiClient;
 import com.smartinvent.network.ApiService;
 import retrofit2.Call;
@@ -124,17 +125,25 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     AuthResponse authResponse = response.body();
 
-                    if (isAdminLogin && !"ADMIN".equals(authResponse.getRole())) {
+                    if (isAdminLogin && authResponse.getRole() != RoleEnum.ADMIN) {
                         Toast.makeText(LoginActivity.this, "Недостатньо прав для входу як адміністратор", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     sharedPreferences.edit()
                             .putLong("employeeId", authResponse.getEmployeeId())
-                            .putString("role", authResponse.getRole())
+                            .putString("role", authResponse.getRole().name())
                             .putString("firstName", authResponse.getFirstName())
                             .putString("lastName", authResponse.getLastName())
+                            .putLong("companyId", authResponse.getCompanyId())
                             .apply();
+
+                    Log.d("LoginActivity", "employeeId: " + authResponse.getEmployeeId());
+                    Log.d("LoginActivity", "role: " + authResponse.getRole().name());
+                    Log.d("LoginActivity", "firstName: " + authResponse.getFirstName());
+                    Log.d("LoginActivity", "lastName: " + authResponse.getLastName());
+                    Log.d("LoginActivity", "company_id: " + authResponse.getCompanyId());
+
 
                     Class<?> targetActivity = isAdminLogin ? AdminHomeActivity.class : UserHomeActivity.class;
                     startActivity(new Intent(LoginActivity.this, targetActivity));

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_list"
+            android:padding="16dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingBottom="16dp">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Створити нову сесію інвентаризації"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="16dp"/>
+        <!-- Назва сесії -->
+
+        <EditText
+                android:id="@+id/editTextSessionName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Назва сесії"
+                android:inputType="text" />
+
+        <!-- Опис сесії -->
+        <EditText
+                android:id="@+id/editTextDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Опис"
+                android:inputType="textMultiLine"
+                android:lines="4"
+                android:minLines="3"
+                android:gravity="top"
+                android:layout_marginTop="12dp" />
+
+        <!-- Відповідальний співробітник -->
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+            <EditText
+                    android:id="@+id/editTextEmployeeWorkId"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="ID відповідального"
+                    android:inputType="number" />
+
+            <Button
+                    android:id="@+id/buttonSelectEmployee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Вибрати" />
+
+        </LinearLayout>
+
+
+        <TextView
+                android:id="@+id/textViewEmployeeFullName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Прізвище та ім'я відповідального"
+                android:padding="8dp"
+                android:gravity="center_vertical" />
+
+
+        <!-- Час початку -->
+        <TextView
+                android:id="@+id/textViewStartTimeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Час початку:"
+                android:layout_marginTop="16dp" />
+
+        <TextView
+                android:id="@+id/textViewStartTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Не вибрано"
+                android:padding="8dp"
+                android:gravity="center_vertical" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+            <Button
+                    android:id="@+id/buttonSetCurrentTime"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Поточний час" />
+
+            <Button
+                    android:id="@+id/buttonSetFutureTime"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Запланувати" />
+        </LinearLayout>
+
+        <!-- Час завершення -->
+        <TextView
+                android:id="@+id/textViewEndTimeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Час завершення:"
+                android:layout_marginTop="16dp" />
+
+        <TextView
+                android:id="@+id/textViewEndTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Не встановлено"
+                android:padding="8dp"
+                android:gravity="center_vertical" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+            <Button
+                    android:id="@+id/buttonSetEndTime"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Вибрати час" />
+
+            <Button
+                    android:id="@+id/buttonClearEndTime"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Без завершення" />
+        </LinearLayout>
+
+        <!-- Кнопка створити -->
+        <Button
+                android:id="@+id/buttonCreateSession"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Створити сесію"
+                android:layout_marginTop="24dp" />
+
+    </LinearLayout>
+</ScrollView>

@@ -129,7 +129,7 @@ public class MainScannerFragment extends Fragment {
     private final ActivityResultLauncher<Intent> qrScannerLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
-                    String scannedCode = result.getData().getStringExtra("scannedCode");
+                    String scannedCode = result.getData().getStringExtra("SCANNED_CODE");
                     checkProductOnServer(scannedCode);
                 } else {
                     Toast.makeText(getContext(), "Сканування скасовано", Toast.LENGTH_SHORT).show();
@@ -151,7 +151,7 @@ public class MainScannerFragment extends Fragment {
 
     private void checkProductOnServer(String productWorkId) {
         try {
-            productApi.getProductById(productWorkId).enqueue(new Callback<Product>() {
+            productApi.getProductByProductWorkId(productWorkId).enqueue(new Callback<Product>() {
                 @Override
                 public void onResponse(Call<Product> call, Response<Product> response) {
                     if (response.isSuccessful() && response.body() != null) {

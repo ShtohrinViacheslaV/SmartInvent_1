@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:layout_margin="8dp"
+                                   app:cardCornerRadius="12dp"
+                                   app:cardElevation="4dp"
+                                   app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:gravity="center_vertical">
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <!-- Transaction Type & Date -->
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                <TextView
+                        android:id="@+id/transactionType"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Transaction Type"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:gravity="start"/>
+
+                <TextView
+                        android:id="@+id/transactionDate"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="2000-01-01 00:00"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:gravity="end"/>
+            </LinearLayout>
+
+            <!-- Employee Info -->
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    android:layout_marginTop="4dp">
+
+                <TextView
+                        android:id="@+id/employeeLastName"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Last name"
+                        android:textSize="13sp"
+                        android:textColor="@android:color/darker_gray"/>
+
+                <TextView
+                        android:id="@+id/employeeFirstName"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="First name"
+                        android:textSize="13sp"
+                        android:textColor="@android:color/darker_gray"/>
+
+                <TextView
+                        android:id="@+id/employeeWorkId"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="000000"
+                        android:textSize="13sp"
+                        android:textColor="@android:color/darker_gray"/>
+            </LinearLayout>
+
+            <!-- Product Info -->
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_marginTop="4dp">
+
+                <TextView
+                        android:id="@+id/transactionProductName"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Product name"
+                        android:textSize="13sp"
+                        android:textColor="@android:color/darker_gray"/>
+
+                <TextView
+                        android:id="@+id/transactionProductWorkId"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Product Id"
+                        android:textSize="13sp"
+                        android:textColor="@android:color/darker_gray"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Quantity -->
+        <TextView
+                android:id="@+id/transactionQuantity"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="+-000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/darker_gray"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

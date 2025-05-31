@@ -1,6 +1,7 @@
 package com.smartinvent.repositories;
 
 
+import com.smartinvent.dto.InventoryProductResultDto;
 import com.smartinvent.models.InventoryProductStatusEnum;
 import com.smartinvent.models.InventoryResult;
 import com.smartinvent.models.InventorySession;
@@ -17,16 +18,21 @@ import java.util.Optional;
 @Repository
 public interface InventoryResultRepository extends JpaRepository<InventoryResult, Long> {
     // Перевірка, чи існує запис за сесією та продуктом
-    Optional<InventoryResult> findBySessionIdAndProductProductId(Long sessionId, Long productId);
+    Optional<InventoryResult> findBySessionInventorySessionIdAndProductProductId(Long sessionInventorySessionId, Long productId);
+
 
     // Отримання результатів за сесією і статусом
-    List<InventoryResult> findBySessionIdAndStatus(Long sessionId, InventoryProductStatusEnum status);
+    List<InventoryResult> findBySessionInventorySessionIdAndStatus(Long sessionInventorySessionId, InventoryProductStatusEnum status);
 
     // Отримання результату для конкретного товару в сесії
     Optional<InventoryResult> findBySessionAndProduct(InventorySession session, Product product);
 
     // Отримання результатів за сесією
     List<InventoryResult> findBySession(InventorySession session);
+
+    List<InventoryResult> findBySessionInventorySessionId(Long sessionId);
+
+    Optional<InventoryResult> findBySessionInventorySessionIdAndProduct_ProductWorkId(Long sessionId, String productWorkId);
 
 }
 

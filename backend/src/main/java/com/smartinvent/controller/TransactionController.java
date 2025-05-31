@@ -42,4 +42,11 @@ public class TransactionController {
         transactionService.deleteTransaction(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{employeeId}")
+    public ResponseEntity<List<Transaction>> getTransactionsByEmployee(@PathVariable Long employeeId) {
+        List<Transaction> transactions = transactionService.getTransactionsByEmployeeId(employeeId);
+        return ResponseEntity.ok(transactions);
+    }
+
 }

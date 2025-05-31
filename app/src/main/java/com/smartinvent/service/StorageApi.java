@@ -1,6 +1,7 @@
 package com.smartinvent.service;
 
 
+import com.smartinvent.model.Category;
 import com.smartinvent.model.Product;
 import com.smartinvent.model.Storage;
 import java.util.List;
@@ -15,7 +16,7 @@ public interface StorageApi {
     Call<Storage> createStorage(@Body Storage storage);
 
     @PUT("api/storages/update/{id}")
-    Call<Void> updateStorage(@Body Storage storage);
+    Call<Storage> updateStorage(@Path("id") Long id, @Body Storage storage);
 
     @DELETE("api/storages/delete/{id}")
     Call<Void> deleteStorage(@Path("id") Long id);

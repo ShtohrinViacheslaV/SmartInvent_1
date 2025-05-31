@@ -75,12 +75,10 @@
                 android:id="@+id/productCount"
                 android:layout_width="70dp"
                 android:layout_height="50dp"
-                android:background="@drawable/button_background"
                 android:gravity="center"
-                android:text="Перевірити"
+                android:text="0000"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textStyle="bold"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

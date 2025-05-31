@@ -22,7 +22,10 @@ public interface ProductApi {
     Call<List<Product>> searchProducts(@Query("query") String query);
 
     @GET("api/products/{id}")
-    Call<Product> getProductById(@Path("id") String productWorkId);
+    Call<Product> getProductById(@Path("id") Long id);
+
+    @GET("api/products/byWorkId/{productWorkId}")
+    Call<Product> getProductByProductWorkId(@Path("productWorkId") String productWorkId);
 
     @GET("products/checkQrCode")
     Call<Boolean> isQrCodeUnique(@Query("qrCode") String qrCode);

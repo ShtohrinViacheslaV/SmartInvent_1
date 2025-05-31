@@ -1,9 +1,6 @@
 package com.smartinvent.service;
 
-import com.smartinvent.model.CreateProductDuringInventoryRequest;
-import com.smartinvent.model.InventoryResult;
-import com.smartinvent.model.InventorySession;
-import com.smartinvent.model.InventorySessionProduct;
+import com.smartinvent.model.*;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -55,6 +52,20 @@ public interface InventoryApi {
             @Query("criteria") String criteria,
             @Query("sortBy") String sortBy
     );
+
+
+
+
+
+    @GET("api/inventory/result/session/{sessionId}")
+    Call<List<InventoryProductResultDto>> getResultsBySession(@Path("sessionId") Long sessionId);
+
+    @GET("api/inventory/result/sessions/{sessionId}/productWorkId/{productWorkId}")
+    Call<InventoryProductResultDto> getProductByWorkId(
+            @Path("sessionId") Long sessionId,
+            @Path("productWorkId") String productWorkId
+    );
+
 
 
 }

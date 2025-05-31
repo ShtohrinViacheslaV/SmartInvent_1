@@ -96,11 +96,12 @@
         <!-- Іконка або кнопка переходу -->
         <ImageView
                 android:id="@+id/btnOpenSession"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_arrow_forward"
-                android:contentDescription="Відкрити сесію"
-                android:padding="8dp"/>
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_inventory_settings"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="Відкрити сесію"/>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

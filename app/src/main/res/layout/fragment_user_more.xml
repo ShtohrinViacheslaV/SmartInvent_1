@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="@drawable/background_gradient"
+              android:padding="16dp">
+
+    <Button
+            android:id="@+id/btnCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Категорії" />
+
+    <Button
+            android:id="@+id/btnStorages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Склади" />
+
+    <Button
+            android:id="@+id/btnTransactions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Транзакції" />
+
+    <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Налаштування" />
+
+
+</LinearLayout>

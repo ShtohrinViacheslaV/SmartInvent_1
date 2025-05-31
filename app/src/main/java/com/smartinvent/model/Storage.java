@@ -5,16 +5,23 @@ import android.os.Parcelable;
 
 public class Storage implements Parcelable {
     private Long storageId;
-    private Company company;
     private String name;
     private String location;
     private String details;
+    private Company company;
 
     public Storage() {
     }
 
     public Storage(Long storageId, Company company, String name, String location, String details) {
         this.storageId = storageId;
+        this.company = company;
+        this.name = name;
+        this.location = location;
+        this.details = details;
+    }
+
+    public Storage(Company company, String name, String location, String details) {
         this.company = company;
         this.name = name;
         this.location = location;
@@ -44,6 +51,7 @@ public class Storage implements Parcelable {
             return new Storage[size];
         }
     };
+
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {

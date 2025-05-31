@@ -52,6 +52,12 @@ public class Product implements Parcelable {
         this.dimensions = dimensions;
     }
 
+    public Product(String productWorkId, String name) {
+        this.productWorkId = productWorkId;
+        this.name = name;
+    }
+
+
     protected Product(Parcel in) {
         if (in.readByte() == 0) {
             productId = null;

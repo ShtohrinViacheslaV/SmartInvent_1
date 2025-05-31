@@ -33,6 +33,12 @@ public class ProductService {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
+        if (!existingProduct.getProductWorkId().equals(product.getProductWorkId())) {
+            if (productRepository.existsByProductWorkId(product.getProductWorkId())) {
+                throw new RuntimeException("ProductWorkId already exists: " + product.getProductWorkId());
+            }
+        }
+
         existingProduct.setName(product.getName());
         existingProduct.setDescription(product.getDescription());
         existingProduct.setProductWorkId(product.getProductWorkId());
@@ -43,9 +49,11 @@ public class ProductService {
         existingProduct.setExpirationDate(product.getExpirationDate());
         existingProduct.setWeight(product.getWeight());
         existingProduct.setDimensions(product.getDimensions());
+        existingProduct.setCount(product.getCount());
 
         return productRepository.save(existingProduct);
     }
+
 
 
     public void deleteProduct(Long id) {
@@ -61,6 +69,11 @@ public class ProductService {
     public Product getProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+    }
+
+    public Product getProductByProductWorkId(String productWorkId) {
+        return productRepository.findByProductWorkId(productWorkId)
+                .orElseThrow(() -> new RuntimeException("Product not found with productWorkId: " + productWorkId));
     }
 
     public List<Product> searchProducts(String query) {

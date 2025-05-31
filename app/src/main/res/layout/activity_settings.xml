@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_list">
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+        <!-- Заголовок -->
+        <TextView
+                android:id="@+id/tvSettingsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Налаштування"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#212121"
+                android:layout_marginBottom="32dp" />
+
+        <!-- Картка співробітника -->
+        <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardEmployee"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                android:layout_marginBottom="24dp"
+                android:padding="24dp"
+                android:backgroundTint="#FFFFFF">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <!-- Ім'я та Прізвище -->
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp"
+                        android:weightSum="2">
+
+                    <TextView
+                            android:id="@+id/employeeFirstName"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Ім'я"
+                            android:paddingStart="12dp"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:textColor="#212121"
+                            android:layout_marginEnd="8dp" />
+
+                    <TextView
+                            android:id="@+id/employeeLastName"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Прізвище"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:textColor="#212121" />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp"
+                        android:gravity="center_vertical">
+
+                    <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:dividerPadding="4dp">
+
+                        <TextView
+                                android:id="@+id/employeePhoneNumber"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Номер телефону"
+                                android:paddingStart="12dp"
+                                android:textSize="18sp"
+                                android:textColor="#424242"
+                                android:layout_marginBottom="6dp" />
+
+                        <TextView
+                                android:id="@+id/employeeEmail"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Електронна пошта"
+                                android:paddingStart="12dp"
+                                android:textSize="18sp"
+                                android:textColor="#424242"
+                                android:layout_marginBottom="6dp" />
+
+                        <TextView
+                                android:id="@+id/employeeRole"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Роль"
+                                android:paddingStart="12dp"
+                                android:textSize="18sp"
+                                android:textColor="#424242" />
+                    </LinearLayout>
+
+                    <TextView
+                            android:id="@+id/empoyeeWorkId"
+                            android:layout_width="75dp"
+                            android:layout_height="75dp"
+                            android:gravity="center"
+                            android:text="0000"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/darker_gray" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Картка: Зміна пароля -->
+        <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                android:padding="24dp">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:text="Змінити пароль"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:layout_gravity="center"
+                        android:textStyle="bold"
+                        android:textColor="#212121"
+                        android:layout_marginBottom="12dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilOldPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:endIconMode="password_toggle"
+                        android:layout_marginBottom="12dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etOldPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:hint="Старий пароль"
+                            android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilNewPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:endIconMode="password_toggle"
+                        android:layout_marginBottom="12dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etNewPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:hint="Новий пароль"
+                            android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilConfirmNewPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:endIconMode="password_toggle"
+                        android:layout_marginBottom="12dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etConfirmNewPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:hint="Підтвердьте новий пароль"
+                            android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                        android:id="@+id/btnChangePassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="Змінити пароль"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF"
+                        android:backgroundTint="#3F51B5" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Картка: Зміна телефону -->
+        <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                android:padding="24dp">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:text="Змінити телефон"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:layout_gravity="center"
+                        android:textStyle="bold"
+                        android:textColor="#212121"
+                        android:layout_marginBottom="12dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilNewPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etNewPhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:hint="+380 ХХХ ХХХ ХХ ХХ"
+                            android:inputType="phone" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                        android:id="@+id/btnChangePhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="Змінити телефон"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF"
+                        android:backgroundTint="#009688" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Картка: Зміна email -->
+        <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                android:padding="24dp">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:text="Змінити email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:layout_gravity="center"
+                        android:textStyle="bold"
+                        android:textColor="#212121"
+                        android:layout_marginBottom="12dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilNewEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etNewEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:hint="example@mail.com"
+                            android:inputType="textEmailAddress" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                        android:id="@+id/btnChangeEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="Змінити email"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF"
+                        android:backgroundTint="#FF5722" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Картка: Вихід із акаунту -->
+        <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                android:padding="24dp">
+
+            <Button
+                    android:id="@+id/btnLogout"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Вийти з акаунту"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#B00020" />
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</ScrollView>

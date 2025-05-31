@@ -8,14 +8,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.smartinvent.R;
 
 public abstract class BaseHomeActivity extends AppCompatActivity {
-    protected abstract Fragment getBottomNavigationFragment(); // Фрагмент навігації для кожного типу користувача
+    protected abstract Fragment getBottomNavigationFragment();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // Загальний макет для обох ролей
+        setContentView(R.layout.activity_main);
 
-        // Додаємо відповідний фрагмент навігації
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.bottomNavigationView, getBottomNavigationFragment())
                 .commit();

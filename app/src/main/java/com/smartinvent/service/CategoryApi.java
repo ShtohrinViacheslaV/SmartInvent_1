@@ -8,6 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.*;
 
 public interface CategoryApi {
+
     @GET("api/categories/all")
     Call<List<Category>> getAllCategories();
 
@@ -15,7 +16,7 @@ public interface CategoryApi {
     Call<Category> createCategory(@Body Category category);
 
     @PUT("api/categories/update/{id}")
-    Call<Void> updateCategory(@Body Category category);
+    Call<Void> updateCategory(@Path("id") Long id, @Body Category category);
 
     @DELETE("api/categories/delete/{id}")
     Call<Void> deleteCategory(@Path("id") Long id);

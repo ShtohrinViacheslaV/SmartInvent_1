@@ -1,20 +1,22 @@
 package com.smartinvent.model;
 
 
+import java.time.LocalDateTime;
+
 public class Transaction {
     private Long transactionId;
     private TransactionTypeEnum type;
     private Product product;
     private Employee employee;
     private int quantity;
-    private String transactionDate;
+    private LocalDateTime transactionDate;
 
 
     public Transaction() {
     }
 
     public Transaction(Long transactionId, TransactionTypeEnum type, Product product,
-                       Employee employee, int quantity, String transactionDate) {
+                       Employee employee, int quantity, LocalDateTime transactionDate) {
         this.transactionId = transactionId;
         this.type = type;
         this.product = product;
@@ -63,12 +65,14 @@ public class Transaction {
         this.quantity = quantity;
     }
 
-    public String getTransactionDate() {
+    public LocalDateTime getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(String transactionDate) {
+    public void setTransactionDate(LocalDateTime transactionDate) {
         this.transactionDate = transactionDate;
     }
+
+
 }
 

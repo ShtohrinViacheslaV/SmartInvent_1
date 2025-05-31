@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "inventoryresult")
 public class InventoryResult {
 
     @Id
@@ -30,7 +31,7 @@ public class InventoryResult {
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "scanned_by", nullable = false)
+    @JoinColumn(name = "scanned_by")
     private Employee scannedBy;
 
     private LocalDateTime scanTime;
@@ -38,9 +39,9 @@ public class InventoryResult {
     @Enumerated(EnumType.STRING)
     private InventoryProductStatusEnum status;
 
-
-
     private String description;
+
+
 
     public Long getId() {
         return id;

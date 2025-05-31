@@ -3,7 +3,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               android:gravity="center"
-              android:background="@color/white"
+              android:background="@drawable/background_gradient"
               android:padding="16dp">
 
     <TextView
@@ -42,7 +42,7 @@
                 <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/ic_product"
+                        android:src="@drawable/ic_product_1"
                         android:tint="@color/black" />
 
                 <TextView
@@ -74,7 +74,7 @@
                 <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/ic_inventory"
+                        android:src="@drawable/ic_inventory_1"
                         android:tint="@color/black" />
 
                 <TextView

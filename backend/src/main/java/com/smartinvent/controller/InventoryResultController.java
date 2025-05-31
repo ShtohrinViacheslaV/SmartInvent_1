@@ -2,6 +2,7 @@ package com.smartinvent.controller;
 
 
 import com.smartinvent.dto.CreateProductDuringInventoryRequest;
+import com.smartinvent.dto.InventoryProductResultDto;
 import com.smartinvent.dto.InventorySessionProductDTO;
 import com.smartinvent.models.Employee;
 import com.smartinvent.models.InventoryResult;
@@ -24,13 +25,6 @@ public class InventoryResultController {
     private final InventoryResultService resultService;
 
 
-    // Отримання результатів інвентаризації для конкретної сесії
-    @GetMapping("/session/{sessionId}")
-    public ResponseEntity<List<InventorySessionProductDTO>> getResultsForSession(@PathVariable Long sessionId) {
-        List<InventorySessionProductDTO> results = resultService.getResultsForSession(sessionId);
-        return ResponseEntity.ok(results);
-    }
-
     // Додавання результату інвентаризації
     @PostMapping("/add")
     public ResponseEntity<InventoryResult> addInventoryResult(@RequestBody InventoryResult inventoryResult) {
@@ -44,6 +38,24 @@ public class InventoryResultController {
         InventoryResult result = resultService.updateInventoryResult(resultId, inventoryResult);
         return ResponseEntity.ok(result);
     }
+
+
+    @GetMapping("/session/{sessionId}")
+    public ResponseEntity<List<InventoryProductResultDto>> getResultsBySession(
+            @PathVariable Long sessionId) {
+        List<InventoryProductResultDto> results = resultService.getResultsBySession(sessionId);
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/sessions/{sessionId}/productWorkId/{productWorkId}")
+    public ResponseEntity<InventoryProductResultDto> getProductByWorkId(
+            @PathVariable Long sessionId,
+            @PathVariable String productWorkId
+    ) {
+        InventoryProductResultDto dto = resultService.getProductBySessionAndWorkId(sessionId, productWorkId);
+        return ResponseEntity.ok(dto);
+    }
+
 
 
     // Отримання товарів для сесії
@@ -77,5 +89,7 @@ public class InventoryResultController {
         List<InventorySessionProductDTO> result = resultService.searchProducts(sessionId, query, criteria, sortBy);
         return ResponseEntity.ok(result);
     }
+
+
 
 }

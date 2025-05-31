@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.smartinvent.service.QRService;
 
 public class ScannerActivity extends AppCompatActivity {
 
@@ -18,11 +19,12 @@ public class ScannerActivity extends AppCompatActivity {
 
     private void startQrScanner() {
         IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setOrientationLocked(false);
+//        integrator.setOrientationLocked(false);
         integrator.setPrompt("Наведіть камеру на QR-код товару");
         integrator.setBeepEnabled(true);
         integrator.initiateScan();
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -32,18 +34,29 @@ public class ScannerActivity extends AppCompatActivity {
                 String scannedCode = result.getContents().trim();
                 Log.d("QR_SCAN", "Просканований код: " + scannedCode);
 
-                Intent intent = new Intent();
-                intent.putExtra("scannedCode", scannedCode);
-                setResult(RESULT_OK, intent);
+                String productWorkId = QRService.parseScannedQRCode(scannedCode);
+
+                if (productWorkId != null) {
+
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("SCANNED_CODE", scannedCode);
+                    setResult(RESULT_OK, resultIntent);
+
+                } else {
+                    // Якщо парсинг не вдався
+                    Log.e("QR_SCAN", "Парсинг QR-коду не вдалося, неправильний формат");
+                    setResult(RESULT_CANCELED);
+
+
+                }
             } else {
                 Log.d("QR_SCAN", "QR-код порожній або сканування скасовано");
                 setResult(RESULT_CANCELED);
+
             }
             finish();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-
-
 }

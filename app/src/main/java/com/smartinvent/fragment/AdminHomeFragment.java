@@ -20,7 +20,6 @@ public class AdminHomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
 
-        // Обробка натискань на картки
         MaterialCardView cardProducts = view.findViewById(R.id.cardProducts);
         MaterialCardView cardInventory = view.findViewById(R.id.cardInventory);
         MaterialCardView cardReports = view.findViewById(R.id.cardReports);

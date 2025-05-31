@@ -50,7 +50,7 @@ public class MainScannerActivity extends AppCompatActivity {
         Log.d("QR_SCAN", "Отриманий код: " + productWorkId);
 
         try {
-            productApi.getProductById(productWorkId).enqueue(new Callback<Product>() {
+            productApi.getProductByProductWorkId(productWorkId).enqueue(new Callback<Product>() {
                 @Override
                 public void onResponse(Call<Product> call, Response<Product> response) {
                     Log.d("QR_SCAN", "HTTP код відповіді: " + response.code());

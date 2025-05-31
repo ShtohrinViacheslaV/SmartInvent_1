@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:background="@drawable/background_list">
+
+
+<LinearLayout
+            android:id="@+id/mainLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <!-- Список категорій -->
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewStorages"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:scrollbars="vertical"
+                android:layout_marginBottom="16dp" />
+
+        <!-- Кнопки дій -->
+        <LinearLayout
+                android:id="@+id/actionButtonsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="12dp">
+
+            <Button
+                    android:id="@+id/buttonAddStorage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add" />
+
+            <Button
+                    android:id="@+id/buttonRefreshStorages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Update"
+                    android:layout_marginStart="7dp" />
+
+            <Button
+                    android:id="@+id/buttonEditStorage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit"
+                    android:layout_marginStart="7dp" />
+
+            <Button
+                    android:id="@+id/buttonDeleteStorage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delete"
+                    android:layout_marginStart="7dp" />
+        </LinearLayout>
+
+        <!-- Форма додавання/редагування -->
+        <LinearLayout
+                android:id="@+id/formLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="8dp"
+                android:background="#EEEEEE"
+                android:layout_marginTop="12dp"
+                android:elevation="4dp">
+
+            <TextView
+                    android:id="@+id/formTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Форма"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="8dp" />
+
+            <EditText
+                    android:id="@+id/editTextStorageName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Назва склада"
+                    android:inputType="text" />
+
+            <EditText
+                    android:id="@+id/editTextStorageLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Локація"
+                    android:inputType="text" />
+
+            <EditText
+                    android:id="@+id/editTextStorageDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Опис"
+                    android:inputType="textMultiLine"
+                    android:minLines="2"
+                    android:maxLines="4"
+                    android:layout_marginTop="8dp" />
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:layout_marginTop="8dp">
+
+                <Button
+                        android:id="@+id/buttonSaveStorage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Зберегти" />
+
+                <Button
+                        android:id="@+id/buttonCancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Скасувати"
+                        android:layout_marginStart="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

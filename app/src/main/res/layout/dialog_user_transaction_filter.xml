@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Фільтрація"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Тип транзакції"
+                android:layout_marginTop="8dp" />
+
+        <RadioGroup
+                android:id="@+id/transactionTypeGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+            <RadioButton
+                    android:id="@+id/radioArrival"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Arrival" />
+
+            <RadioButton
+                    android:id="@+id/radioDeparture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Departure" />
+
+            <RadioButton
+                    android:id="@+id/radioUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Update" />
+        </RadioGroup>
+
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ID продукту" />
+
+        <EditText
+                android:id="@+id/productWorkIdInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Дата від" />
+
+        <TextView
+                android:id="@+id/fromDateText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Виберіть дату"
+                android:padding="12dp"
+                android:background="#EEEEEE"
+                android:textColor="#000000"
+                android:focusable="false"
+                android:clickable="true"
+                android:layout_marginBottom="8dp"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Дата до" />
+
+        <TextView
+                android:id="@+id/toDateText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Виберіть дату"
+                android:padding="12dp"
+                android:background="#EEEEEE"
+                android:textColor="#000000"
+                android:focusable="false"
+                android:clickable="true"
+                android:layout_marginBottom="16dp"/>
+
+        <Button
+                android:id="@+id/applyFilterBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Застосувати фільтр"/>
+    </LinearLayout>
+</ScrollView>

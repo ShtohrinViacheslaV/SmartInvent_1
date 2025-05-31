@@ -2,6 +2,7 @@ package com.smartinvent.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +17,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.smartinvent.R;
-import com.smartinvent.activity.InventorySessionDetailsActivity;
+import com.smartinvent.activity.InventoryProductListActivity;
 import com.smartinvent.adapter.InventorySessionAdapter;
+import com.smartinvent.model.Constants;
 import com.smartinvent.model.InventorySession;
+import com.smartinvent.model.InventorySessionStatusEnum;
 import com.smartinvent.network.ApiClient;
 import com.smartinvent.service.InventoryApi;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -59,9 +61,9 @@ public class InventorySessionsFragment extends Fragment implements InventorySess
 
         fetchSessions();
 
-        btnAll.setOnClickListener(v -> filterSessions("ALL"));
-        btnActive.setOnClickListener(v -> filterSessions("ACTIVE"));
-        btnCompleted.setOnClickListener(v -> filterSessions("COMPLETED"));
+        btnAll.setOnClickListener(v -> filterSessions(null));
+        btnActive.setOnClickListener(v -> filterSessions(InventorySessionStatusEnum.ACTIVE));
+        btnCompleted.setOnClickListener(v -> filterSessions(InventorySessionStatusEnum.COMPLETED));
         btnSortDate.setOnClickListener(v -> toggleSortByDate());
 
         return view;
@@ -71,7 +73,7 @@ public class InventorySessionsFragment extends Fragment implements InventorySess
         progressBar.setVisibility(View.VISIBLE);
 
         InventoryApi apiService = ApiClient.getClient().create(InventoryApi.class);
-        Call<List<InventorySession>> call = apiService.getAllSessions();  // Використовуємо getAllSessions
+        Call<List<InventorySession>> call = apiService.getAllSessions();
 
         call.enqueue(new Callback<List<InventorySession>>() {
             @Override
@@ -79,14 +81,12 @@ public class InventorySessionsFragment extends Fragment implements InventorySess
                 progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null) {
                     allSessions = response.body();
-                    // Initialize the adapter with the correct parameters
                     adapter = new InventorySessionAdapter(allSessions, requireContext(), InventorySessionsFragment.this);
                     recyclerView.setAdapter(adapter);
                 } else {
                     Toast.makeText(getContext(), "Помилка завантаження сесій", Toast.LENGTH_SHORT).show();
                 }
             }
-
 
             @Override
             public void onFailure(Call<List<InventorySession>> call, Throwable t) {
@@ -96,13 +96,11 @@ public class InventorySessionsFragment extends Fragment implements InventorySess
         });
     }
 
-    private void filterSessions(String status) {
+    private void filterSessions(@Nullable InventorySessionStatusEnum status) {
         List<InventorySession> filteredList = new ArrayList<>();
 
         for (InventorySession session : allSessions) {
-            if (status.equals("ALL")) {
-                filteredList.add(session);
-            } else if (session.getStatusName().equalsIgnoreCase(status)) {
+            if (status == null || session.getStatus() == status) {
                 filteredList.add(session);
             }
         }
@@ -113,13 +111,10 @@ public class InventorySessionsFragment extends Fragment implements InventorySess
     private void toggleSortByDate() {
         isAscending = !isAscending;
 
-        Collections.sort(allSessions, new Comparator<InventorySession>() {
-            @Override
-            public int compare(InventorySession o1, InventorySession o2) {
-                if (o1.getStartTime() == null || o2.getStartTime() == null) return 0;
-                return isAscending ? o1.getStartTime().compareTo(o2.getStartTime())
-                        : o2.getStartTime().compareTo(o1.getStartTime());
-            }
+        Collections.sort(allSessions, (o1, o2) -> {
+            if (o1.getStartTime() == null || o2.getStartTime() == null) return 0;
+            return isAscending ? o1.getStartTime().compareTo(o2.getStartTime())
+                    : o2.getStartTime().compareTo(o1.getStartTime());
         });
 
         adapter.updateList(new ArrayList<>(allSessions));
@@ -127,8 +122,9 @@ public class InventorySessionsFragment extends Fragment implements InventorySess
 
     @Override
     public void onSessionClick(InventorySession session) {
-        Intent intent = new Intent(getContext(), InventorySessionDetailsActivity.class);
-        intent.putExtra("session_id", session.getInventorySessionId());
+        Intent intent = new Intent(getContext(), InventoryProductListActivity.class);
+        intent.putExtra(Constants.KEY_INVENTORY_SESSION_ID, session.getInventorySessionId());
+        Log.d("SessionID InventorySessionsFragment", session.getInventorySessionId() + "");
         startActivity(intent);
     }
 }

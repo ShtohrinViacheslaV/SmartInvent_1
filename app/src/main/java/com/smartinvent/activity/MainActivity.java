@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_employee) {
                     selectedFragment = new EmployeeFragment();
                 } else if (item.getItemId() == R.id.nav_more) {
-                    selectedFragment = new MoreFragment();
+                    selectedFragment = new AdminMoreFragment();
                 }
             }
             else {
@@ -56,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_scanner) {
                     selectedFragment = new MainScannerFragment();
                 } else if (item.getItemId() == R.id.nav_inventory) {
-                    selectedFragment = new InventoryFragment();
+                    selectedFragment = new InventorySessionsFragment();
                 } else if (item.getItemId() == R.id.nav_more) {
-                    selectedFragment = new MoreFragment();
+                    selectedFragment = new UserMoreFragment();
                 }
             }
 

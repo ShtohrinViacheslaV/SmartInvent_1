@@ -28,13 +28,14 @@ java {
 
 dependencies {
     implementation("org.apache.commons:commons-compress:1.27.1")
-
+    implementation("org.springframework.boot:spring-boot-starter-mail:3.4.4")
     implementation("org.projectlombok:lombok:1.18.30")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
     implementation("org.xerial:sqlite-jdbc:3.47.0.0")
     implementation("org.hibernate.orm:hibernate-core:6.6.9.Final")
     implementation("org.hibernate.orm:hibernate-community-dialects:6.6.9.Final")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

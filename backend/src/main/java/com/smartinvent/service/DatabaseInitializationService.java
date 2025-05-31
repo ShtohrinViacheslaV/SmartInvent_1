@@ -54,8 +54,8 @@ public class DatabaseInitializationService {
 
 
     private static final List<String> TABLE_NAMES = List.of(
-            "company", "employee", "category", "product",
-            "storage", "transactions", "backup", "printout", "action_log"
+            "category", "company", "employee",  "inventory_result", "inventory_session",
+            "storage", "transaction", "product"
     );
 
 

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="@drawable/background_list"
+              android:padding="16dp">
+
+    <!-- Заголовок -->
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Сесії інвентаризації"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="8dp" />
+
+    <!-- Кнопки фільтрації та сортування -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+        <Button
+                android:id="@+id/btn_filter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Фільтр"
+                android:padding="8dp"/>
+
+        <Button
+                android:id="@+id/btn_sort"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Сортувати ↓"
+                android:padding="8dp"
+                android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSessions"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_list" />
+
+    <!-- Кнопки керування -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:layout_marginTop="8dp">
+
+        <Button
+                android:id="@+id/btn_add_session"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Нова"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:padding="8dp"/>
+
+        <Button
+                android:id="@+id/btn_refresh_sessions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Оновити"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:padding="8dp"/>
+    </LinearLayout>
+</LinearLayout>

@@ -12,3 +12,23 @@ TRUNCATE TABLE Company RESTART IDENTITY CASCADE;
 
 -- Включаємо перевірку зовнішніх ключів
 SET session_replication_role = 'origin';
+
+
+
+
+
+
+DROP TABLE InventoryResult CASCADE;
+DROP TABLE InventorySession CASCADE;
+DROP TABLE InventorySessionStatus CASCADE;
+DROP TABLE InventoryProductStatus CASCADE;
+
+DROP TABLE Transaction CASCADE;
+DROP TABLE TransactionType CASCADE;
+
+DROP TABLE Product CASCADE;
+DROP TABLE Storage CASCADE;
+DROP TABLE Category CASCADE;
+DROP TABLE Employee CASCADE;
+DROP TABLE Role CASCADE;
+DROP TABLE Company CASCADE;

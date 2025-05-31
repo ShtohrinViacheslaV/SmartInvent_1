@@ -1,17 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp"
-            android:background="@color/white">
+            android:background="@drawable/background_edit">
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:padding="16dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="16dp">
 
         <!-- Заголовок -->
         <TextView
@@ -30,7 +31,8 @@
                 android:layout_height="wrap_content"
                 app:boxStrokeColor="@color/primary"
                 app:boxStrokeWidthFocused="2dp"
-                android:hint="Назва товару">
+                android:hint="Назва товару"
+                android:layout_marginTop="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_name"
@@ -46,7 +48,7 @@
                 app:boxStrokeColor="@color/primary"
                 app:boxStrokeWidthFocused="2dp"
                 android:hint="Опис товару"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_description"
@@ -55,22 +57,88 @@
                     android:textSize="16sp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Код товару підприємства -->
+        <!-- Ціна -->
         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:boxStrokeColor="@color/primary"
                 app:boxStrokeWidthFocused="2dp"
-                android:hint="Код товару (підприємство)"
-                android:layout_marginTop="5dp">
+                android:hint="Ціна"
+                android:layout_marginTop="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_product_work_id"
+                    android:id="@+id/edt_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:textSize="16sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Виробник -->
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxStrokeColor="@color/primary"
+                app:boxStrokeWidthFocused="2dp"
+                android:hint="Виробник"
+                android:layout_marginTop="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_manufacturer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Термін придатності -->
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxStrokeColor="@color/primary"
+                app:boxStrokeWidthFocused="2dp"
+                android:hint="Термін придатності"
+                android:layout_marginTop="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_expiration_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Вага -->
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxStrokeColor="@color/primary"
+                app:boxStrokeWidthFocused="2dp"
+                android:hint="Вага"
+                android:layout_marginTop="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textSize="16sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Габарити -->
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxStrokeColor="@color/primary"
+                app:boxStrokeWidthFocused="2dp"
+                android:hint="Габарити"
+                android:layout_marginTop="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_dimensions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textSize="16sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Кількість -->
         <com.google.android.material.textfield.TextInputLayout
@@ -78,101 +146,136 @@
                 android:layout_height="wrap_content"
                 app:boxStrokeColor="@color/primary"
                 app:boxStrokeWidthFocused="2dp"
-                android:hint="Кількість"
-                android:layout_marginTop="5dp">
+                android:hint="Кількість товару"
+                android:layout_marginTop="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:textSize="16sp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <!-- Вибір категорії -->
-
+        <!-- Категорія -->
         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Категорія"
+                android:layout_marginTop="8dp"
                 app:boxStrokeColor="@color/primary"
                 app:boxStrokeWidthFocused="2dp"
-                android:hint="     Категорія"
-                android:layout_marginTop="5dp">
+                app:endIconMode="dropdown_menu">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_spn_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:height="50dp"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:padding="12dp"
+                    android:inputType="none"
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
 
-        <!-- Вибір складу -->
+
+        <!-- Склад -->
         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Склад"
+                android:layout_marginTop="8dp"
                 app:boxStrokeColor="@color/primary"
                 app:boxStrokeWidthFocused="2dp"
-                android:hint="     Склад"
-                android:layout_marginTop="5dp">
+                app:endIconMode="dropdown_menu">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_spn_storage"
                     android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:padding="12dp"
+                    android:textSize="16sp"
+                    android:inputType="none"
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Код товару -->
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxStrokeColor="@color/primary"
+                android:hint="Код товару"
+                android:layout_marginTop="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_product_work_id"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:height="50dp"
+                    android:inputType="text"
                     android:textSize="16sp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:gravity="center">
+        <!-- Кнопки для QR -->
 
-        <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_view_qr_code"
-                android:layout_width="0dp"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Переглянути QR-код"
-                app:cornerRadius="12dp"
-                app:icon="@drawable/ic_qr"
-                android:layout_marginEnd="5dp"/>
-    </LinearLayout>
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:gravity="center">
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:gravity="center">
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_scan_qr"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Сканувати QR"
+                    android:backgroundTint="@color/primary"
+                    app:cornerRadius="12dp"
+                    android:textColor="@color/white"
+                    android:layout_marginEnd="5dp"/>
 
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_view_qr"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Переглянути QR"
+                    android:backgroundTint="@color/primary"
+                    app:cornerRadius="12dp"
+                    android:textColor="@color/white"/>
+        </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_edt_save"
-                android:layout_width="0dp"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Зберегти"
-                android:backgroundTint="@color/primary"
-                app:cornerRadius="12dp"
-                android:textColor="@color/white"
-                android:layout_marginEnd="5dp"/>
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:gravity="center">
 
-        <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_edt_cancel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Скасувати"
-                android:backgroundTint="@color/black"
-                app:cornerRadius="12dp"
-                android:textColor="@color/white"/>
-    </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_edt_save"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Зберегти"
+                    android:backgroundTint="@color/primary"
+                    app:cornerRadius="12dp"
+                    android:textColor="@color/white"
+                    android:layout_marginEnd="5dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_edt_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Скасувати"
+                    android:backgroundTint="@color/black"
+                    app:cornerRadius="12dp"
+                    android:textColor="@color/white"/>
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

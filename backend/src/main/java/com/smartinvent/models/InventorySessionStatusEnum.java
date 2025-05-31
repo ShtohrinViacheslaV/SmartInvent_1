@@ -4,7 +4,8 @@ package com.smartinvent.models;
 public enum InventorySessionStatusEnum {
     ACTIVE("Інвентаризація активна"),
     COMPLETED("Інвентаризація завершена"),
-    CANCELLED("Інвентаризація скасована");
+    CANCELLED("Інвентаризація скасована"),
+    PLANNED("Інвентаризація запланована");
 
     private final String description;
 

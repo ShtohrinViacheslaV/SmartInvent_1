@@ -29,7 +29,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
-    private final EmployeeDetailsService employeeDetailsService; // Сервіс, що вантажить користувачів із БД
+    private final EmployeeDetailsService employeeDetailsService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -39,7 +39,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // REST API – відключаємо CSRF
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // Відкриті ендпоінти (без авторизації)
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/companies/**", "/api/employees/**", "/api/testConnection", "/api/testConnection", "/api/inventory/**", "/api/products/**", "/api/transactions/**", "/api/checkTables", "/api/setupDatabase", "/api/categories/**", "/api/storages/**").permitAll()

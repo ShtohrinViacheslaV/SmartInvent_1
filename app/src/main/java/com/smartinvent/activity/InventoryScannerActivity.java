@@ -1,10 +1,12 @@
 package com.smartinvent.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -34,7 +36,7 @@ public class InventoryScannerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Long inventorySessionId = getIntent().getLongExtra(Constants.KEY_INVENTORY_SESSION_ID, -1);
+        inventorySessionId = getIntent().getLongExtra(Constants.KEY_INVENTORY_SESSION_ID, -1);
         Log.d("SessionID InventoryScannerActivity", String.valueOf(inventorySessionId));
 
 
@@ -81,7 +83,7 @@ public class InventoryScannerActivity extends AppCompatActivity {
                 Intent intent = new Intent(InventoryScannerActivity.this, InventoryProductCheckActivity.class);
                 intent.putExtra(Constants.KEY_INVENTORY_SESSION_ID, inventorySessionId);
                 intent.putExtra(Constants.KEY_PRODUCT_ID, productId);
-                intent.putExtra("product", dto);
+                intent.putExtra(Constants.KEY_PRODUCT, dto);
                 Log.d("SessionID InventoryScannerActivity", String.valueOf(inventorySessionId));
                 Log.d("ProductID InventoryScannerActivity", String.valueOf(productId));
                 Log.d("ProductData InventoryScannerActivity", dto.toString());
@@ -91,9 +93,30 @@ public class InventoryScannerActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String errorMessage) {
-                Toast.makeText(InventoryScannerActivity.this, "Помилка при завантаженні товару", Toast.LENGTH_SHORT).show();
-                finish();
+                // Показуємо діалогове вікно з підтвердженням
+                new AlertDialog.Builder(InventoryScannerActivity.this)
+                        .setTitle("Товар не знайдено")
+                        .setMessage("Цього товару немає в інвентаризації. Бажаєте його створити?")
+                        .setPositiveButton("Створити", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Переходимо на сторінку створення товару
+                                Intent intent = new Intent(InventoryScannerActivity.this, AddProductActivity.class);
+                                intent.putExtra(Constants.KEY_INVENTORY_SESSION_ID, inventorySessionId);
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("Скасувати", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        })
+                        .show();
             }
+
         });
     }
 

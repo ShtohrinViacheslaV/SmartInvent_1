@@ -1,14 +1,25 @@
 package com.smartinvent.model;
 
 
+import java.time.LocalDateTime;
+
 public class InventoryResult {
 
     private Long inventoryResultId;
-    private Long inventorySessionId;
-    private Long product;
-    private Long scannedBy;
+    private InventorySession session;
+    private Product product;
+    private Employee scannedBy;
     private InventoryProductStatusEnum statusName;
+    private LocalDateTime scanTime;
     private String description;
+
+    public LocalDateTime getScanTime() {
+        return scanTime;
+    }
+
+    public void setScanTime(LocalDateTime scanTime) {
+        this.scanTime = scanTime;
+    }
 
     public Long getInventoryResultId() {
         return inventoryResultId;
@@ -18,27 +29,27 @@ public class InventoryResult {
         this.inventoryResultId = inventoryResultId;
     }
 
-    public Long getInventorySessionId() {
-        return inventorySessionId;
+    public InventorySession getSession() {
+        return session;
     }
 
-    public void setInventorySessionId(Long inventorySessionId) {
-        this.inventorySessionId = inventorySessionId;
+    public void setSession(InventorySession session) {
+        this.session = session;
     }
 
-    public Long getProduct() {
+    public Product getProduct() {
         return product;
     }
 
-    public void setProduct(Long product) {
+    public void setProduct(Product product) {
         this.product = product;
     }
 
-    public Long getScannedBy() {
+    public Employee getScannedBy() {
         return scannedBy;
     }
 
-    public void setScannedBy(Long scannedBy) {
+    public void setScannedBy(Employee scannedBy) {
         this.scannedBy = scannedBy;
     }
 

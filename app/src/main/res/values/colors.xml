@@ -3,6 +3,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="lightGray">#9AB2EF</color>
+    <color name="lightBlue">#9AB2EF</color>
+    <color name="lightGreen">#A5D6A7</color>
+    <color name="lightRed">#EF9A9A</color>
+    <color name="lightYellow">#FFF59D</color>
+    <color name="lightOrange">#FFCC80</color>
+    <color name="red">#F44336</color>
+    <color name="nav_item_selected">#2196F3</color> <!-- синій -->
+    <color name="nav_item_unselected">#757575</color> <!-- сірий -->
+
     <color name="darkGray">#636363</color>
     <color name="delft_blue">#283673</color>
     <color name="middle_yellow">#FFEB3B</color>

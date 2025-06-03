@@ -8,6 +8,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import com.smartinvent.model.Constants;
 import com.smartinvent.model.Product;
 import com.smartinvent.network.ApiClient;
 import com.smartinvent.service.ProductApi;
@@ -80,7 +81,7 @@ public class MainScannerActivity extends AppCompatActivity {
 
     private void openProductDetails(Product product) {
         Intent intent = new Intent(this, ProductDetailsActivity.class);
-        intent.putExtra("product", product);
+        intent.putExtra(Constants.KEY_PRODUCT, product);
         startActivity(intent);
         finish();
     }
@@ -91,7 +92,7 @@ public class MainScannerActivity extends AppCompatActivity {
                 .setMessage("Додати новий товар?")
                 .setPositiveButton("Так", (dialog, which) -> {
                     Intent intent = new Intent(this, AddProductActivity.class);
-                    intent.putExtra("productWorkId", productWorkId);
+                    intent.putExtra(Constants.KEY_PRODUCT_WORK_ID, productWorkId);
                     startActivity(intent);
                     finish();
                 })

@@ -13,8 +13,13 @@ public class InventorySession {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
+    public InventorySession(Long inventorySessionId) {
+        this.inventorySessionId = inventorySessionId;
+    }
 
+    public InventorySession() {
 
+    }
 
     public Long getInventorySessionId() {
         return inventorySessionId;

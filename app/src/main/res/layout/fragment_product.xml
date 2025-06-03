@@ -58,56 +58,109 @@
                 android:background="@drawable/background_list"/>
 
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="4"
-            android:layout_marginTop="8dp">
+        <LinearLayout
+                android:id="@+id/actionButtonsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="4"
+                android:gravity="center"
+                android:layout_marginBottom="12dp">
 
-            <Button
+            <ImageButton
                     android:id="@+id/btn_add_product"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Додати"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:padding="8dp"/>
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_add"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Додати"
+                    android:layout_marginEnd="8dp" />
 
-            <Button
-                    android:id="@+id/btn_edit_product"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Редагувати"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:padding="8dp"
-                    android:enabled="false"/>
 
-            <Button
+            <ImageButton
                     android:id="@+id/btn_refresh"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Оновити"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:padding="8dp"/>
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_update"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Оновити"
+                    android:layout_marginEnd="8dp" />
 
-            <Button
+            <ImageButton
+                    android:id="@+id/btn_edit_product"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_edit"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Редагувати"
+                    android:layout_marginEnd="8dp" />
+
+            <ImageButton
                     android:id="@+id/btn_details_product"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Інфо"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:padding="8dp"
-                    android:enabled="false"/>
-
-
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_info_1"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Видалити"/>
         </LinearLayout>
+<!--    <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:weightSum="4"-->
+<!--            android:layout_marginTop="8dp">-->
+
+<!--            <Button-->
+<!--                    android:id="@+id/btn_add_product"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:text="Додати"-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:padding="8dp"/>-->
+
+<!--            <Button-->
+<!--                    android:id="@+id/btn_edit_product"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:text="Редагувати"-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:enabled="false"/>-->
+
+<!--            <Button-->
+<!--                    android:id="@+id/btn_refresh"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:text="Оновити"-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:padding="8dp"/>-->
+
+<!--            <Button-->
+<!--                    android:id="@+id/btn_details_product"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:text="Інфо"-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:enabled="false"/>-->
+
+
+<!--        </LinearLayout>-->
     </LinearLayout>
 </FrameLayout>

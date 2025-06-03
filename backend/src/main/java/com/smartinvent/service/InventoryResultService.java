@@ -10,6 +10,7 @@ import com.smartinvent.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -23,6 +24,7 @@ public class InventoryResultService {
 
     private final InventoryResultRepository resultRepository;
     private final ProductRepository productRepository;
+    private final EmployeeRepository employeeRepository;
 
     public void initializeResultsForSession(InventorySession session) {
         List<Product> products = productRepository.findAll();
@@ -53,12 +55,82 @@ public class InventoryResultService {
         return results.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
+
     public InventoryProductResultDto getProductBySessionAndWorkId(Long sessionId, String productWorkId) {
         InventoryResult result = resultRepository
                 .findBySessionInventorySessionIdAndProduct_ProductWorkId(sessionId, productWorkId)
                 .orElseThrow(() -> new EntityNotFoundException("Товар з таким QR-кодом не знайдено в цій сесії"));
 
         return mapToDto(result);
+    }
+
+
+    public InventoryProductResultDto getProductBySessionAndProductId(Long sessionId, Long productId) {
+        InventoryResult result = resultRepository
+                .findBySessionInventorySessionIdAndProductProductId(sessionId, productId)
+                .orElseThrow(() -> new EntityNotFoundException("Inventory result not found"));
+
+        return mapToDto(result);
+    }
+
+
+    public Map<String, Long> countStatusesBySession(Long sessionId) {
+        List<Object[]> results = resultRepository.countByStatusForSession(sessionId);
+        Map<String, Long> statusMap = new HashMap<>();
+        for (Object[] result : results) {
+            String status = (String) result[0];
+            Long count = (Long) result[1];
+            statusMap.put(status, count);
+        }
+        return statusMap;
+    }
+
+
+    @Transactional
+    public void saveOrUpdateInventoryProductResultDto(Long sessionId, InventoryProductResultDto dto) {
+        Optional<InventoryResult> optionalResult =
+                resultRepository.findBySessionInventorySessionIdAndProductProductId(sessionId, dto.getProductId());
+
+        Product product = productRepository.findById(dto.getProductId())
+                .orElseThrow(() -> new RuntimeException("Продукт не знайдено"));
+
+        InventoryResult result;
+        if (optionalResult.isPresent()) {
+            // Оновлення наявного результату
+            result = optionalResult.get();
+            result.setStatus(dto.getStatus());
+            result.setScanTime(dto.getScanTime());
+            result.setDescription(dto.getDescription());
+        } else {
+            // Створення нового результату
+            InventorySession session = sessionRepository.findById(sessionId)
+                    .orElseThrow(() -> new RuntimeException("Сесія не знайдена"));
+
+            result = new InventoryResult();
+            result.setSession(session);
+            result.setProduct(product);
+            result.setStatus(dto.getStatus());
+            result.setScanTime(dto.getScanTime());
+            result.setDescription(dto.getDescription());
+        }
+
+        if (dto.getScannedBy() != null) {
+            Employee employee = employeeRepository.findById(dto.getScannedBy())
+                    .orElseThrow(() -> new RuntimeException("Працівник не знайдений"));
+            result.setScannedBy(employee);
+        }
+
+        // Оновлюємо продукт
+        product.setPrice(dto.getPrice());
+        product.setCount(dto.getCount());
+        product.setManufacturer(dto.getManufacturer());
+        product.setExpirationDate(dto.getExpirationDate());
+        product.setWeight(dto.getWeight());
+        product.setDimensions(dto.getDimensions());
+        product.setDescription(dto.getDescription());
+
+        resultRepository.save(result);
+        productRepository.save(product);
     }
 
 
@@ -79,7 +151,7 @@ public class InventoryResultService {
         dto.setPrice(product.getPrice());
         dto.setCount(product.getCount());
         dto.setManufacturer(product.getManufacturer());
-        dto.setExpirationDate(product.getExpirationDate() != null ? product.getExpirationDate().toString() : null);
+        dto.setExpirationDate(product.getExpirationDate());
         dto.setWeight(product.getWeight());
         dto.setDimensions(product.getDimensions());
         dto.setStatus(result.getStatus());
@@ -90,15 +162,14 @@ public class InventoryResultService {
     }
 
 
+    public List<InventoryProductResultDto> getProductsByStatus(Long sessionId, InventoryProductStatusEnum status) {
+        List<InventoryResult> results = resultRepository
+                .findBySessionInventorySessionIdAndStatus(sessionId, status);
 
-
-
-
-
-
-
-
-
+        return results.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
 
 
 

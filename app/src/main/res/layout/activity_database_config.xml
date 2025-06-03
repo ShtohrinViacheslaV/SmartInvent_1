@@ -14,7 +14,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Database Configuration"
+                android:text="Налаштування Бази Даних"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_gravity="center_horizontal"
@@ -31,14 +31,14 @@
                     android:id="@+id/radio_manual"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Connect by parameters"
+                    android:text="За параметрами"
                     android:checked="true" />
 
             <RadioButton
                     android:id="@+id/radio_url"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Connect by URL" />
+                    android:text="За URL-адресою" />
         </RadioGroup>
 
         <!-- Поле для введення URL -->
@@ -86,14 +86,15 @@
                 android:id="@+id/testButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Test Connection"
+                android:text="Тестове підключення"
                 android:layout_marginTop="8dp" />
 
         <Button
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save and Connect"
+                android:backgroundTint="@color/black"
+                android:text="Зберегти та підключитися"
                 android:layout_marginTop="16dp" />
 
         <Button
@@ -101,7 +102,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="backToPreviousPage"
-                android:text="Back"
+                android:backgroundTint="@color/red"
+                android:text="Назад"
                 android:textSize="16dp"
                 android:layout_marginTop="16dp"/>
 

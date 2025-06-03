@@ -5,6 +5,8 @@ import retrofit2.Call;
 import retrofit2.http.*;
 
 import java.util.List;
+import java.util.Map;
+
 public interface InventoryApi {
 
     // --- SESSION ENDPOINTS ---
@@ -23,6 +25,25 @@ public interface InventoryApi {
 
     @PUT("api/inventory/session/complete/{sessionId}")
     Call<InventorySession> completeSession(@Path("sessionId") Long sessionId);
+
+
+    @GET("api/inventory/result/session/{sessionId}/status-counts")
+    Call<Map<String, Long>> getStatusCounts(@Path("sessionId") Long sessionId);
+
+
+    @PUT("api/inventory/session/cancel/{sessionId}")
+    Call<InventorySession> cancelSession(@Path("sessionId") Long sessionId);
+
+    @POST("api/inventory/session/{sessionId}/complete-and-backup")
+    Call<String> completeAndBackupSession(@Path("sessionId") Long sessionId);
+
+
+
+
+
+
+
+
 
 
     // --- RESULT ENDPOINTS ---
@@ -54,16 +75,28 @@ public interface InventoryApi {
     );
 
 
+    @GET("api/inventory/result/session/{sessionId}/products/by-id/{productId}")
+    Call<InventoryProductResultDto> getProductById( @Path("sessionId") Long sessionId, @Path("productId") Long productId);
 
 
 
     @GET("api/inventory/result/session/{sessionId}")
     Call<List<InventoryProductResultDto>> getResultsBySession(@Path("sessionId") Long sessionId);
 
-    @GET("api/inventory/result/sessions/{sessionId}/productWorkId/{productWorkId}")
+    @GET("api/inventory/result/session/{sessionId}/products/by-work-id/{productWorkId}")
     Call<InventoryProductResultDto> getProductByWorkId(
             @Path("sessionId") Long sessionId,
             @Path("productWorkId") String productWorkId
+    );
+
+    @PUT("api/inventory/result/session/{sessionId}/save-or-update/result")
+    Call<Void> saveOrUpdateInventoryProductResultDto(@Path("sessionId") Long sessionId, @Body InventoryProductResultDto dto);
+
+
+    @GET("api/inventory/result/session/{sessionId}/products/status/{status}")
+    Call<List<InventoryProductResultDto>> getInventoryProductsByStatus(
+            @Path("sessionId") long sessionId,
+            @Path("status") String status
     );
 
 

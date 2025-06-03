@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class Product implements Parcelable {
     private Long productId;
@@ -15,13 +16,13 @@ public class Product implements Parcelable {
     private Storage storage;
     private BigDecimal price;
     private String manufacturer;
-    private String expirationDate;
+    private LocalDate expirationDate;
     private BigDecimal weight;
     private String dimensions;
 
     public Product(Long productId, String name, String description, String productWorkId,
                    Category category, Storage storage, BigDecimal price, String manufacturer,
-                   String expirationDate, BigDecimal weight, String dimensions) {
+                   LocalDate expirationDate, BigDecimal weight, String dimensions) {
         this.productId = productId;
         this.name = name;
         this.description = description;
@@ -37,7 +38,7 @@ public class Product implements Parcelable {
     }
 
     public Product(String name, String description, String productWorkId, Integer count, Category category,
-                   Storage storage, BigDecimal price, String manufacturer, String expirationDate,
+                   Storage storage, BigDecimal price, String manufacturer, LocalDate expirationDate,
                    BigDecimal weight, String dimensions) {
         this.name = name;
         this.description = description;
@@ -58,7 +59,7 @@ public class Product implements Parcelable {
     }
 
 
-    protected Product(Parcel in) {
+    public Product(Parcel in) {
         if (in.readByte() == 0) {
             productId = null;
         } else {
@@ -80,7 +81,12 @@ public class Product implements Parcelable {
             price = new BigDecimal(in.readString());
         }
         manufacturer = in.readString();
-        expirationDate = in.readString();
+
+        if (in.readByte() == 0) {
+            expirationDate = null;
+        } else {
+            expirationDate = LocalDate.parse(in.readString());
+        }
         if (in.readByte() == 0) {
             weight = null;
         } else {
@@ -103,6 +109,10 @@ public class Product implements Parcelable {
 
     public Product() {
 
+    }
+
+    public Product(Long productId) {
+        this.productId = productId;
     }
 
     @Override
@@ -131,7 +141,12 @@ public class Product implements Parcelable {
             dest.writeString(price.toString());
         }
         dest.writeString(manufacturer);
-        dest.writeString(expirationDate);
+        if (expirationDate == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeString(expirationDate.toString());
+        }
         if (weight == null) {
             dest.writeByte((byte) 0);
         } else {
@@ -211,11 +226,11 @@ public class Product implements Parcelable {
         this.manufacturer = manufacturer;
     }
 
-    public String getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 

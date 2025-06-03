@@ -18,8 +18,6 @@ import java.util.Optional;
 @Repository
 public interface InventoryResultRepository extends JpaRepository<InventoryResult, Long> {
     // Перевірка, чи існує запис за сесією та продуктом
-    Optional<InventoryResult> findBySessionInventorySessionIdAndProductProductId(Long sessionInventorySessionId, Long productId);
-
 
     // Отримання результатів за сесією і статусом
     List<InventoryResult> findBySessionInventorySessionIdAndStatus(Long sessionInventorySessionId, InventoryProductStatusEnum status);
@@ -33,6 +31,16 @@ public interface InventoryResultRepository extends JpaRepository<InventoryResult
     List<InventoryResult> findBySessionInventorySessionId(Long sessionId);
 
     Optional<InventoryResult> findBySessionInventorySessionIdAndProduct_ProductWorkId(Long sessionId, String productWorkId);
+
+    Optional<InventoryResult> findBySessionInventorySessionIdAndProductProductId(Long sessionId, Long productId);
+
+
+    @Query("SELECT status, COUNT(*) FROM InventoryResult WHERE session.inventorySessionId = :sessionId GROUP BY status")
+    List<Object[]> countByStatusForSession(@Param("sessionId") Long sessionId);
+
+
+    void deleteAllBySessionInventorySessionId(Long sessionId);
+
 
 }
 

@@ -1,5 +1,6 @@
 package com.smartinvent.activity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,9 +22,13 @@ import com.smartinvent.service.StorageService;
 import com.smartinvent.service.TransactionService;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 
 
 public class EditProductActivity extends AppCompatActivity {
@@ -61,6 +66,8 @@ public class EditProductActivity extends AppCompatActivity {
         editPrice = findViewById(R.id.edt_price);
         editManufacturer = findViewById(R.id.edt_manufacturer);
         editExpirationDate = findViewById(R.id.edt_expiration_date);
+        editExpirationDate.setInputType(InputType.TYPE_NULL); // Забороняє клавіатуру
+        editExpirationDate.setOnClickListener(v -> showDatePicker());
         editWeight = findViewById(R.id.edt_weight);
         editDimensions = findViewById(R.id.edt_dimensions);
         editCount = findViewById(R.id.edt_count);
@@ -108,10 +115,10 @@ public class EditProductActivity extends AppCompatActivity {
         });
 
         btnViewQr.setOnClickListener(v -> {
-            String productCode = editProductWorkId.getText().toString().trim();
-            if (!productCode.isEmpty()) {
+            String productWorkId = editProductWorkId.getText().toString().trim();
+            if (!productWorkId.isEmpty()) {
                 Intent intent = new Intent(this, ViewQrActivity.class);
-                intent.putExtra("PRODUCT_CODE", productCode);
+                intent.putExtra(Constants.KEY_PRODUCT_WORK_ID, productWorkId);
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Спочатку введіть або відскануйте код", Toast.LENGTH_SHORT).show();
@@ -137,11 +144,39 @@ public class EditProductActivity extends AppCompatActivity {
         editProductWorkId.setText(product.getProductWorkId());
         editPrice.setText(product.getPrice() != null ? product.getPrice().toString() : "");
         editManufacturer.setText(product.getManufacturer());
-        editExpirationDate.setText(product.getExpirationDate());
+        editExpirationDate.setText(product.getExpirationDate() != null ? product.getExpirationDate().toString() : "");
         editWeight.setText(product.getWeight() != null ? product.getWeight().toString() : "");
         editDimensions.setText(product.getDimensions());
         editCount.setText(product.getCount() != null ? String.valueOf(product.getCount()) : "");
     }
+
+    private void showDatePicker() {
+        final Calendar calendar = Calendar.getInstance();
+
+        String currentDate = editExpirationDate.getText().toString();
+        if (!currentDate.isEmpty()) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                Date date = sdf.parse(currentDate);
+                if (date != null) {
+                    calendar.setTime(date);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year1, month1, dayOfMonth) -> {
+            String selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year1, month1 + 1, dayOfMonth);
+            editExpirationDate.setText(selectedDate);
+        }, year, month, day);
+        datePickerDialog.show();
+    }
+
 
     private void loadCategories() {
         categoryService.getAllCategories(new CategoryService.CategoryCallback() {
@@ -208,7 +243,8 @@ public class EditProductActivity extends AppCompatActivity {
         String description = editDescription.getText().toString().trim();
         String priceStr = editPrice.getText().toString().trim();
         String manufacturer = editManufacturer.getText().toString().trim();
-        String expirationDate = editExpirationDate.getText().toString().trim();
+        String expirationStr = editExpirationDate.getText().toString().trim(); // поле дати
+
         String weightStr = editWeight.getText().toString().trim();
         String dimensions = editDimensions.getText().toString().trim();
         String countStr = editCount.getText().toString().trim();
@@ -227,6 +263,18 @@ public class EditProductActivity extends AppCompatActivity {
                 price = new BigDecimal(priceStr);
             } catch (NumberFormatException e) {
                 Toast.makeText(this, "Невірний формат ціни", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        // Парсинг дати
+        LocalDate expiration = null;
+        if (!expirationStr.isEmpty()) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                expiration = LocalDate.parse(expirationStr, formatter);
+            } catch (DateTimeParseException e) {
+                Toast.makeText(this, "Невірний формат дати (очікується yyyy-MM-dd)", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -275,7 +323,7 @@ public class EditProductActivity extends AppCompatActivity {
         currentProduct.setPrice(price);
         currentProduct.setCount(count);
         currentProduct.setManufacturer(manufacturer);
-        currentProduct.setExpirationDate(expirationDate);
+        currentProduct.setExpirationDate(expiration);
         currentProduct.setWeight(weight);
         currentProduct.setDimensions(dimensions);
 
@@ -314,7 +362,7 @@ public class EditProductActivity extends AppCompatActivity {
 
     private Employee getCurrentEmployee() {
         SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        long employeeId = prefs.getLong("employee_id", -1);
+        long employeeId = prefs.getLong(Constants.KEY_EMPLOYEE_ID, -1);
         if (employeeId == -1) return null;
 
         Employee employee = new Employee();

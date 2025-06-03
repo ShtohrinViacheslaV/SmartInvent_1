@@ -5,6 +5,7 @@ import com.smartinvent.dto.CreateProductDuringInventoryRequest;
 import com.smartinvent.dto.InventoryProductResultDto;
 import com.smartinvent.dto.InventorySessionProductDTO;
 import com.smartinvent.models.Employee;
+import com.smartinvent.models.InventoryProductStatusEnum;
 import com.smartinvent.models.InventoryResult;
 import com.smartinvent.models.Product;
 import com.smartinvent.service.InventoryResultService;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import retrofit2.http.Path;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/inventory/result")
@@ -47,7 +50,7 @@ public class InventoryResultController {
         return ResponseEntity.ok(results);
     }
 
-    @GetMapping("/sessions/{sessionId}/productWorkId/{productWorkId}")
+    @GetMapping("/session/{sessionId}/products/by-work-id/{productWorkId}")
     public ResponseEntity<InventoryProductResultDto> getProductByWorkId(
             @PathVariable Long sessionId,
             @PathVariable String productWorkId
@@ -55,6 +58,37 @@ public class InventoryResultController {
         InventoryProductResultDto dto = resultService.getProductBySessionAndWorkId(sessionId, productWorkId);
         return ResponseEntity.ok(dto);
     }
+
+    @GetMapping("/session/{sessionId}/products/by-id/{productId}")
+    public ResponseEntity<InventoryProductResultDto> getProductById(@PathVariable Long sessionId, @PathVariable Long productId) {
+        InventoryProductResultDto dto = resultService.getProductBySessionAndProductId(sessionId, productId);
+        return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("/session/{sessionId}/save-or-update/result")
+    public ResponseEntity<Void> saveOrUpdateInventoryResult(@PathVariable Long sessionId,
+                                                            @RequestBody InventoryProductResultDto dto) {
+        resultService.saveOrUpdateInventoryProductResultDto(sessionId, dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/session/{sessionId}/status-counts")
+    public ResponseEntity<Map<String, Long>> getStatusCounts(@PathVariable Long sessionId) {
+        return ResponseEntity.ok(resultService.countStatusesBySession(sessionId));
+    }
+
+
+
+    @GetMapping("/session/{sessionId}/products/status/{status}")
+    public ResponseEntity<List<InventoryProductResultDto>> getProductsByStatus(
+            @PathVariable Long sessionId,
+            @PathVariable InventoryProductStatusEnum status) {
+        List<InventoryProductResultDto> result = resultService.getProductsByStatus(sessionId, status);
+        return ResponseEntity.ok(result);
+    }
+
+
+
 
 
 
@@ -79,7 +113,7 @@ public class InventoryResultController {
         return ResponseEntity.ok(productDto);
     }
 
-    @GetMapping("/api/inventory/result/search")
+    @GetMapping("/search")
     public ResponseEntity<List<InventorySessionProductDTO>> searchInventorySessionProducts(
             @RequestParam Long sessionId,
             @RequestParam String query,

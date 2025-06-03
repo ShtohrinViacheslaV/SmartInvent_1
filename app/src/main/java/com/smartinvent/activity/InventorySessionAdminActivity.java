@@ -2,6 +2,7 @@ package com.smartinvent.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -13,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.smartinvent.R;
 import com.smartinvent.adapter.InventorySessionAdapter;
+import com.smartinvent.model.Constants;
 import com.smartinvent.model.InventorySession;
+import com.smartinvent.model.InventorySessionStatusEnum;
 import com.smartinvent.network.ApiClient;
 
 import java.util.List;
@@ -76,8 +79,17 @@ public class InventorySessionAdminActivity extends AppCompatActivity implements 
 
     @Override
     public void onSessionClick(InventorySession session) {
-        Intent intent = new Intent(this, InventorySessionDetailsActivity.class);
-        intent.putExtra("session_id", session.getInventorySessionId());
-        startActivity(intent);
+        InventorySessionStatusEnum status = session.getStatus();
+
+        if (status == InventorySessionStatusEnum.FINISHED) {
+            Toast.makeText(this, "Ця сесія завершена і недоступна для перегляду.", Toast.LENGTH_SHORT).show();
+        } else if (status == InventorySessionStatusEnum.CANCELLED) {
+            Toast.makeText(this, "Ця сесія скасована і недоступна для перегляду.", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(this, InventorySessionDetailsActivity.class);
+            intent.putExtra(Constants.KEY_INVENTORY_SESSION_ID, session.getInventorySessionId());
+            startActivity(intent);
+        }
     }
+
 }

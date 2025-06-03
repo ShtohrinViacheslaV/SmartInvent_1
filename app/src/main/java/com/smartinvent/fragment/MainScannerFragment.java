@@ -116,6 +116,7 @@ import com.smartinvent.R;
 import com.smartinvent.activity.AddProductActivity;
 import com.smartinvent.activity.ProductDetailsActivity;
 import com.smartinvent.activity.ScannerActivity;
+import com.smartinvent.model.Constants;
 import com.smartinvent.model.Product;
 import com.smartinvent.network.ApiClient;
 import com.smartinvent.service.ProductApi;
@@ -173,7 +174,7 @@ public class MainScannerFragment extends Fragment {
 
     private void openProductDetails(Product product) {
         Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
-        intent.putExtra("product", product);
+        intent.putExtra(Constants.KEY_PRODUCT, product);
         startActivity(intent);
     }
 
@@ -183,7 +184,7 @@ public class MainScannerFragment extends Fragment {
                 .setMessage("Додати новий товар?")
                 .setPositiveButton("Так", (dialog, which) -> {
                     Intent intent = new Intent(getActivity(), AddProductActivity.class);
-                    intent.putExtra("productWorkId", productWorkId);
+                    intent.putExtra(Constants.KEY_PRODUCT_WORK_ID, productWorkId);
                     startActivity(intent);
                 })
                 .setNegativeButton("Ні", (dialog, which) -> dialog.dismiss())

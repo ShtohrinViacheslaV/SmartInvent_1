@@ -4,6 +4,7 @@ import com.smartinvent.models.InventoryProductStatusEnum;
 
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class InventoryProductResultDto {
@@ -21,13 +22,14 @@ public class InventoryProductResultDto {
     private BigDecimal price;
     private Integer count;
     private String manufacturer;
-    private String expirationDate;
+    private LocalDate expirationDate;
     private BigDecimal weight;
     private String dimensions;
 
     private InventoryProductStatusEnum status;
     private Long scannedBy;
     private String description;
+    private LocalDateTime scanTime;
 
     public InventoryProductResultDto() {
     }
@@ -36,8 +38,8 @@ public class InventoryProductResultDto {
                                      Long productId, String productName, String productDescription,
                                      String productWorkId, Integer productCount, String categoryName,
                                      String storageName, BigDecimal price, Integer count, String manufacturer,
-                                     String expirationDate, BigDecimal weight, String dimensions,
-                                     InventoryProductStatusEnum status, Long scannedBy, String description) {
+                                     LocalDate expirationDate, BigDecimal weight, String dimensions,
+                                     InventoryProductStatusEnum status, Long scannedBy, String description, LocalDateTime scanTime) {
         this.inventoryResultId = inventoryResultId;
         this.inventorySessionId = inventorySessionId;
         this.productId = productId;
@@ -56,6 +58,7 @@ public class InventoryProductResultDto {
         this.status = status;
         this.scannedBy = scannedBy;
         this.description = description;
+        this.scanTime = scanTime;
     }
 
     public Long getInventoryResultId() {
@@ -154,11 +157,11 @@ public class InventoryProductResultDto {
         this.manufacturer = manufacturer;
     }
 
-    public String getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 
@@ -200,5 +203,13 @@ public class InventoryProductResultDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getScanTime() {
+        return scanTime;
+    }
+
+    public void setScanTime(LocalDateTime scanTime) {
+        this.scanTime = scanTime;
     }
 }

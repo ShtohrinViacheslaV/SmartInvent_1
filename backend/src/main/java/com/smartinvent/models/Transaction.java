@@ -1,5 +1,6 @@
 package com.smartinvent.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class Transaction {
     private int quantity;
 
     @Column(name = "transaction_date")
+    @JsonProperty("transactionDate")
     private LocalDateTime date;
 
     public Transaction() {

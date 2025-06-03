@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.smartinvent.R;
 import com.smartinvent.adapter.InventorySessionProductAdapter;
+import com.smartinvent.model.Constants;
 import com.smartinvent.model.InventoryProductResultDto;
 import com.smartinvent.service.InventoryService;
 
@@ -47,7 +48,7 @@ public class ManualProductSearchDialogFragment extends DialogFragment {
     public static ManualProductSearchDialogFragment newInstance(Long sessionId) {
         ManualProductSearchDialogFragment fragment = new ManualProductSearchDialogFragment();
         Bundle args = new Bundle();
-        args.putLong("inventorySessionId", sessionId);
+        args.putLong(Constants.KEY_INVENTORY_SESSION_ID, sessionId);
         fragment.setArguments(args);
         return fragment;
     }

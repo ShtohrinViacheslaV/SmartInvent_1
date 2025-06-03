@@ -1,9 +1,8 @@
 package com.smartinvent.service;
 
 
-import com.smartinvent.models.Employee;
-import com.smartinvent.models.InventorySession;
-import com.smartinvent.models.InventorySessionStatusEnum;
+import com.smartinvent.dto.InventoryProductResultDto;
+import com.smartinvent.models.*;
 import com.smartinvent.repositories.InventorySessionRepository;
 import com.smartinvent.repositories.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -91,13 +91,26 @@ public class InventorySessionService {
     public InventorySession completeSession(Long sessionId) {
         InventorySession session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new RuntimeException("Session not found"));
-
+        if (session.getStatus() != InventorySessionStatusEnum.ACTIVE) {
+            throw new IllegalStateException("Сесію не можна завершити");
+        }
         InventorySessionStatusEnum completedStatus = InventorySessionStatusEnum.COMPLETED;
         session.setStatus(completedStatus); // Заміна статусу на Enum
         session.setEndTime(LocalDateTime.now());
 
         return sessionRepository.save(session);
     }
+
+    public InventorySession cancelSession(Long sessionId) {
+        InventorySession session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new RuntimeException("Session not found"));
+        InventorySessionStatusEnum cancelledStatus = InventorySessionStatusEnum.CANCELLED;
+        session.setStatus(cancelledStatus);
+        session.setEndTime(LocalDateTime.now());
+        return sessionRepository.save(session);
+    }
+
+
 
     @Transactional
     public void activatePlannedSessionsIfNeeded() {
@@ -141,6 +154,7 @@ public class InventorySessionService {
             System.out.println("Completed " + sessionsToComplete.size() + " session(s)");
         }
     }
+
 
 
 }

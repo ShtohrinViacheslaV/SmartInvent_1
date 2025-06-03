@@ -2,10 +2,7 @@ package com.smartinvent.activity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,7 +23,8 @@ public class ManageCategoriesActivity extends AppCompatActivity implements Categ
     private List<Category> categoryList = new ArrayList<>();
     private CategoryService categoryService;
 
-    private Button btnAdd, btnEdit, btnDelete, btnRefresh, btnSave, btnCancel;
+    private Button btnSave, btnCancel;
+    private ImageButton btnAdd, btnEdit, btnDelete, btnRefresh;
     private EditText editName, editDescription;
     private View formLayout;
     private TextView formTitle;

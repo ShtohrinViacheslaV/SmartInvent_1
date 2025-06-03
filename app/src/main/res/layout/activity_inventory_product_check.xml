@@ -293,8 +293,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_marginTop="12dp">
+            android:weightSum="2">
 
         <Button
                 android:id="@+id/confirmButton"
@@ -312,10 +311,22 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="Скасувати"
-                android:backgroundTint="@color/black"
+                android:backgroundTint="@color/red"
                 android:textColor="@android:color/white"
                 android:layout_marginBottom="12dp" />
+
     </LinearLayout>
+        <Button
+                android:id="@+id/notFoundButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Не знайдено"
+                android:backgroundTint="@color/red"
+                android:textColor="@android:color/white"
+                android:visibility="gone"
+                android:layout_marginTop="16dp"/>
+
+
 
     </LinearLayout>
 </ScrollView>

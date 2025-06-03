@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.smartinvent.R;
 import com.smartinvent.activity.*;
 import com.smartinvent.adapter.ProductAdapter;
+import com.smartinvent.model.Constants;
 import com.smartinvent.model.Product;
 import com.smartinvent.network.ApiClient;
 import com.smartinvent.service.ProductApi;
@@ -38,7 +40,8 @@ public class ProductFragment extends Fragment {
     private ProductAdapter productAdapter;
     private ProductService productService;
     private EditText searchInput;
-    private Button btnScanQr, btnSearchProduct, btnAddProduct, btnEditProduct, btnRefresh, btnDetailsProduct;
+    Button btnScanQr, btnSearchProduct;
+    private ImageButton btnAddProduct, btnEditProduct, btnRefresh, btnDetailsProduct;
     private List<Product> productList = new ArrayList<>();
     private static final int REQUEST_ADD_PRODUCT = 1;
     private static final int REQUEST_EDIT_PRODUCT = 2;
@@ -180,7 +183,7 @@ public class ProductFragment extends Fragment {
         }
 
         Intent intent = new Intent(getActivity(), EditProductActivity.class);
-        intent.putExtra("product", selectedProduct);
+        intent.putExtra(Constants.KEY_PRODUCT, selectedProduct);
         startActivityForResult(intent, REQUEST_EDIT_PRODUCT);
     }
 
@@ -192,7 +195,7 @@ public class ProductFragment extends Fragment {
         }
 
         Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
-        intent.putExtra("product", selectedProduct);
+        intent.putExtra(Constants.KEY_PRODUCT, selectedProduct);
         startActivity(intent);
     }
 

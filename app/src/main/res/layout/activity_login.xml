@@ -107,29 +107,5 @@
         app:layout_constraintTop_toBottomOf="@+id/login_admin"
         tools:ignore="MissingConstraints" />
 
-    <ImageButton
-        android:id="@+id/btn_english"
-        android:layout_width="50dp"
-        android:layout_height="35dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/en"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_ukrainian"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-
-    <ImageButton
-        android:id="@+id/btn_ukrainian"
-        android:layout_width="50dp"
-        android:layout_height="35dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/ukr"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_english"
-        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

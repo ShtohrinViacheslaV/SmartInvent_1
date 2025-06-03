@@ -18,9 +18,9 @@
         android:layout_height="48dp"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:background="@drawable/title_field"
-        android:text="Sign up company"
-        android:textColor="@color/middle_yellow"
+        android:background="@color/primary"
+        android:text="Реєстрація компанії"
+        android:textColor="@color/white"
         android:textSize="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,7 @@
             android:background="@drawable/login_field"
             android:ems="10"
             android:gravity="center"
-            android:hint="Company Name"
+            android:hint="Назва компанії"
             android:inputType=""
             android:textSize="24dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -56,120 +56,6 @@
             tools:ignore="MissingConstraints" />
     </LinearLayout>
 
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:gravity="center"-->
-<!--        android:layout_marginTop="24dp">-->
-<!--        <Spinner-->
-<!--            android:id="@+id/spinner_legal_entity_type"-->
-<!--            android:layout_width="300dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:background="@drawable/spinner_field"-->
-<!--            android:gravity="center"-->
-<!--            android:spinnerMode="dialog"-->
-<!--            android:verticalScrollbarPosition="right"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
-<!--        <ImageButton-->
-<!--            android:id="@+id/btn_help_legal_entity_type"-->
-<!--            android:layout_width="35dp"-->
-<!--            android:layout_height="35dp"-->
-<!--            android:background="@drawable/help"-->
-<!--            android:onClick="signUpCompanyPage2"-->
-<!--            android:scaleType="fitCenter"-->
-<!--            tools:ignore="MissingConstraints" />-->
-<!--    </LinearLayout>-->
-
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:gravity="center"-->
-<!--        android:layout_marginTop="24dp">-->
-<!--        <EditText-->
-<!--            android:id="@+id/input_registration_number"-->
-<!--            android:layout_width="300dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:background="@drawable/login_field"-->
-<!--            android:ems="10"-->
-<!--            android:gravity="center"-->
-<!--            android:hint="Registration Number"-->
-<!--            android:inputType=""-->
-<!--            android:textSize="24dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/spinner_legal_entity_type" />-->
-<!--        <ImageButton-->
-<!--            android:id="@+id/btn_help_registration_number"-->
-<!--            android:layout_width="35dp"-->
-<!--            android:layout_height="35dp"-->
-<!--            android:background="@drawable/help"-->
-<!--            android:onClick="signUpCompanyPage2"-->
-<!--            android:scaleType="fitCenter"-->
-<!--            tools:ignore="MissingConstraints" />-->
-<!--    </LinearLayout>-->
-
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:gravity="center"-->
-<!--        android:layout_marginTop="24dp">-->
-<!--        <EditText-->
-<!--            android:id="@+id/input_tin"-->
-<!--            android:layout_width="300dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:background="@drawable/login_field"-->
-<!--            android:ems="10"-->
-<!--            android:gravity="center"-->
-<!--            android:hint="Tax Identification Number"-->
-<!--            android:inputType=""-->
-<!--            android:textSize="24dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/input_registration_number" />-->
-<!--        <ImageButton-->
-<!--            android:id="@+id/btn_help_tin"-->
-<!--            android:layout_width="35dp"-->
-<!--            android:layout_height="35dp"-->
-<!--            android:background="@drawable/help"-->
-<!--            android:onClick="signUpCompanyPage2"-->
-<!--            android:scaleType="fitCenter"-->
-<!--            tools:ignore="MissingConstraints" />-->
-<!--    </LinearLayout>-->
-
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:gravity="center"-->
-<!--        android:layout_marginTop="24dp">-->
-<!--        <EditText-->
-<!--            android:id="@+id/input_industry_type"-->
-<!--            android:layout_width="300dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:background="@drawable/login_field"-->
-<!--            android:ems="10"-->
-<!--            android:gravity="center"-->
-<!--            android:hint="Industry Type"-->
-<!--            android:inputType=""-->
-<!--            android:textSize="24dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/input_tin" />-->
-<!--        <ImageButton-->
-<!--            android:id="@+id/btn_help_industry_type"-->
-<!--            android:layout_width="35dp"-->
-<!--            android:layout_height="35dp"-->
-<!--            android:background="@drawable/help"-->
-<!--            android:onClick="signUpCompanyPage2"-->
-<!--            android:scaleType="fitCenter"-->
-<!--            tools:ignore="MissingConstraints" />-->
-<!--    </LinearLayout>-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -183,7 +69,7 @@
             android:background="@drawable/login_field"
             android:ems="10"
             android:gravity="center"
-            android:hint="Company Address"
+            android:hint="Адреса компанії"
             android:inputType=""
             android:textSize="24dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -212,7 +98,7 @@
             android:background="@drawable/login_field"
             android:ems="10"
             android:gravity="center"
-            android:hint="Phone Number"
+            android:hint="Номер телефону"
             android:inputType=""
             android:textSize="24dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -241,7 +127,7 @@
             android:background="@drawable/login_field"
             android:ems="10"
             android:gravity="center"
-            android:hint="Email Address"
+            android:hint="Електронна адреса"
             android:inputType=""
             android:textSize="24dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -257,36 +143,6 @@
             tools:ignore="MissingConstraints" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="24dp">
-        <EditText
-            android:id="@+id/input_website_url"
-            android:layout_width="300dp"
-            android:layout_height="48dp"
-            android:background="@drawable/login_field"
-            android:ems="10"
-            android:gravity="center"
-            android:hint="Website URL"
-            android:inputType=""
-            android:textSize="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_email_address" />
-        <ImageButton
-            android:id="@+id/btn_help_website_url"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:background="@drawable/help"
-            android:onClick="signUpCompanyPage2"
-            android:scaleType="fitCenter"
-            tools:ignore="MissingConstraints" />
-    </LinearLayout>
-
-
 
 
     <Button
@@ -296,9 +152,9 @@
         android:layout_marginTop="24dp"
         android:backgroundTint="@color/delft_blue"
         android:onClick="signUpCompanyPage2"
-        android:text="Next page"
+        android:text="Далі"
         android:textSize="24dp"
-        android:textColor="@color/middle_yellow"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_website_url"
@@ -311,9 +167,9 @@
         android:layout_marginTop="24dp"
         android:backgroundTint="@color/delft_blue"
         android:onClick="backToLogin"
-        android:text="Back to Login"
+        android:text="Назад"
         android:textSize="24dp"
-        android:textColor="@color/middle_yellow"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_company_page_2"

@@ -9,4 +9,3 @@ public class UserHomeActivity extends BaseHomeActivity {
         return new BottomNavigationUserFragment();
     }
 }
-

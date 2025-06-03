@@ -7,6 +7,7 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import com.smartinvent.R;
 import com.smartinvent.model.Company;
+import com.smartinvent.model.Constants;
 import com.smartinvent.model.Employee;
 import com.smartinvent.model.RoleEnum;
 import com.smartinvent.service.EmployeeService;
@@ -39,7 +40,7 @@ public class AddEmployeeActivity extends AppCompatActivity {
 
         // Отримання companyId з SharedPreferences
         SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        companyId = prefs.getLong("companyId", -1);
+        companyId = prefs.getLong(Constants.KEY_COMPANY_ID, -1);
         if (companyId == -1) {
             Toast.makeText(this, "❌ Company ID не знайдено", Toast.LENGTH_SHORT).show();
             finish();

@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.smartinvent.R;
 import com.smartinvent.model.Company;
+import com.smartinvent.model.Constants;
 import com.smartinvent.model.Employee;
 import com.smartinvent.model.RoleEnum;
 import com.smartinvent.network.ApiClient;
@@ -80,7 +81,7 @@ public class SignUpCompanyActivity2 extends AppCompatActivity {
                     // ✅ Зберегти дані для автоматичного входу
                     SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
                     sharedPreferences.edit()
-                            .putLong("employeeId", createdAdmin.getEmployeeId())
+                            .putLong(Constants.KEY_EMPLOYEE_ID, createdAdmin.getEmployeeId())
                             .putString("role", createdAdmin.getRole().name())
                             .putString("firstName", createdAdmin.getFirstName())
                             .putString("lastName", createdAdmin.getLastName())

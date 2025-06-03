@@ -1,4 +1,4 @@
-package com.smartinvent.activity;
-
-public class MoreActivity {
-}
+//package com.smartinvent.activity;
+//
+//public class MoreActivity {
+//}

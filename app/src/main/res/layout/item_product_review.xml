@@ -1,0 +1,149 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                   android:id="@+id/cardViewProduct"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:layout_margin="8dp"
+                                   app:cardCornerRadius="12dp"
+                                   app:cardElevation="4dp">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+        <!-- Інформація про товар -->
+        <LinearLayout
+                android:id="@+id/infoContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_toStartOf="@id/buttonContainer"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="8dp">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    android:layout_marginTop="4dp">
+
+                <TextView
+                        android:id="@+id/productName"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_height="wrap_content"
+                        android:text="Назва товару"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:maxLines="2"
+                        android:ellipsize="end" />
+
+                <TextView
+                        android:id="@+id/productStatus"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Статус"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    android:layout_marginTop="4dp">
+
+                <TextView
+                        android:id="@+id/productWorkId"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Код"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/darker_gray"
+                        android:gravity="center" />
+
+                <TextView
+                        android:id="@+id/productStorage"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Склад"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/darker_gray"
+                        android:gravity="center" />
+
+                <TextView
+                        android:id="@+id/productCategory"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Категорія"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/darker_gray"
+                        android:gravity="center" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Кнопки дій -->
+        <LinearLayout
+                android:id="@+id/buttonContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp">
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/rejectButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="@android:color/holo_red_light"
+                    android:text=""
+                    android:visibility="gone"
+                    app:icon="@drawable/ic_reject"
+                    app:iconGravity="textStart"
+                    app:iconTint="@android:color/white"
+                    app:cornerRadius="20dp"
+                    app:iconPadding="0dp"
+                    app:rippleColor="@android:color/darker_gray" />
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/confirmButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="@android:color/holo_green_dark"
+                    android:text=""
+                    app:icon="@drawable/ic_check_circle_filled"
+                    app:iconGravity="textStart"
+                    app:iconTint="@android:color/white"
+                    app:cornerRadius="20dp"
+                    app:iconPadding="0dp"
+                    app:rippleColor="@android:color/darker_gray" />
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/infoButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:backgroundTint="@android:color/darker_gray"
+                    android:text=""
+                    app:icon="@drawable/ic_info"
+                    app:iconGravity="textStart"
+                    app:iconTint="@android:color/white"
+                    app:cornerRadius="20dp"
+                    app:iconPadding="0dp"
+                    app:rippleColor="@android:color/white" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

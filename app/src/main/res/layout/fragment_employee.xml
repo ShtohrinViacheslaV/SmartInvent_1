@@ -27,41 +27,95 @@
                 android:background="@drawable/background_list"/>
 
         <LinearLayout
+                android:id="@+id/actionButtonsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="4"
-                android:layout_marginTop="8dp">
+                android:gravity="center"
+                android:layout_marginBottom="12dp">
 
-            <Button
+            <ImageButton
                     android:id="@+id/btn_add_employee"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Додати"/>
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_add"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Додати"
+                    android:layout_marginEnd="8dp" />
 
-            <Button
-                    android:id="@+id/btn_edit_employee"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Редагувати"
-                    android:enabled="false"/>
 
-            <Button
-                    android:id="@+id/btn_delete_employee"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Видалити"
-                    android:enabled="false"/>
-
-            <Button
+            <ImageButton
                     android:id="@+id/btn_refresh_employees"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Оновити"/>
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_update"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Оновити"
+                    android:layout_marginEnd="8dp" />
+
+            <ImageButton
+                    android:id="@+id/btn_edit_employee"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_edit"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Редагувати"
+                    android:layout_marginEnd="8dp" />
+
+            <ImageButton
+                    android:id="@+id/btn_delete_employee"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_delete"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Видалити"/>
         </LinearLayout>
+
+<!--        <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:weightSum="4"-->
+<!--                android:layout_marginTop="8dp">-->
+
+<!--            <Button-->
+<!--                    android:id="@+id/btn_add_employee"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Додати"/>-->
+
+<!--            <Button-->
+<!--                    android:id="@+id/btn_edit_employee"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Редагувати"-->
+<!--                    android:enabled="false"/>-->
+
+<!--            <Button-->
+<!--                    android:id="@+id/btn_delete_employee"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Видалити"-->
+<!--                    android:enabled="false"/>-->
+
+<!--            <Button-->
+<!--                    android:id="@+id/btn_refresh_employees"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Оновити"/>-->
+<!--        </LinearLayout>-->
     </LinearLayout>
 </FrameLayout>

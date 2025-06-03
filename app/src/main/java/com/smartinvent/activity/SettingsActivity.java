@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.smartinvent.R;
+import com.smartinvent.model.Constants;
 import com.smartinvent.model.Employee;
 import com.smartinvent.service.EmployeeService;
 import retrofit2.Call;
@@ -53,7 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
 
-        employeeId = sharedPreferences.getLong("employeeId", -1);  // Ініціалізація поля класу
+        employeeId = sharedPreferences.getLong(Constants.KEY_EMPLOYEE_ID, -1);  // Ініціалізація поля класу
 
         if (employeeId == -1) {
             Toast.makeText(this, "Користувач не авторизований", Toast.LENGTH_LONG).show();

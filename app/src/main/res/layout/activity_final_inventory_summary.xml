@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:background="@android:color/white">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+        <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Завершення інвентаризації"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:paddingBottom="16dp" />
+
+        <com.anychart.AnyChartView
+                android:id="@+id/final_chart_view"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@drawable/background_list"
+                android:elevation="6dp"
+                android:layout_marginBottom="24dp" />
+
+        <TextView
+                android:id="@+id/tvSummary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Підсумкова статистика:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+        <!-- ✅ Card: Total Products -->
+        <include layout="@layout/card_stat_item"
+                 android:id="@+id/cardTotalProducts"
+                 android:layout_marginBottom="12dp"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"/>
+
+        <!-- ✅ Card: Confirmed -->
+        <include layout="@layout/card_stat_item"
+                 android:id="@+id/cardConfirmed"
+                 android:layout_marginBottom="12dp"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"/>
+
+        <!-- ✅ Card: Modified -->
+        <include layout="@layout/card_stat_item"
+                 android:id="@+id/cardModified"
+                 android:layout_marginBottom="12dp"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"/>
+
+        <!-- ✅ Card: Added -->
+        <include layout="@layout/card_stat_item"
+                 android:id="@+id/cardAdded"
+                 android:layout_marginBottom="12dp"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"/>
+
+        <!-- ✅ Card: Not Found -->
+        <include layout="@layout/card_stat_item"
+                 android:id="@+id/cardNotFound"
+                 android:layout_marginBottom="24dp"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"/>
+
+        <Button
+                android:id="@+id/btnFinishAndSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Завершити інвентаризацію та зберегти"
+                android:backgroundTint="@color/black"
+                android:textColor="@android:color/white"
+                android:padding="12dp"
+                android:textSize="16sp"
+                android:layout_marginTop="16dp"
+                android:elevation="4dp" />
+    </LinearLayout>
+</ScrollView>

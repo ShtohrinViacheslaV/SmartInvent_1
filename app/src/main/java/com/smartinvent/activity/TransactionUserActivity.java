@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.smartinvent.R;
 import com.smartinvent.adapter.TransactionAdapter;
+import com.smartinvent.model.Constants;
 import com.smartinvent.model.Transaction;
 import com.smartinvent.model.TransactionTypeEnum;
 import com.smartinvent.service.TransactionService;
@@ -51,7 +52,7 @@ public class TransactionUserActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
 
-        loggedInEmployeeId = sharedPreferences.getLong("employeeId", -1);  // Ініціалізація поля класу
+        loggedInEmployeeId = sharedPreferences.getLong(Constants.KEY_EMPLOYEE_ID, -1);  // Ініціалізація поля класу
 
         if (loggedInEmployeeId == -1) {
             Toast.makeText(this, "Користувач не авторизований", Toast.LENGTH_LONG).show();
@@ -123,9 +124,16 @@ public class TransactionUserActivity extends AppCompatActivity {
         }
 
         filteredTransactions.sort((a, b) -> {
-            if (sortByDateAsc) return a.getTransactionDate().compareTo(b.getTransactionDate());
-            else return b.getTransactionDate().compareTo(a.getTransactionDate());
+            LocalDateTime dateA = a.getTransactionDate();
+            LocalDateTime dateB = b.getTransactionDate();
+
+            if (dateA == null && dateB == null) return 0;
+            if (dateA == null) return sortByDateAsc ? 1 : -1;
+            if (dateB == null) return sortByDateAsc ? -1 : 1;
+
+            return sortByDateAsc ? dateA.compareTo(dateB) : dateB.compareTo(dateA);
         });
+
 
         adapter.notifyDataSetChanged();
     }

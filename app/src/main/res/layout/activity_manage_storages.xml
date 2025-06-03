@@ -21,42 +21,96 @@
                 android:scrollbars="vertical"
                 android:layout_marginBottom="16dp" />
 
-        <!-- Кнопки дій -->
-        <LinearLayout
-                android:id="@+id/actionButtonsLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginBottom="12dp">
+    <LinearLayout
+            android:id="@+id/actionButtonsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            android:gravity="center"
+            android:layout_marginBottom="12dp">
 
-            <Button
-                    android:id="@+id/buttonAddStorage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Add" />
+        <ImageButton
+                android:id="@+id/buttonAddStorage"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="56dp"
+                android:src="@drawable/ic_add"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:contentDescription="Додати"
+                android:layout_marginEnd="8dp" />
 
-            <Button
-                    android:id="@+id/buttonRefreshStorages"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Update"
-                    android:layout_marginStart="7dp" />
 
-            <Button
-                    android:id="@+id/buttonEditStorage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Edit"
-                    android:layout_marginStart="7dp" />
+        <ImageButton
+                android:id="@+id/buttonRefreshStorages"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="56dp"
+                android:src="@drawable/ic_update"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:contentDescription="Оновити"
+                android:layout_marginEnd="8dp" />
 
-            <Button
-                    android:id="@+id/buttonDeleteStorage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Delete"
-                    android:layout_marginStart="7dp" />
-        </LinearLayout>
+        <ImageButton
+                android:id="@+id/buttonEditStorage"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="56dp"
+                android:src="@drawable/ic_edit"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:contentDescription="Редагувати"
+                android:layout_marginEnd="8dp" />
+
+        <ImageButton
+                android:id="@+id/buttonDeleteStorage"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="56dp"
+                android:src="@drawable/ic_delete"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:contentDescription="Видалити"/>
+    </LinearLayout>
+
+<!--    &lt;!&ndash; Кнопки дій &ndash;&gt;-->
+<!--        <LinearLayout-->
+<!--                android:id="@+id/actionButtonsLayout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:gravity="center"-->
+<!--                android:layout_marginBottom="12dp">-->
+
+<!--            <Button-->
+<!--                    android:id="@+id/buttonAddStorage"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Add" />-->
+
+<!--            <Button-->
+<!--                    android:id="@+id/buttonRefreshStorages"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Update"-->
+<!--                    android:layout_marginStart="7dp" />-->
+
+<!--            <Button-->
+<!--                    android:id="@+id/buttonEditStorage"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Edit"-->
+<!--                    android:layout_marginStart="7dp" />-->
+
+<!--            <Button-->
+<!--                    android:id="@+id/buttonDeleteStorage"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Delete"-->
+<!--                    android:layout_marginStart="7dp" />-->
+<!--        </LinearLayout>-->
 
         <!-- Форма додавання/редагування -->
         <LinearLayout

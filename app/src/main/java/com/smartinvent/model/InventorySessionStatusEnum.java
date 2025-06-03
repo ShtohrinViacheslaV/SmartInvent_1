@@ -10,7 +10,9 @@ public enum InventorySessionStatusEnum {
     @SerializedName("CANCELLED")
     CANCELLED("Інвентаризація скасована"),
     @SerializedName("PLANNED")
-    PLANNED("Інвентаризація запланована");
+    PLANNED("Інвентаризація запланована"),
+    @SerializedName("FINISHED")
+    FINISHED("Інвентаризація запланована");
 
     private final String description;
 

@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class InventoryProductResultDto implements Parcelable {
 
@@ -21,13 +23,14 @@ public class InventoryProductResultDto implements Parcelable {
     private BigDecimal price;
     private Integer count;
     private String manufacturer;
-    private String expirationDate;
+    private LocalDate expirationDate;
     private BigDecimal weight;
     private String dimensions;
 
     private InventoryProductStatusEnum status;
     private Long scannedBy;
     private String description;
+    private LocalDateTime scanTime;
 
     public InventoryProductResultDto() {
     }
@@ -36,8 +39,8 @@ public class InventoryProductResultDto implements Parcelable {
                                      Long productId, String productName, String productDescription,
                                      String productWorkId, Integer productCount, String categoryName,
                                      String storageName, BigDecimal price, Integer count, String manufacturer,
-                                     String expirationDate, BigDecimal weight, String dimensions,
-                                     InventoryProductStatusEnum status, Long scannedBy, String description) {
+                                     LocalDate expirationDate, BigDecimal weight, String dimensions,
+                                     InventoryProductStatusEnum status, Long scannedBy, String description, LocalDateTime scanTime) {
         this.inventoryResultId = inventoryResultId;
         this.inventorySessionId = inventorySessionId;
         this.productId = productId;
@@ -56,6 +59,7 @@ public class InventoryProductResultDto implements Parcelable {
         this.status = status;
         this.scannedBy = scannedBy;
         this.description = description;
+        this.scanTime = scanTime;
     }
 
 
@@ -96,7 +100,13 @@ public class InventoryProductResultDto implements Parcelable {
             count = in.readInt();
         }
         manufacturer = in.readString();
-        expirationDate = in.readString();
+
+        LocalDate expirationDate = null;
+        if (in.readByte() == 1) {
+            expirationDate = LocalDate.parse(in.readString());
+        } else {
+            expirationDate = null;
+        }
 
         String weightStr = in.readString();
         weight = weightStr != null ? new BigDecimal(weightStr) : null;
@@ -113,6 +123,14 @@ public class InventoryProductResultDto implements Parcelable {
             scannedBy = in.readLong();
         }
         description = in.readString();
+
+        LocalDateTime scanTime = null;
+        if (in.readByte() == 1) {
+            scanTime = LocalDateTime.parse(in.readString());
+        } else {
+            scanTime = null;
+        }
+
     }
 
     @Override
@@ -156,7 +174,13 @@ public class InventoryProductResultDto implements Parcelable {
             dest.writeInt(count);
         }
         dest.writeString(manufacturer);
-        dest.writeString(expirationDate);
+
+        if (expirationDate != null) {
+            dest.writeByte((byte) 1);
+            dest.writeString(expirationDate.toString());
+        } else {
+            dest.writeByte((byte) 0);
+        }
 
         dest.writeString(weight != null ? weight.toPlainString() : null);
 
@@ -171,6 +195,13 @@ public class InventoryProductResultDto implements Parcelable {
             dest.writeLong(scannedBy);
         }
         dest.writeString(description);
+
+        if (scanTime != null) {
+            dest.writeByte((byte) 1);
+            dest.writeString(scanTime.toString());
+        } else {
+            dest.writeByte((byte) 0);
+        }
     }
 
     @Override
@@ -286,11 +317,11 @@ public class InventoryProductResultDto implements Parcelable {
         this.manufacturer = manufacturer;
     }
 
-    public String getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 
@@ -332,5 +363,13 @@ public class InventoryProductResultDto implements Parcelable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getScanTime() {
+        return scanTime;
+    }
+
+    public void setScanTime(LocalDateTime scanTime) {
+        this.scanTime = scanTime;
     }
 }

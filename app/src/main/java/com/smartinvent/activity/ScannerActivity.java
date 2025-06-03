@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.smartinvent.model.Constants;
 import com.smartinvent.service.QRService;
 
 public class ScannerActivity extends AppCompatActivity {
@@ -39,7 +40,7 @@ public class ScannerActivity extends AppCompatActivity {
                 if (productWorkId != null) {
 
                     Intent resultIntent = new Intent();
-                    resultIntent.putExtra("SCANNED_CODE", scannedCode);
+                    resultIntent.putExtra(Constants.KEY_SCANNED_CODE, scannedCode);
                     setResult(RESULT_OK, resultIntent);
 
                 } else {

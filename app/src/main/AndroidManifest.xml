@@ -72,6 +72,11 @@
         <activity android:name=".activity.ProductInventoryActivity" android:exported="false"/>
         <activity android:name=".activity.InventoryProductCheckActivity" android:exported="false"/>
         <activity android:name=".activity.InventoryScannerActivity" android:exported="false"/>
+        <activity android:name=".activity.FinalInventorySummaryActivity" android:exported="false"/>
+        <activity android:name=".activity.InventoryProductReviewActivity" android:exported="false"/>
+        <activity android:name=".activity.ReviewInventoryResultsActivity" android:exported="false"/>
+
+
 
 
 

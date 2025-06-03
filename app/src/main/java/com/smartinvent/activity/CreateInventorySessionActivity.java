@@ -168,6 +168,79 @@ public class CreateInventorySessionActivity extends AppCompatActivity {
 
         session.setStatus(statusEnum);
 
+
+        inventoryApi.getAllSessions().enqueue(new Callback<List<InventorySession>>() {
+            @Override
+            public void onResponse(Call<List<InventorySession>> call, Response<List<InventorySession>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<InventorySession> sessions = response.body();
+                    ZonedDateTime newStart = selectedStartTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC);
+                    ZonedDateTime newEnd = selectedEndTime != null
+                            ? selectedEndTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC)
+                            : null;
+
+                    boolean conflictFound = false;
+
+                    for (InventorySession existingSession : sessions) {
+                        if (existingSession.getStatus() == InventorySessionStatusEnum.COMPLETED ||
+                                existingSession.getStatus() == InventorySessionStatusEnum.CANCELLED) {
+                            continue; // Не враховуємо завершені або скасовані
+                        }
+
+                        ZonedDateTime existingStart = existingSession.getStartTime().atZone(ZoneOffset.UTC);
+                        ZonedDateTime existingEnd = existingSession.getEndTime() != null
+                                ? existingSession.getEndTime().atZone(ZoneOffset.UTC)
+                                : null;
+
+                        boolean overlaps = (newEnd == null || existingEnd == null)
+                                ? newStart.isBefore(existingEnd != null ? existingEnd : ZonedDateTime.now(ZoneOffset.UTC).plusYears(1)) &&
+                                existingStart.isBefore(newEnd != null ? newEnd : ZonedDateTime.now(ZoneOffset.UTC).plusYears(1))
+                                : newStart.isBefore(existingEnd) && existingStart.isBefore(newEnd);
+
+                        if (overlaps) {
+                            conflictFound = true;
+                            break;
+                        }
+                    }
+
+                    if (conflictFound) {
+                        Toast.makeText(CreateInventorySessionActivity.this,
+                                "Існує інша активна або запланована сесія в цьому періоді!",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        actuallyCreateSession(); // викликаємо метод створення
+                    }
+
+                } else {
+                    Toast.makeText(CreateInventorySessionActivity.this, "Помилка при перевірці сесій", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<InventorySession>> call, Throwable t) {
+                Toast.makeText(CreateInventorySessionActivity.this, "Помилка: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void actuallyCreateSession() {
+        InventorySession session = new InventorySession();
+        session.setName(editTextSessionName.getText().toString().trim());
+        session.setDescription(editTextSessionDescription.getText().toString().trim());
+        session.setStartTime(selectedStartTime);
+        session.setEndTime(selectedEndTime);
+
+        Employee employee = new Employee();
+        employee.setEmployeeId(selectedEmployeeId);
+        session.setEmployee(employee);
+
+        ZonedDateTime nowUtc = ZonedDateTime.now(ZoneOffset.UTC);
+        ZonedDateTime startUtc = selectedStartTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC);
+        InventorySessionStatusEnum statusEnum = startUtc.isAfter(nowUtc)
+                ? InventorySessionStatusEnum.PLANNED
+                : InventorySessionStatusEnum.ACTIVE;
+        session.setStatus(statusEnum);
+
         inventoryApi.createSession(session).enqueue(new Callback<InventorySession>() {
             @Override
             public void onResponse(Call<InventorySession> call, Response<InventorySession> response) {
@@ -185,6 +258,7 @@ public class CreateInventorySessionActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void showEmployeeSearchDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

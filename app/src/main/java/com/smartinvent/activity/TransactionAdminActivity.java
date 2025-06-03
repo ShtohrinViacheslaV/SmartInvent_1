@@ -117,9 +117,16 @@ public class TransactionAdminActivity extends AppCompatActivity {
         }
 
         filteredTransactions.sort((a, b) -> {
-            if (sortByDateAsc) return a.getTransactionDate().compareTo(b.getTransactionDate());
-            else return b.getTransactionDate().compareTo(a.getTransactionDate());
+            LocalDateTime dateA = a.getTransactionDate();
+            LocalDateTime dateB = b.getTransactionDate();
+
+            if (dateA == null && dateB == null) return 0;
+            if (dateA == null) return sortByDateAsc ? 1 : -1;
+            if (dateB == null) return sortByDateAsc ? -1 : 1;
+
+            return sortByDateAsc ? dateA.compareTo(dateB) : dateB.compareTo(dateA);
         });
+
 
         adapter.notifyDataSetChanged();
     }

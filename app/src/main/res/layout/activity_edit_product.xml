@@ -103,7 +103,9 @@
                     android:id="@+id/edt_expiration_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:focusable="false"
+                    android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Вага -->
@@ -261,7 +263,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Зберегти"
-                    android:backgroundTint="@color/primary"
+                    android:backgroundTint="@color/black"
                     app:cornerRadius="12dp"
                     android:textColor="@color/white"
                     android:layout_marginEnd="5dp"/>
@@ -272,7 +274,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Скасувати"
-                    android:backgroundTint="@color/black"
+                    android:backgroundTint="@color/red"
                     app:cornerRadius="12dp"
                     android:textColor="@color/white"/>
         </LinearLayout>

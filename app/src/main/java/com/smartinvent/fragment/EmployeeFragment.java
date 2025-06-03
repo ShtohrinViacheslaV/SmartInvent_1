@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import com.smartinvent.R;
 import com.smartinvent.activity.AddEmployeeActivity;
 import com.smartinvent.activity.EditEmployeeActivity;
 import com.smartinvent.adapter.EmployeeAdapter;
+import com.smartinvent.model.Constants;
 import com.smartinvent.model.Employee;
 import com.smartinvent.service.EmployeeService;
 import retrofit2.Call;
@@ -34,7 +36,7 @@ public class EmployeeFragment extends Fragment {
     private EmployeeAdapter employeeAdapter;
     private List<Employee> employeeList = new ArrayList<>();
     private EmployeeService employeeService;
-    private Button btnAddEmployee, btnEditEmployee, btnDeleteEmployee, btnRefreshEmployees;
+    private ImageButton btnAddEmployee, btnEditEmployee, btnDeleteEmployee, btnRefreshEmployees;
     private static final int REQUEST_ADD_EMPLOYEE = 1;
     private static final int REQUEST_EDIT_EMPLOYEE = 2;
     private Long companyId;
@@ -75,7 +77,7 @@ public class EmployeeFragment extends Fragment {
 
         // Витягуємо companyId із SharedPreferences
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        companyId = sharedPreferences.getLong("companyId", -1L);
+        companyId = sharedPreferences.getLong(Constants.KEY_COMPANY_ID, -1L);
         if (companyId == -1L) {
             Toast.makeText(getContext(), "Не вдалось отримати ID компанії", Toast.LENGTH_SHORT).show();
         }
@@ -135,7 +137,7 @@ public class EmployeeFragment extends Fragment {
         }
         if (getActivity() != null) {
             Intent intent = new Intent(getActivity(), EditEmployeeActivity.class);
-            intent.putExtra("employee", selected);
+            intent.putExtra(Constants.KEY_EMPLOYEE, selected);
             startActivityForResult(intent, REQUEST_EDIT_EMPLOYEE);
         }
     }

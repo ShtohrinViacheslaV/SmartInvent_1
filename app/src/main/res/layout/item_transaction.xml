@@ -33,7 +33,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="Transaction Type"
+                        android:text="Тип транзакції"
                         android:textStyle="bold"
                         android:textSize="16sp"
                         android:textColor="@android:color/black"
@@ -64,7 +64,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="Last name"
+                        android:text="Прізвище"
                         android:textSize="13sp"
                         android:textColor="@android:color/darker_gray"/>
 
@@ -73,7 +73,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="First name"
+                        android:text="Ім'я"
                         android:textSize="13sp"
                         android:textColor="@android:color/darker_gray"/>
 
@@ -100,7 +100,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="Product name"
+                        android:text="Назва товару"
                         android:textSize="13sp"
                         android:textColor="@android:color/darker_gray"/>
 
@@ -109,7 +109,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="Product Id"
+                        android:text="Код товару"
                         android:textSize="13sp"
                         android:textColor="@android:color/darker_gray"/>
             </LinearLayout>

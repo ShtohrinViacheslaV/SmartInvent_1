@@ -18,6 +18,10 @@ public class Employee implements Parcelable {
     public Employee() {
     }
 
+    public Employee(Long employeeId) {
+        this.employeeId = employeeId;
+    }
+
     public Employee(String employeeWorkId, String firstName, String lastName) {
         this.employeeWorkId = employeeWorkId;
         this.firstName = firstName;

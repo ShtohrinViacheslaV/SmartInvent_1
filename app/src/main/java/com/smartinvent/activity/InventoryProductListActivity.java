@@ -26,7 +26,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InventoryProductListActivity extends AppCompatActivity {
 
@@ -48,6 +50,7 @@ public class InventoryProductListActivity extends AppCompatActivity {
     private ArrayAdapter<String> categoryAdapter;
     private ArrayAdapter<String> storageAdapter;
     private ArrayAdapter<String> statusAdapter;
+    private final Map<String, InventoryProductStatusEnum> statusMap = new HashMap<>();
 
 
     private Long inventorySessionId;
@@ -58,9 +61,6 @@ public class InventoryProductListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inventory_product_list);
 
         inventorySessionId = getIntent().getLongExtra(Constants.KEY_INVENTORY_SESSION_ID, -1);
-        Log.d("SessionID InventoryProductListActivity", inventorySessionId + "");
-
-        Log.d("IntentDebug", "Received intent: " + getIntent().toString());
 
         categoryService = new CategoryService();
         storageService = new StorageService();
@@ -109,7 +109,7 @@ public class InventoryProductListActivity extends AppCompatActivity {
                 Intent intent = new Intent(InventoryProductListActivity.this, InventoryProductCheckActivity.class);
                 intent.putExtra(Constants.KEY_INVENTORY_SESSION_ID, inventorySessionId);
                 intent.putExtra(Constants.KEY_PRODUCT_ID, product.getProductId());
-                intent.putExtra("product", product);  // якщо потрібен Parcelable
+                intent.putExtra(Constants.KEY_PRODUCT, product);  // якщо потрібен Parcelable
                 startActivity(intent);
             });
             dialog.show(getSupportFragmentManager(), "manualSearchDialog");
@@ -177,13 +177,13 @@ public class InventoryProductListActivity extends AppCompatActivity {
     }
 
     private void loadStatuses() {
-        List<String> statusNames = new ArrayList<>();
+        List<String> statusDescriptions = new ArrayList<>();
         for (InventoryProductStatusEnum status : InventoryProductStatusEnum.values()) {
-            statusNames.add(status.getDescription());
+            statusDescriptions.add(status.getDescription());
+            statusMap.put(status.getDescription(), status);  // зв'язок опису з enum
         }
 
-        statusAdapter = new ArrayAdapter<>(InventoryProductListActivity.this, R.layout.item_dropdown, statusNames);
-        statusAdapter.setDropDownViewResource(R.layout.item_dropdown);
+        statusAdapter = new ArrayAdapter<>(this, R.layout.item_dropdown, statusDescriptions);
         spinnerStatus.setAdapter(statusAdapter);
     }
 
@@ -207,24 +207,21 @@ public class InventoryProductListActivity extends AppCompatActivity {
 
 
     private void filterProducts() {
-        String status = spinnerStatus.getText().toString().trim();
+        String statusText = spinnerStatus.getText().toString().trim();
         String storage = spinnerStorage.getText().toString().trim();
         String category = spinnerCategory.getText().toString().trim();
 
+        InventoryProductStatusEnum selectedStatus = statusMap.get(statusText);
+
+
         List<InventoryProductResultDto> filtered = new ArrayList<>();
         for (InventoryProductResultDto p : allProducts) {
-            // Фільтрація по статусу
-            if (!TextUtils.isEmpty(status)) {
-                InventoryProductStatusEnum productStatus = p.getStatus();
-                if (productStatus == null || !productStatus.name().equalsIgnoreCase(status)) continue;
-            }
+            if (selectedStatus != null && p.getStatus() != selectedStatus) continue;
 
-            // Фільтрація по складу
             if (!TextUtils.isEmpty(storage)) {
                 if (p.getStorageName() == null || !p.getStorageName().equalsIgnoreCase(storage)) continue;
             }
 
-            // Фільтрація по категорії
             if (!TextUtils.isEmpty(category)) {
                 if (p.getCategoryName() == null || !p.getCategoryName().equalsIgnoreCase(category)) continue;
             }

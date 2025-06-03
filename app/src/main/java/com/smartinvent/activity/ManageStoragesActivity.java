@@ -4,10 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.smartinvent.R;
 import com.smartinvent.adapter.StorageAdapter;
 import com.smartinvent.model.Company;
+import com.smartinvent.model.Constants;
 import com.smartinvent.model.Storage;
 import com.smartinvent.service.StorageService;
 
@@ -29,7 +27,8 @@ public class ManageStoragesActivity extends AppCompatActivity implements Storage
     private List<Storage> storageList = new ArrayList<>();
     private StorageService storageService;
 
-    private Button btnAdd, btnEdit, btnDelete, btnRefresh, btnSave, btnCancel;
+    private Button btnSave, btnCancel;
+    private ImageButton btnAdd, btnEdit, btnDelete, btnRefresh;
     private EditText editName, editLocation, editDetails;
     private View formLayout;
     private TextView formTitle;
@@ -50,7 +49,7 @@ public class ManageStoragesActivity extends AppCompatActivity implements Storage
 
         SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
 
-        companyId = sharedPreferences.getLong("companyId", -1);
+        companyId = sharedPreferences.getLong(Constants.KEY_COMPANY_ID, -1);
         Log.d("ManageStoragesActivity", "companyId: " + companyId);
 
         if (companyId == -1) {

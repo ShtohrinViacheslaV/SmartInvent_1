@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.smartinvent.R;
 import com.smartinvent.model.Company;
+import com.smartinvent.model.Constants;
 import com.smartinvent.network.ApiClient;
 import com.smartinvent.network.ApiService;
 import retrofit2.Call;
@@ -60,7 +61,7 @@ public class SignUpCompanyActivity1 extends AppCompatActivity {
                     Log.d("SignUpCompanyActivity1", "Sending company with ID: " + createdCompany.getCompanyId());
 
                     Intent intent = new Intent(SignUpCompanyActivity1.this, SignUpCompanyActivity2.class);
-                    intent.putExtra("company", createdCompany);
+                    intent.putExtra(Constants.KEY_COMPANY, createdCompany);
                     startActivity(intent);
                     finish();
                 } else {

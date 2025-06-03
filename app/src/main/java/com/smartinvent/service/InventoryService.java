@@ -1,5 +1,6 @@
 package com.smartinvent.service;
 
+import com.android.volley.Request;
 import com.smartinvent.model.*;
 import com.smartinvent.network.ApiClient;
 
@@ -8,6 +9,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.util.List;
+import java.util.Map;
 
 
 public class InventoryService {
@@ -92,6 +94,25 @@ public class InventoryService {
         });
     }
 
+    public void cancelSession(Long sessionId, InventorySessionCallback callback) {
+        inventoryApi.cancelSession(sessionId).enqueue(new Callback<InventorySession>() {
+            @Override
+            public void onResponse(Call<InventorySession> call, Response<InventorySession> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFailure("Error cancelling session");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<InventorySession> call, Throwable t) {
+                callback.onFailure("Network error");
+            }
+        });
+    }
+
+
     public void getSessionDetails(Long sessionId, InventorySessionCallback callback) {
         inventoryApi.getSessionDetails(sessionId).enqueue(new Callback<InventorySession>() {
             @Override
@@ -109,7 +130,30 @@ public class InventoryService {
             }
         });
     }
+
+
 // === RESULT METHODS ===
+
+
+    public void getStatusCounts(Long sessionId, StatusCountCallback callback) {
+        inventoryApi.getStatusCounts(sessionId).enqueue(new Callback<Map<String, Long>>() {
+            @Override
+            public void onResponse(Call<Map<String, Long>> call, Response<Map<String, Long>> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFailure("Error loading status counts");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Long>> call, Throwable t) {
+                callback.onFailure("Network error");
+            }
+        });
+    }
+
+
 
     public void getResultsForSession(Long sessionId, InventoryResultListCallback callback) {
         inventoryApi.getResultsForSession(sessionId).enqueue(new Callback<List<InventorySessionProduct>>() {
@@ -160,6 +204,24 @@ public class InventoryService {
             }
         });
     }
+
+    public void saveOrUpdateInventoryProductResultDto(Long sessionId, InventoryProductResultDto dto, InventoryActionCallback callback) {
+        inventoryApi.saveOrUpdateInventoryProductResultDto(sessionId, dto).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                callback.onSuccess(response.isSuccessful());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+
+
+
 
     public void updateResult(Long resultId, InventoryResult result, InventoryActionCallback callback) {
         inventoryApi.updateResult(resultId, result).enqueue(new Callback<InventoryResult>() {
@@ -244,6 +306,72 @@ public class InventoryService {
                 });
     }
 
+    public void getProductById(Long sessionId, Long productId, InventoryProductResultSingleCallback callback) {
+        inventoryApi.getProductById(sessionId, productId).enqueue(new Callback<InventoryProductResultDto>() {
+            @Override
+            public void onResponse(Call<InventoryProductResultDto> call, Response<InventoryProductResultDto> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFailure("Product not found");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<InventoryProductResultDto> call, Throwable t) {
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+
+    public void getProductsByStatus(long sessionId, String status, ProductsCallback callback) {
+        InventoryApi api = ApiClient.getClient().create(InventoryApi.class);
+
+        Call<List<InventoryProductResultDto>> call = api.getInventoryProductsByStatus(sessionId, status);
+        call.enqueue(new Callback<List<InventoryProductResultDto>>() {
+            @Override
+            public void onResponse(Call<List<InventoryProductResultDto>> call, Response<List<InventoryProductResultDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFailure("Не вдалося отримати товари");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<InventoryProductResultDto>> call, Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+    }
+
+
+    // === BACKUP ===
+
+    public void completeAndBackupSession(Long sessionId, StringCallback callback) {
+        inventoryApi.completeAndBackupSession(sessionId).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFailure("Помилка при завершенні сесії з бекапом");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                callback.onFailure("Помилка мережі: " + t.getMessage());
+            }
+        });
+    }
+
+
+
+
+
+
 
 
 
@@ -270,6 +398,19 @@ public class InventoryService {
     }
 
     // === CALLBACK INTERFACES ===
+
+
+    public interface StringCallback {
+        void onSuccess(String message);
+        void onFailure(String errorMessage);
+    }
+
+
+    public interface ProductsCallback {
+        void onSuccess(List<InventoryProductResultDto> products);
+        void onFailure(String errorMessage);
+    }
+
 
     public interface InventorySessionCallback {
         void onSuccess(InventorySession session);
@@ -305,6 +446,12 @@ public class InventoryService {
         void onSuccess(InventoryProductResultDto productResultDto);
         void onFailure(String errorMessage);
     }
+
+    public interface StatusCountCallback {
+        void onSuccess(Map<String, Long> statusCounts);
+        void onFailure(String errorMessage);
+    }
+
 
 
 }

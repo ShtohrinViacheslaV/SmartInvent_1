@@ -5,6 +5,7 @@ import com.smartinvent.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -14,8 +15,12 @@ public class TransactionService {
     private TransactionRepository transactionRepository;
 
     public Transaction createTransaction(Transaction transaction) {
+        if (transaction.getDate() == null) {
+            transaction.setDate(LocalDateTime.now());
+        }
         return transactionRepository.save(transaction);
     }
+
 
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();

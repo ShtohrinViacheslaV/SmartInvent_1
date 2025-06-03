@@ -52,22 +52,23 @@ public class InventorySessionsFragment extends Fragment implements InventorySess
 
         recyclerView = view.findViewById(R.id.recyclerViewSessions);
         progressBar = view.findViewById(R.id.progressBarSessions);
-        btnAll = view.findViewById(R.id.btn_all);
-        btnActive = view.findViewById(R.id.btn_active);
-        btnCompleted = view.findViewById(R.id.btn_completed);
-        btnSortDate = view.findViewById(R.id.btn_sort_by_date);
+//        btnAll = view.findViewById(R.id.btn_all);
+//        btnActive = view.findViewById(R.id.btn_active);
+//        btnCompleted = view.findViewById(R.id.btn_completed);
+//        btnSortDate = view.findViewById(R.id.btn_sort_by_date);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         fetchSessions();
 
-        btnAll.setOnClickListener(v -> filterSessions(null));
-        btnActive.setOnClickListener(v -> filterSessions(InventorySessionStatusEnum.ACTIVE));
-        btnCompleted.setOnClickListener(v -> filterSessions(InventorySessionStatusEnum.COMPLETED));
-        btnSortDate.setOnClickListener(v -> toggleSortByDate());
+//        btnAll.setOnClickListener(v -> filterSessions(null));
+//        btnActive.setOnClickListener(v -> filterSessions(InventorySessionStatusEnum.ACTIVE));
+//        btnCompleted.setOnClickListener(v -> filterSessions(InventorySessionStatusEnum.COMPLETED));
+//        btnSortDate.setOnClickListener(v -> toggleSortByDate());
 
         return view;
     }
+
 
     private void fetchSessions() {
         progressBar.setVisibility(View.VISIBLE);
@@ -80,7 +81,13 @@ public class InventorySessionsFragment extends Fragment implements InventorySess
             public void onResponse(Call<List<InventorySession>> call, Response<List<InventorySession>> response) {
                 progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null) {
-                    allSessions = response.body();
+                    // Фільтрація лише активних сесій
+                    allSessions = new ArrayList<>();
+                    for (InventorySession session : response.body()) {
+                        if (session.getStatus() == InventorySessionStatusEnum.ACTIVE) {
+                            allSessions.add(session);
+                        }
+                    }
                     adapter = new InventorySessionAdapter(allSessions, requireContext(), InventorySessionsFragment.this);
                     recyclerView.setAdapter(adapter);
                 } else {
@@ -95,6 +102,33 @@ public class InventorySessionsFragment extends Fragment implements InventorySess
             }
         });
     }
+//
+//    private void fetchSessions() {
+//        progressBar.setVisibility(View.VISIBLE);
+//
+//        InventoryApi apiService = ApiClient.getClient().create(InventoryApi.class);
+//        Call<List<InventorySession>> call = apiService.getAllSessions();
+//
+//        call.enqueue(new Callback<List<InventorySession>>() {
+//            @Override
+//            public void onResponse(Call<List<InventorySession>> call, Response<List<InventorySession>> response) {
+//                progressBar.setVisibility(View.GONE);
+//                if (response.isSuccessful() && response.body() != null) {
+//                    allSessions = response.body();
+//                    adapter = new InventorySessionAdapter(allSessions, requireContext(), InventorySessionsFragment.this);
+//                    recyclerView.setAdapter(adapter);
+//                } else {
+//                    Toast.makeText(getContext(), "Помилка завантаження сесій", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<InventorySession>> call, Throwable t) {
+//                progressBar.setVisibility(View.GONE);
+//                Toast.makeText(getContext(), "Помилка підключення", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
     private void filterSessions(@Nullable InventorySessionStatusEnum status) {
         List<InventorySession> filteredList = new ArrayList<>();

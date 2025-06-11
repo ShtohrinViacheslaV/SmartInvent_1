@@ -15,17 +15,6 @@ java {
     }
 }
 
-//java {
-//    toolchain {
-//        languageVersion = JavaLanguageVersion.of(17)
-//    }
-//}
-
-//repositories {
-//    mavenCentral()
-//}
-
-
 dependencies {
     implementation("org.apache.commons:commons-compress:1.27.1")
     implementation("org.springframework.boot:spring-boot-starter-mail:3.4.4")
